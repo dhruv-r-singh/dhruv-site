@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dhruv Raj Singh</title>
+<script src="https://cdn.jsdelivr.net/npm/cobe@0.6.1/dist/cobe.umd.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+
+
+:root {
+  --bg:      #0A0A0A;
+  --bg2:     #171717;
+  --bg3:     #171717;
+  --surface: #171717;
+  --text:    #F0F0F0;
+  --text2:   #888888;
+  --muted:   #444444;
+  --border:  #171717;
+  --accent:  #F0F0F0;
+  --font-display: Georgia, serif;
+  --font-body:    'League Spartan', sans-serif;
+  --font-mono:    'Geist Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background:var(--bg); color:var(--text);
+  font-family:var(--font-body); font-weight:300;
+  line-height:1.6; -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:200;
+  height:58px; display:flex; align-items:center; justify-content:space-between;
+  padding:0 3rem;
+  background:rgba(10,10,10,0.92); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-name {
+  font-family:var(--font-display); font-size:1.05rem;
+  color:var(--text); text-decoration:none; letter-spacing:0.01em;
+}
+.nav-links { display:flex; gap:0; align-items:center; }
+.nav-link {
+  font-size:0.78rem; font-weight:400; letter-spacing:0.05em;
+  color:var(--text2); text-decoration:none;
+  padding:0 1.25rem; height:58px; display:flex; align-items:center;
+  border-bottom:2px solid transparent; transition:color 0.2s, border-color 0.2s;
+  text-transform:uppercase;
+}
+.nav-link:hover { color:var(--text); }
+.nav-link.active { color:var(--text); border-bottom-color:var(--text); }
+.nav-avail {
+  display:flex; align-items:center; gap:6px;
+  font-family:var(--font-mono); font-size:0.68rem; color:var(--muted);
+}
+.avail-dot {
+  width:6px; height:6px; border-radius:50%; background:#F0F0F0;
+  animation:blink 2.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ── PAGES ── */
+.page { display:none; padding-top:58px; }
+.page.active { display:block; }
+
+/* ── SHARED ── */
+.container { max-width:1100px; margin:0 auto; padding:0 3rem; }
+.section-label {
+  font-family:var(--font-mono); font-size:0.68rem;
+  letter-spacing:0.16em; text-transform:uppercase; color:var(--muted);
+  margin-bottom:1rem;
+}
+h1,h2,h3 { font-family:var(--font-display); font-weight:400; }
+h1 { font-size:clamp(3.8rem,8vw,7rem); line-height:1.0; letter-spacing:-0.01em; }
+h2 { font-size:clamp(2.2rem,3.5vw,3.2rem); line-height:1.1; letter-spacing:-0.01em; }
+h3 { font-size:1.2rem; }
+.body-text { font-size:0.95rem; color:var(--text2); line-height:1.85; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:none; }
+}
+.fu  { opacity:0; animation:fadeUp 0.55s ease forwards; }
+.fu1 { animation-delay:0.05s; }
+.fu2 { animation-delay:0.15s; }
+.fu3 { animation-delay:0.25s; }
+.fu4 { animation-delay:0.35s; }
+.reveal {
+  opacity:0; transform:translateY(14px);
+  transition:opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.in { opacity:1; transform:none; }
+
+/* ═══════════════════════════════════
+   HOME
+═══════════════════════════════════ */
+.home-hero {
+  min-height:calc(100vh - 58px);
+  display:grid; grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--border);
+}
+.home-hero-left {
+  padding:5rem 3rem 5rem 3rem;
+  display:flex; flex-direction:column; justify-content:center;
+  border-right:1px solid var(--border);
+}
+.home-hero-right {
+  padding:5rem 3rem;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  background:var(--bg2);
+}
+.hero-eyebrow {
+  font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:2rem;
+}
+.hero-name { margin-bottom:2rem; }
+.hero-name .line2 { color:var(--text2); opacity:0.55; }
+.hero-tagline {
+  font-size:1.05rem; color:var(--text2); line-height:1.8;
+  max-width:440px; margin-bottom:3rem;
+}
+.hero-ctas { display:flex; gap:0.75rem; flex-wrap:wrap; }
+.btn {
+  font-family:var(--font-body); font-weight:500; cursor:pointer;
+  border:none; transition:all 0.2s; display:inline-flex; align-items:center; gap:6px;
+  text-decoration:none; font-size:0.82rem; letter-spacing:0.04em;
+}
+.btn-fill {
+  background:var(--text); color:var(--bg);
+  padding:11px 22px; border-radius:6px;
+}
+.btn-fill:hover { opacity:0.82; transform:translateY(-1px); }
+.btn-outline {
+  background:transparent; border:1px solid var(--border);
+  color:var(--text2); padding:10px 22px; border-radius:6px;
+}
+.btn-outline:hover { border-color:var(--text); color:var(--text); }
+
+.hero-stats {
+  display:flex; flex-direction:column; gap:0;
+}
+.hero-stat-row {
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:1.1rem 0; border-bottom:1px solid var(--border);
+}
+.hero-stat-row:first-child { border-top:1px solid var(--border); }
+.hs-num {
+  font-family:var(--font-display); font-size:2.2rem; color:var(--text);
+}
+.hs-label { font-size:0.8rem; color:var(--text2); max-width:200px; text-align:right; }
+
+/* quick links strip */
+.quick-strip {
+  display:flex; border-top:1px solid var(--border);
+}
+.quick-item {
+  flex:1; padding:1.75rem 3rem;
+  border-right:1px solid var(--border);
+  text-decoration:none; color:inherit;
+  display:flex; justify-content:space-between; align-items:center;
+  transition:background 0.2s;
+}
+.quick-item:last-child { border-right:none; }
+.quick-item:hover { background:var(--bg2); }
+.qi-title { font-size:0.85rem; font-weight:500; }
+.qi-sub { font-size:0.75rem; color:var(--muted); margin-top:2px; }
+.qi-arrow { color:var(--muted); transition:transform 0.2s; font-size:0.9rem; }
+.quick-item:hover .qi-arrow { transform:translate(3px,-3px); color:var(--text); }
+
+/* ═══════════════════════════════════
+   ABOUT
+═══════════════════════════════════ */
+.about-header {
+  padding:5rem 3rem 4rem 1.5rem;
+  border-bottom:1px solid var(--border);
+  max-width:1100px; margin:0 auto;
+}
+.about-header h2 { margin-top:1rem; max-width:700px; }
+
+.about-body {
+  display:grid; grid-template-columns:2fr 1fr;
+  border-bottom:1px solid var(--border);
+}
+.about-main { padding:4rem 3rem; border-right:1px solid var(--border); }
+.about-sidebar { padding:4rem 2.5rem; background:var(--bg2); }
+
+.about-main p { font-size:0.95rem; color:var(--text2); line-height:1.85; margin-bottom:1.5rem; }
+.about-main p:last-child { margin-bottom:0; }
+.about-main h3 {
+  font-family:var(--font-display); font-size:1.4rem;
+  margin:2.5rem 0 1rem; color:var(--text);
+}
+
+.sidebar-block { margin-bottom:2.5rem; }
+.sidebar-block:last-child { margin-bottom:0; }
+.sidebar-title {
+  font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:1rem;
+}
+.sidebar-item {
+  padding:0.75rem 0; border-bottom:1px solid var(--border);
+  font-size:0.85rem; color:var(--text2);
+}
+.sidebar-item:first-of-type { border-top:1px solid var(--border); }
+.sidebar-item strong { color:var(--text); font-weight:500; display:block; font-size:0.82rem; }
+
+/* timeline */
+.timeline { display:flex; flex-direction:column; gap:0; margin-top:1.5rem; }
+.tl-item {
+  display:grid; grid-template-columns:80px 1fr;
+  gap:1.5rem; padding:1.25rem 0;
+  border-bottom:1px solid var(--border);
+}
+.tl-item:first-child { border-top:1px solid var(--border); }
+.tl-year {
+  font-family:var(--font-mono); font-size:0.7rem;
+  color:var(--muted); padding-top:2px; letter-spacing:0.06em;
+}
+.tl-content h4 { font-size:0.9rem; font-weight:500; color:var(--text); margin-bottom:3px; }
+.tl-content p { font-size:0.82rem; color:var(--text2); line-height:1.6; }
+
+/* skills grid */
+.skills-section {
+  border-bottom:1px solid var(--border);
+}
+.skills-header { padding:3rem 3rem 2rem; max-width:1100px; margin:0 auto; }
+.skills-grid {
+  display:grid; grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--border);
+}
+.skill-col {
+  padding:2rem 3rem; border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.skill-col:nth-child(4n) { border-right:none; }
+.skill-col-title {
+  font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.12em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:1rem;
+}
+.skill-list { display:flex; flex-direction:column; gap:5px; }
+.skill-list span { font-size:0.85rem; color:var(--text2); }
+
+/* ═══════════════════════════════════
+   WORK
+═══════════════════════════════════ */
+.work-header {
+  padding:3rem 3rem 3rem 1.5rem; border-bottom:1px solid var(--border);
+  max-width:1100px; margin:0 auto;
+}
+.work-header h2 { margin-top:1rem; }
+
+.work-list { display:flex; flex-direction:column; max-width:1100px; margin:0 auto; }
+.work-item {
+  display:grid; grid-template-columns:60px 1fr 140px;
+  gap:2.5rem; align-items:start;
+  padding:2.5rem 3rem;
+  border-bottom:1px solid var(--border);
+  transition:background 0.2s;
+}
+.work-item:hover { background:var(--bg2); }
+.wi-num {
+  font-family:var(--font-mono); font-size:0.7rem;
+  color:var(--muted); letter-spacing:0.06em; padding-top:4px;
+}
+.wi-title {
+  font-family:var(--font-display); font-size:1.35rem;
+  color:var(--text); margin-bottom:0.5rem; letter-spacing:-0.01em;
+}
+.wi-desc {
+  font-size:0.87rem; color:var(--text2); line-height:1.7;
+  max-width:540px; margin-bottom:1rem;
+}
+.wi-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+.tag {
+  font-family:var(--font-mono); font-size:0.63rem; letter-spacing:0.06em;
+  color:var(--muted); border:1px solid var(--border);
+  padding:2px 8px; border-radius:2px;
+}
+.wi-meta { text-align:right; }
+.wi-year {
+  font-family:var(--font-mono); font-size:0.7rem;
+  color:var(--muted); display:block; margin-bottom:0.5rem;
+}
+.wi-status {
+  font-family:var(--font-mono); font-size:0.65rem;
+  letter-spacing:0.08em; display:inline-block;
+  padding:3px 8px; border-radius:2px;
+}
+.status-active { background:rgba(34,197,94,0.1); color:#16a34a; }
+.status-ongoing { background:rgba(59,130,246,0.1); color:#2563eb; }
+.status-complete { background:var(--bg3); color:var(--muted); }
+
+/* ═══════════════════════════════════
+   CONTACT
+═══════════════════════════════════ */
+.contact-hero {
+  padding:6rem 3rem 5rem 1.5rem; border-bottom:1px solid var(--border);
+  max-width:1100px; margin:0 auto;
+}
+.contact-hero h2 { margin-top:1rem; max-width:600px; }
+.contact-hero p { margin-top:1.5rem; font-size:0.95rem; color:var(--text2); max-width:480px; line-height:1.8; }
+
+.contact-body {
+  display:grid; grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--border);
+}
+.contact-links-col {
+  padding:4rem 3rem; border-right:1px solid var(--border);
+}
+.contact-info-col { padding:4rem 3rem; background:var(--bg2); }
+
+.contact-link-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.2rem 0; border-bottom:1px solid var(--border);
+  text-decoration:none; color:inherit; transition:color 0.2s;
+}
+.contact-link-row:first-child { border-top:1px solid var(--border); }
+.contact-link-row:hover { color:var(--text); }
+.contact-link-row:hover .cl-arrow { transform:translate(3px,-3px); color:var(--text); }
+.cl-lbl {
+  font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:3px;
+}
+.cl-val { font-size:0.88rem; color:var(--text2); }
+.cl-arrow { color:var(--muted); transition:transform 0.2s; font-size:0.9rem; }
+
+.contact-info-col h3 {
+  font-family:var(--font-display); font-size:1.5rem; margin-bottom:1.25rem;
+}
+.contact-info-col p { font-size:0.9rem; color:var(--text2); line-height:1.8; margin-bottom:1.5rem; }
+.contact-detail-row {
+  padding:0.9rem 0; border-bottom:1px solid var(--border);
+  display:flex; gap:1.5rem;
+}
+.contact-detail-row:first-of-type { border-top:1px solid var(--border); }
+.cd-label {
+  font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--muted); width:80px; flex-shrink:0; padding-top:1px;
+}
+.cd-val { font-size:0.85rem; color:var(--text2); }
+
+footer {
+  padding:2rem 3rem; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.footer-l { font-family:var(--font-mono); font-size:0.67rem; color:var(--muted); letter-spacing:0.06em; }
+.footer-r { font-family:var(--font-mono); font-size:0.67rem; color:var(--muted); }
+
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* ── DROPDOWN ── */
+.nav-dropdown { position:relative; }
+.nav-dropdown:hover .dropdown-menu { opacity:1; pointer-events:all; transform:translateY(0); }
+.dropdown-menu {
+  position:absolute; top:100%; left:50%; transform:translateX(-50%) translateY(-6px);
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:8px; padding:0.4rem 0; min-width:160px;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.18s, transform 0.18s;
+  z-index:300;
+}
+.dropdown-item {
+  display:block; padding:0.55rem 1.1rem;
+  font-size:0.76rem; color:var(--text2); text-decoration:none;
+  letter-spacing:0.03em; cursor:pointer; transition:color 0.15s;
+  white-space:nowrap;
+}
+.dropdown-item:hover { color:var(--text); }
+
+/* ── PROJECT DETAIL PAGE ── */
+.proj-detail-header {
+  padding:5rem 3rem 3rem 1.5rem; border-bottom:1px solid var(--border);
+  max-width:1100px; margin:0 auto;
+}
+.proj-back {
+  font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.1em;
+  color:var(--muted); cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:6px;
+  margin-bottom:2rem; transition:color 0.2s;
+  background:none; border:none; padding:0;
+}
+.proj-back:hover { color:var(--text); }
+.proj-detail-header h1 { font-size:clamp(2.2rem,5vw,3.5rem); margin-bottom:1rem; }
+.proj-detail-header .proj-meta-row {
+  display:flex; gap:1.5rem; align-items:center; flex-wrap:wrap;
+}
+.proj-detail-body {
+  max-width:1100px; margin:0 auto;
+  display:grid; grid-template-columns:2fr 1fr;
+  gap:0; border-bottom:1px solid var(--border);
+}
+.proj-content { padding:3rem; border-right:1px solid var(--border); }
+.proj-content p { font-size:0.95rem; color:var(--text2); line-height:1.85; margin-bottom:1.5rem; }
+.proj-content h3 { font-family:var(--font-display); font-size:1.3rem; margin:2rem 0 0.75rem; }
+.proj-sidebar { padding:3rem 2.5rem; background:var(--bg2); }
+.proj-sidebar .sidebar-title {
+  font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.14em;
+  text-transform:uppercase; color:var(--muted); margin-bottom:1rem;
+}
+.proj-sidebar .sidebar-item {
+  padding:0.75rem 0; border-bottom:1px solid var(--border);
+  font-size:0.85rem; color:var(--text2);
+}
+.proj-sidebar .sidebar-item:first-of-type { border-top:1px solid var(--border); }
+.proj-sidebar .sidebar-item strong { display:block; font-size:0.8rem; color:var(--text); font-weight:500; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-name" onclick="showPage('home');return false;">Dhruv Raj Singh</a>
+  <div class="nav-links">
+    <a class="nav-link active" onclick="showPage('home');return false;" href="#">Home</a>
+    <a class="nav-link" onclick="showPage('about');return false;" href="#">About</a>
+    <div class="nav-dropdown">
+    <a class="nav-link" onclick="showPage('work');return false;" href="#">Projects</a>
+    <div class="dropdown-menu">
+      <a class="dropdown-item" onclick="showPage('proj-swarm');return false;" href="#">SWARM Systems</a>
+      <a class="dropdown-item" onclick="showPage('proj-micromouse');return false;" href="#">Micromouse Club</a>
+      <a class="dropdown-item" onclick="showPage('proj-youtube');return false;" href="#">YouTube Channel</a>
+    </div>
+  </div>
+    <a class="nav-link" onclick="showPage('contact');return false;" href="#">Contact</a>
+  </div>
+
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="home-hero-left">
+      <div class="hero-eyebrow fu fu1">2026</div>
+      <h1 class="hero-name fu fu2" style="color:#FFFFFF;">
+        Dhruv<br>
+        <span class="line2" style="color:#FFFFFF;opacity:1;">Raj Singh</span>
+      </h1>
+      <p class="hero-tagline fu fu3">Objective: Innovate the future.</p>
+      <div class="hero-ctas fu fu4">
+        <a class="btn btn-fill" onclick="showPage('work');return false;" href="#">View projects →</a>
+        <a class="btn btn-outline" onclick="showPage('contact');return false;" href="#">Get in touch</a>
+      </div>
+    </div>
+    <div class="home-hero-right" style="position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+      <pre id="ascii-art" style="font-family:var(--font-mono);font-size:0.62rem;line-height:1.4;color:var(--text2);text-align:center;user-select:none;letter-spacing:0.08em;"></pre>
+    </div>
+  </div>
+
+
+
+  <footer>
+    <span class="footer-l">Dhruv Raj Singh © 2025</span>
+    <span class="footer-r">Nashua, NH</span>
+  </footer>
+</div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<div class="page" id="page-about">
+  <div class="about-header reveal">
+    <div class="section-label" style="display:none;"></div>
+    <h2>About</h2>
+  </div>
+
+  <div class="about-body">
+    <div class="about-main">
+      <p class="reveal">I'm Dhruv. 16, Nashua NH, and I've basically been building things my whole life. Started with robotics when I was five, haven't really stopped since.</p>
+
+      <p class="reveal">Aerospace is where most of my energy goes — autonomous systems specifically. I like the idea of machines that can think for themselves, adapt, and operate without someone holding their hand the whole time. SWARM is the biggest thing I'm working on right now. There's also Micromouse, a club I started at my school that somehow turned into something real.</p>
+
+      <p class="reveal">But it's not just aerospace. I care about building things that actually matter — whether that's a drone system, a product, or a low-cost device that could help someone. I want to work on things that leave a mark. That's kind of the whole point for me.</p>
+
+      <p class="reveal">Outside of all that — music, philosophy, history, competition. I think a lot about purpose and identity, probably more than most people my age. I can go from extremely locked in to completely burnt out, but either way my brain keeps running. That's just how it goes.</p>
+    </div>
+
+    <div class="about-sidebar">
+      <div class="sidebar-block reveal">
+        <div class="sidebar-title">The basics</div>
+        <div class="sidebar-item"><strong>Age</strong>16</div>
+        <div class="sidebar-item"><strong>School</strong>Nashua High School South</div>
+        <div class="sidebar-item"><strong>Location</strong>Nashua, NH</div>
+        <div class="sidebar-item"><strong>Status</strong>Open to opportunities</div>
+      </div>
+
+      <div class="sidebar-block reveal">
+        <div class="sidebar-title">A few facts</div>
+        <div class="sidebar-item"><strong>2nd degree black belt</strong>Kempo Karate</div>
+        <div class="sidebar-item"><strong>10 years</strong>in competitive robotics</div>
+        <div class="sidebar-item"><strong>250+ students</strong>taught in year one</div>
+        <div class="sidebar-item"><strong>23 teams globally</strong>MIT challenge selectee</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-l">Dhruv Raj Singh © 2025</span>
+    <span class="footer-r">Nashua, NH</span>
+  </footer>
+</div>
+
+<!-- ═══════════════ WORK ═══════════════ -->
+<div class="page" id="page-work">
+  <div class="work-header reveal">
+    <div class="section-label" style="display:none;"></div>
+    <h2>Projects</h2>
+  </div>
+
+  <div class="work-list" id="work-list">
+    <div class="work-item reveal" onclick="showPage('proj-swarm')" style="cursor:pointer;">
+      <span class="wi-num">01</span>
+      <div>
+        <div class="wi-title">SWARM Systems</div>
+        <div class="wi-desc">A drone system where every node is the same hardware — roles like Scout, Anchor, and Intel get assigned by AI in real time depending on what the swarm needs. No central controller, no fixed purposes. If one node dies, the others adapt. Still building it.</div>
+        <div class="wi-tags">
+          <span class="tag">Autonomous Systems</span>
+          <span class="tag">Decentralized AI</span>
+          <span class="tag">Mesh Networking</span>
+          <span class="tag">Embedded</span>
+          <span class="tag">Python</span>
+        </div>
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2025–</span>
+        <span class="wi-status status-active">Active</span>
+      </div>
+    </div>
+
+    <div class="work-item reveal" onclick="showPage('proj-micromouse')" style="cursor:pointer;">
+      <span class="wi-num">02</span>
+      <div>
+        <div class="wi-title">Micromouse Club</div>
+        <div class="wi-desc">Started this from scratch at my school. We teach embedded programming, PID control, and maze-solving algorithms — basically everything you need to build a robot that navigates on its own. 50+ in person, 1,000+ online. First year, still going.</div>
+        <div class="wi-tags">
+          <span class="tag">Leadership</span>
+          <span class="tag">PID Control</span>
+          <span class="tag">Path Planning</span>
+          <span class="tag">Education</span>
+          <span class="tag">Embedded</span>
+        </div>
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2024–</span>
+        <span class="wi-status status-active">Active</span>
+      </div>
+    </div>
+
+    <div class="work-item reveal" onclick="showPage('proj-youtube')" style="cursor:pointer;">
+      <span class="wi-num">03</span>
+      <div>
+        <div class="wi-title">Engineering YouTube Channel</div>
+        <div class="wi-desc">Started making videos to break down engineering concepts that felt unnecessarily gatekept. Robotics, embedded systems, autonomous stuff — explained like a normal person. Somehow reached people in countries I've never been to, which is still kind of insane to me.</div>
+        <div class="wi-tags">
+          <span class="tag">Education</span>
+          <span class="tag">Content Creation</span>
+          <span class="tag">Engineering Communication</span>
+        </div>
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2023–</span>
+        <span class="wi-status status-active">Active</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-l">Dhruv Raj Singh © 2025</span>
+    <span class="footer-r">Nashua, NH</span>
+  </footer>
+</div>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<div class="page" id="page-contact">
+  <div class="contact-hero reveal">
+    <div class="section-label" style="display:none;"></div>
+    <h2>Contact</h2>
+    <p>Whether it's a research opportunity, engineering collaboration, or just a conversation about autonomous systems and aerospace — reach out. I'm always interested in working on things that push the field forward.</p>
+  </div>
+
+  <div class="contact-body">
+    <div class="contact-links-col">
+      <div class="section-label reveal" style="margin-bottom:1.5rem;">Links</div>
+      <a class="contact-link-row reveal" href="mailto:dhruvrajsingh.2028@gmail.com">
+        <div><div class="cl-lbl">Email</div><div class="cl-val">dhruvrajsingh.2028@gmail.com</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link-row reveal" href="https://www.linkedin.com/in/dhruv-raj-singh-6b8441370/" target="_blank">
+        <div><div class="cl-lbl">LinkedIn</div><div class="cl-val">Dhruv Raj Singh</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link-row reveal" href="https://github.com/dhruv-r-singh" target="_blank">
+        <div><div class="cl-lbl">GitHub</div><div class="cl-val">@dhruv-r-singh</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link-row reveal" href="https://www.youtube.com/@drub.1" target="_blank">
+        <div><div class="cl-lbl">YouTube</div><div class="cl-val">@drub.1</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-link-row reveal" href="#" target="_blank">
+        <div><div class="cl-lbl">Instagram</div><div class="cl-val">@dhruvrajsingh</div></div>
+        <span class="cl-arrow">↗</span>
+      </a>
+    </div>
+
+    <div class="contact-info-col">
+      <h3 class="reveal">Let's talk</h3>
+      <p class="reveal">If you're building something interesting, I'm down to hear about it. Research, collaboration, or just a good conversation — reach out.</p>
+      <div class="contact-detail-row reveal">
+        <span class="cd-label">Location</span>
+        <span class="cd-val">Nashua, NH</span>
+      </div>
+      <div class="contact-detail-row reveal">
+        <span class="cd-label">School</span>
+        <span class="cd-val">Nashua High School South</span>
+      </div>
+      <div class="contact-detail-row reveal">
+        <span class="cd-label">Open to</span>
+        <span class="cd-val">Anything worth building</span>
+      </div>
+      <div class="contact-detail-row reveal">
+        <span class="cd-label">Response</span>
+        <span class="cd-val">Usually within 24–48 hours</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-l">Dhruv Raj Singh © 2025</span>
+    <span class="footer-r">Nashua, NH</span>
+  </footer>
+</div>
+
+<!-- ═══════════════ SWARM DETAIL ═══════════════ -->
+<div class="page" id="page-proj-swarm">
+  <div class="proj-detail-header reveal">
+    <button class="proj-back" onclick="showPage('work')">← Projects</button>
+    <div class="wi-tags" style="margin-bottom:1.25rem;">
+      <span class="tag">Autonomous Systems</span><span class="tag">Decentralized AI</span><span class="tag">Mesh Networking</span><span class="tag">Embedded</span>
+    </div>
+    <h1>SWARM Systems</h1>
+    <div class="proj-meta-row">
+      <span class="wi-status status-active">Active</span>
+      <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">2025–present</span>
+    </div>
+  </div>
+  <div class="proj-detail-body">
+    <div class="proj-content reveal">
+      <p>SWARM started from a pretty simple frustration — most drone systems are built around specialized hardware. You design a scout drone, a relay drone, a sensor drone. If one fails, it fails. The whole architecture is fragile by design.</p>
+      <p>The idea behind SWARM is that every single node is identical hardware. Same motors, same compute, same sensors. What makes them different is software — roles like Scout, Anchor, Intel, Lift, Pulse, and Sentinel get assigned dynamically by a distributed AI system depending on what the swarm actually needs in that moment.</p>
+      <p>If a node's battery drops, it hands off its role automatically. If one goes offline entirely, the remaining nodes redistribute and keep running. No central controller means no single point of failure.</p>
+      <h3>The hard part</h3>
+      <p>Getting the decentralized role negotiation to actually work is the bulk of the challenge. Each node has to be aware of the swarm's state, make decisions locally, and reach consensus with the others — all in real time, all without a central brain telling them what to do. That's what I'm deep in right now.</p>
+    </div>
+    <div class="proj-sidebar reveal">
+      <div class="sidebar-title">Details</div>
+      <div class="sidebar-item"><strong>Status</strong>Active development</div>
+      <div class="sidebar-item"><strong>Started</strong>2025</div>
+      <div class="sidebar-item"><strong>Stack</strong>Python, embedded C, mesh networking</div>
+      <div class="sidebar-item"><strong>Nodes per unit</strong>3–6 identical drones</div>
+      <div class="sidebar-item"><strong>Key concept</strong>Decentralized AI coordination</div>
+    </div>
+  </div>
+
+  <!-- Globe -->
+  <div style="display:flex;flex-direction:column;align-items:center;padding:4rem 3rem;border-top:1px solid var(--border);background:var(--bg2);">
+    <div style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:1.5rem;">Global deployment potential</div>
+    <canvas id="swarm-globe" style="width:400px;height:400px;cursor:grab;"></canvas>
+  </div>
+
+  <footer><span class="footer-l">Dhruv Raj Singh © 2025</span><span class="footer-r">Nashua, NH</span></footer>
+</div>
+
+<!-- ═══════════════ MICROMOUSE DETAIL ═══════════════ -->
+<div class="page" id="page-proj-micromouse">
+  <div class="proj-detail-header reveal">
+    <button class="proj-back" onclick="showPage('work')">← Projects</button>
+    <div class="wi-tags" style="margin-bottom:1.25rem;">
+      <span class="tag">Robotics</span><span class="tag">PID Control</span><span class="tag">Path Planning</span><span class="tag">Education</span>
+    </div>
+    <h1>Micromouse Club</h1>
+    <div class="proj-meta-row">
+      <span class="wi-status status-active">Active</span>
+      <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">2024–present</span>
+    </div>
+  </div>
+  <div class="proj-detail-body">
+    <div class="proj-content reveal">
+      <p>Micromouse is a robotics competition where you build a small autonomous robot that navigates a maze as fast as possible — no remote control, no human input once it starts. It has to map the maze, find the optimal path, and run it. Classic problem, genuinely hard to do well.</p>
+      <p>I started this club at Nashua High School South because nobody else was doing it and I thought it was one of the best ways to actually learn embedded systems and autonomous navigation. Not in a theoretical way — you build something, it breaks, you figure out why, you fix it.</p>
+      <p>In the first year we got 50+ students coming in person and a few hundred more following along online. I didn't expect it to grow that fast. We teach PID control, sensor integration, maze-solving algorithms — the real stuff, not watered down.</p>
+      <h3>Project Arcturus</h3>
+      <p>My personal Micromouse build. Still a work in progress, but the goal is to build something competitive — not just functional. Custom PCB, optimized firmware, tuned PID. Every iteration gets a little faster.</p>
+    </div>
+    <div class="proj-sidebar reveal">
+      <div class="sidebar-title">Details</div>
+      <div class="sidebar-item"><strong>Status</strong>Active</div>
+      <div class="sidebar-item"><strong>Started</strong>2024</div>
+      <div class="sidebar-item"><strong>Students</strong>50+ in person, 1,000+ online</div>
+      <div class="sidebar-item"><strong>My robot</strong>Project Arcturus</div>
+      <div class="sidebar-item"><strong>Topics taught</strong>PID, path planning, embedded programming</div>
+    </div>
+  </div>
+  <footer><span class="footer-l">Dhruv Raj Singh © 2025</span><span class="footer-r">Nashua, NH</span></footer>
+</div>
+
+<!-- ═══════════════ YOUTUBE DETAIL ═══════════════ -->
+<div class="page" id="page-proj-youtube">
+  <div class="proj-detail-header reveal">
+    <button class="proj-back" onclick="showPage('work')">← Projects</button>
+    <div class="wi-tags" style="margin-bottom:1.25rem;">
+      <span class="tag">Education</span><span class="tag">Content Creation</span><span class="tag">Engineering</span>
+    </div>
+    <h1>Engineering YouTube Channel</h1>
+    <div class="proj-meta-row">
+      <span class="wi-status status-active">Active</span>
+      <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">2023–present</span>
+    </div>
+  </div>
+  <div class="proj-detail-body">
+    <div class="proj-content reveal">
+      <p>I started making videos because a lot of the engineering content online is either too basic or buried behind paywalls and academic jargon. I wanted to explain things the way I wish someone had explained them to me — clearly, without dumbing it down.</p>
+      <p>The channel covers robotics, embedded systems, autonomous navigation, and whatever else I'm working on at the time. The goal was never to go viral. It was to make content that's actually useful for students who are trying to learn this stuff seriously.</p>
+      <p>Somehow it reached people in countries I've never been to. That part still feels kind of unreal to me. If even a few of those people built something because of a video I made, that's worth more than any view count.</p>
+    </div>
+    <div class="proj-sidebar reveal">
+      <div class="sidebar-title">Details</div>
+      <div class="sidebar-item"><strong>Started</strong>2023</div>
+      <div class="sidebar-item"><strong>Status</strong>Active</div>
+      <div class="sidebar-item"><strong>Channel</strong>@drub.1</div>
+      <div class="sidebar-item"><strong>Topics</strong>Robotics, embedded systems, autonomous navigation</div>
+    </div>
+  </div>
+  <footer><span class="footer-l">Dhruv Raj Singh © 2025</span><span class="footer-r">Nashua, NH</span></footer>
+</div>
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const el = document.getElementById('page-' + name);
+  if (el) el.classList.add('active');
+  // highlight parent nav for subpages
+  const parent = name.startsWith('proj-') ? 'work' : name;
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + parent + "'")) {
+      l.classList.add('active');
+    }
+  });
+  window.scrollTo(0, 0);
+  setTimeout(initReveal, 50);
+}
+
+function initReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => observer.observe(el));
+}
+initReveal();
+
+// ── ASCII ART ──
+(function() {
+  const el = document.getElementById('ascii-art');
+  if (!el) return;
+  const W = 38, H = 18;
+  const chars = ['.', '+', '*', 'o', ' ', ' ', ' ', ' '];
+  let grid = Array.from({length: H}, () => Array.from({length: W}, () => ({ c: ' ', t: Math.random()*100 })));
+  function tick() {
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        grid[y][x].t--;
+        if (grid[y][x].t <= 0) {
+          grid[y][x].c = chars[Math.floor(Math.random() * chars.length)];
+          grid[y][x].t = 40 + Math.random() * 120;
+        }
+      }
+    }
+    el.textContent = grid.map(row => row.map(c => c.c).join('')).join('\n');
+  }
+  tick();
+  setInterval(tick, 120);
+})();
+
+// ── COBE GLOBE ──
+(function() {
+  let globeInstance = null;
+
+  function initGlobe() {
+    const canvas = document.getElementById('swarm-globe');
+    if (!canvas || globeInstance) return;
+
+    if (typeof createGlobe === 'undefined') {
+      setTimeout(initGlobe, 200);
+      return;
+    }
+
+    let phi = 0;
+    let theta = 0.3;
+    let isDragging = false;
+    let lastX = 0;
+    let pointerPhi = 0;
+
+    globeInstance = createGlobe(canvas, {
+      devicePixelRatio: 2,
+      width: 800,
+      height: 800,
+      phi: 0,
+      theta: 0.3,
+      dark: 1,
+      diffuse: 1.2,
+      mapSamples: 16000,
+      mapBrightness: 6,
+      baseColor: [0.1, 0.1, 0.1],
+      markerColor: [1, 1, 1],
+      glowColor: [0.15, 0.15, 0.15],
+      markers: [
+        { location: [42.3601, -71.0589], size: 0.05 }, // Boston / MIT
+        { location: [42.9956, -71.4548], size: 0.05 }, // Nashua NH
+        { location: [37.7749, -122.4194], size: 0.04 }, // San Francisco
+        { location: [51.5074, -0.1278], size: 0.04 },  // London
+        { location: [35.6762, 139.6503], size: 0.04 }, // Tokyo
+        { location: [28.6139, 77.2090], size: 0.04 },  // New Delhi
+        { location: [-33.8688, 151.2093], size: 0.03 },// Sydney
+        { location: [55.7558, 37.6173], size: 0.03 },  // Moscow
+        { location: [1.3521, 103.8198], size: 0.03 },  // Singapore
+        { location: [-23.5505, -46.6333], size: 0.03 },// São Paulo
+      ],
+      onRender(state) {
+        if (!isDragging) phi += 0.003;
+        state.phi = phi;
+        state.theta = theta;
+      }
+    });
+
+    canvas.addEventListener('mousedown', e => {
+      isDragging = true;
+      lastX = e.clientX;
+      canvas.style.cursor = 'grabbing';
+    });
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      canvas.style.cursor = 'grab';
+    });
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      const dx = e.clientX - lastX;
+      phi -= dx * 0.005;
+      lastX = e.clientX;
+    });
+  }
+
+  const origShow = window.showPage;
+  window.showPage = function(name) {
+    origShow(name);
+    if (name === 'proj-swarm') setTimeout(initGlobe, 150);
+  };
+})();
+</script>
+</body>
+</html>
