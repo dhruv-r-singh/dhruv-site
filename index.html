@@ -182,7 +182,7 @@ h3 { font-size:1.2rem; }
    ABOUT
 ═══════════════════════════════════ */
 .about-header {
-  padding:5rem 3rem 4rem 1.5rem;
+  padding:3rem 3rem 3rem 1.5rem;
   border-bottom:1px solid var(--border);
   max-width:1100px; margin:0 auto;
 }
@@ -305,7 +305,7 @@ h3 { font-size:1.2rem; }
    CONTACT
 ═══════════════════════════════════ */
 .contact-hero {
-  padding:6rem 3rem 5rem 1.5rem; border-bottom:1px solid var(--border);
+  padding:3rem 3rem 3rem 1.5rem; border-bottom:1px solid var(--border);
   max-width:1100px; margin:0 auto;
 }
 .contact-hero h2 { margin-top:1rem; max-width:600px; }
@@ -469,8 +469,8 @@ footer {
         <a class="btn btn-outline" onclick="showPage('contact');return false;" href="#">Reach out →</a>
       </div>
     </div>
-    <div class="home-hero-right" style="position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:stretch;">
-      <pre id="ascii-art" style="font-family:var(--font-mono);font-size:0.62rem;line-height:1.35;color:var(--text2);user-select:none;letter-spacing:0.08em;position:absolute;inset:0;padding:1.5rem;overflow:hidden;margin:0;white-space:pre;"></pre>
+    <div class="home-hero-right" style="position:relative;overflow:hidden;display:flex;align-items:stretch;justify-content:stretch;min-height:100%;">
+      <pre id="ascii-art" style="font-family:var(--font-mono);font-size:0.62rem;line-height:1.35;color:var(--text2);user-select:none;letter-spacing:0.08em;position:absolute;inset:0;padding:0;overflow:hidden;margin:0;white-space:pre;width:100%;height:100%;"></pre>
     </div>
   </div>
 
@@ -488,7 +488,6 @@ footer {
 <!-- ═══════════════ ABOUT ═══════════════ -->
 <div class="page" id="page-about">
   <div class="about-header reveal">
-    <div class="section-label" style="display:none;"></div>
     <h2>About</h2>
   </div>
 
@@ -534,7 +533,6 @@ footer {
 <!-- ═══════════════ WORK ═══════════════ -->
 <div class="page" id="page-work">
   <div class="work-header reveal">
-    <div class="section-label" style="display:none;"></div>
     <h2>Projects</h2>
   </div>
 
@@ -593,7 +591,6 @@ footer {
 <!-- ═══════════════ CONTACT ═══════════════ -->
 <div class="page" id="page-contact">
   <div class="contact-hero reveal">
-    <div class="section-label" style="display:none;"></div>
     <h2>Contact</h2>
     <p>I'm always open to new conversations, whether that's a research opportunity, a collaboration, or just an interesting idea worth talking through. Feel free to reach out through any of the links below, I do my best to respond to everything.</p>
   </div>
@@ -774,12 +771,11 @@ footer {
 </div>
 
 <script>
-function showPage(name) {
+function showPage(name, pushState) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   const el = document.getElementById('page-' + name);
   if (el) el.classList.add('active');
-  // highlight parent nav for subpages
   const parent = name.startsWith('proj-') ? 'work' : name;
   document.querySelectorAll('.nav-link').forEach(l => {
     if (l.getAttribute('onclick') && l.getAttribute('onclick').includes("'" + parent + "'")) {
@@ -788,7 +784,26 @@ function showPage(name) {
   });
   window.scrollTo(0, 0);
   setTimeout(initReveal, 50);
+  if (pushState !== false) {
+    try { history.pushState({ page: name }, '', '#' + name); } catch(e) {}
+  }
 }
+
+window.addEventListener('popstate', function(e) {
+  const page = (e.state && e.state.page) || 'home';
+  showPage(page, false);
+});
+
+// Load page from hash on initial load
+(function() {
+  const hash = window.location.hash.replace('#', '');
+  const valid = ['home','about','work','contact','proj-swarm','proj-micromouse','proj-youtube'];
+  if (hash && valid.includes(hash)) {
+    showPage(hash, false);
+  } else {
+    try { history.replaceState({ page: 'home' }, '', '#home'); } catch(e) {}
+  }
+})();
 
 function initReveal() {
   const observer = new IntersectionObserver(entries => {
@@ -802,20 +817,23 @@ initReveal();
 
 // ── ASCII ART ──
 document.addEventListener('DOMContentLoaded', () => {
-  const el = document.getElementById('ascii-art');
-  if (!el) return;
   const chars = ['.', '+', '*', 'o', '·', ' ', ' ', ' ', ' ', ' '];
 
-  function buildGrid() {
-    const charW = 7.4, charH = 13.5;
-    const W = Math.max(1, Math.floor((el.parentElement ? el.parentElement.offsetWidth : 400) / charW));
-    const H = Math.max(1, Math.floor((el.parentElement ? el.parentElement.offsetHeight : 300) / charH));
-    return { W, H, grid: Array.from({length: H}, () =>
-      Array.from({length: W}, () => ({ c: ' ', t: Math.random() * 100 }))
-    )};
-  }
+  function initAscii() {
+    const el = document.getElementById('ascii-art');
+    if (!el) return;
 
-  let state = buildGrid();
+    function buildGrid() {
+      const charW = 7.2, charH = 13.5;
+      const parent = el.parentElement;
+      const W = Math.max(10, Math.floor((parent ? parent.offsetWidth : 500) / charW));
+      const H = Math.max(5, Math.floor((parent ? parent.offsetHeight : 400) / charH));
+      return { W, H, grid: Array.from({length: H}, () =>
+        Array.from({length: W}, () => ({ c: ' ', t: Math.random() * 100 }))
+      )};
+    }
+
+    let state = buildGrid();
 
   function tick() {
     const el2 = document.getElementById('ascii-art');
@@ -834,9 +852,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setInterval(tick, 100);
 
-  window.addEventListener('resize', () => {
-    if (document.getElementById('ascii-art')) state = buildGrid();
-  });
+    window.addEventListener('resize', () => {
+      if (document.getElementById('ascii-art')) state = buildGrid();
+    });
+  }
+
+  // Delay init to ensure layout is complete
+  setTimeout(initAscii, 100);
 });
 
 // ── CONTACT FORM ──
