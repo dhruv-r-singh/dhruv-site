@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="favicon.jpg" id="favicon">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowing Water Generator | Dhruv Raj Singh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
+  <div class="nav-links">
+    <a class="nav-link " href="index.html">Home</a>
+    <div class="nav-dropdown" id="nav-games-wrap" style="display:none;">
+      <a class="nav-link " href="games.html">Games</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="fluxle.html">Fluxle</a>
+        <a class="dropdown-item" href="hives.html">Hives</a>
+      </div>
+    </div>
+    <a class="nav-link " href="about.html">About</a>
+    <div class="nav-dropdown">
+      <a class="nav-link active" href="work.html">Projects</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="proj-swarm.html">SWARM Systems</a>
+        <a class="dropdown-item" href="proj-adaptflow.html">AdaptFlow</a>
+        <a class="dropdown-item" href="proj-micromouse.html">The Micromouse Club</a>
+        <a class="dropdown-item" href="proj-generator.html">Flowing Water Generator</a>
+        <a class="dropdown-item" href="proj-youtube.html">YouTube Channel</a>
+      </div>
+    </div>
+    <a class="nav-link " href="contact.html">Contact</a>
+  </div>
+  <button id="mobile-menu-btn" onclick="toggleMobileNav()" style="display:none;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text);font-size:1.2rem;line-height:1;flex-shrink:0;">☰</button>
+</nav>
+<script>
+// Show games nav if previously unlocked
+(function(){
+  if(localStorage.getItem('gamesUnlocked')){
+    var el=document.getElementById('nav-games-wrap');
+    if(el) el.style.display='';
+    var m=document.getElementById('mobile-nav-games');
+    if(m) m.style.display='';
+  }
+})();
+</script>
+
+<div class="mobile-nav" id="mobile-nav" style="display:none;">
+  <a href="index.html" onclick="closeMobileNav()">Home</a>
+  <a href="games.html" id="mobile-nav-games" style="display:none;" onclick="closeMobileNav()">Games</a>
+  <a href="about.html" onclick="closeMobileNav()">About</a>
+  <a href="work.html" onclick="closeMobileNav()">Projects</a>
+  <div class="mobile-nav-sub">
+    <a href="proj-swarm.html" onclick="closeMobileNav()">SWARM Systems</a>
+    <a href="proj-adaptflow.html" onclick="closeMobileNav()">AdaptFlow</a>
+    <a href="proj-micromouse.html" onclick="closeMobileNav()">The Micromouse Club</a>
+    <a href="proj-generator.html" onclick="closeMobileNav()">Flowing Water Generator</a>
+    <a href="proj-youtube.html" onclick="closeMobileNav()">YouTube Channel</a>
+  </div>
+  <a href="contact.html" onclick="closeMobileNav()">Contact</a>
+</div>
+<div class="page active" id="page-proj-generator">
+
+  <div class="proj-detail-header reveal">
+    <a href="work.html" class="proj-back">← Projects</a>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <h1 style="margin-bottom:0;color:#FFFFFF;">Flowing Water Generator</h1>
+    </div>
+    <div class="proj-meta-row">
+      <span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span>
+      <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">2024</span>
+    </div>
+  </div>
+
+
+  <div class="proj-detail-body">
+    <div class="proj-content reveal">
+      <p>The goal was straightforward: build a generator that converts flowing water into electricity for as little money as possible. The final build came in at around $15, cheap enough to be realistically deployable in places without reliable power infrastructure. Off-grid homes, refugee camps, emergency zones.</p>
+      <p>The core mechanism is an Archimedes screw turbine, a design that has been around since ancient Greece, originally used to lift water uphill. Running it in reverse, with water flowing through it, spins a shaft connected to a DC generator. The faster the water moves, the more voltage the generator produces. In this model it powers two colored LEDs or a motor through a 2-pin micro connector.</p>
+      <p>What I liked about this project was how much physics went into something that looks so simple. I worked out the output voltage, current, RPM, and helical path length of the screw blade from scratch. The voltage formula alone connects water density, flow velocity, screw geometry, and generator efficiency. There is a lot going on inside a piece of PVC pipe.</p>
+      <p>The whole frame is wood, PVC pipe, and salvaged plastic. I soldered the connections, epoxied the screw blades to the shaft, and built the housing from a transparent plastic container. It works. That part still gets me.</p>
+    </div>
+    <div class="proj-sidebar reveal">
+      <div class="sidebar-title">About this project</div>
+      <div class="sidebar-item"><strong>Year</strong>2024</div>
+      <div class="sidebar-item"><strong>Status</strong>Complete</div>
+      <div class="sidebar-item"><strong>Total cost</strong>~$15</div>
+      <div class="sidebar-item"><strong>Mechanism</strong>Archimedes screw turbine + DC generator</div>
+      <div class="sidebar-item"><strong>Output</strong>3v to 24v, 0.1A to 1A</div>
+      <div class="sidebar-item"><strong>Built for</strong>Off-grid, refugee camps, disaster zones</div>
+    </div>
+  </div>
+  <footer><span class="footer-l">Dhruv Raj Singh © 2026</span><span class="footer-r">Nashua, NH</span></footer>
+
+</div>
+<script>
+function initReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); observer.unobserve(e.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => observer.observe(el));
+}
+document.addEventListener('DOMContentLoaded', initReveal);
+
+function toggleMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('mobile-menu-btn');
+  const isOpen = nav.style.display === 'flex';
+  if (isOpen) {
+    nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
+    setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
+    btn.textContent = '\u2630';
+  } else {
+    nav.style.display = 'flex';
+    nav.style.animation = 'slideInRight 0.32s cubic-bezier(0.22,1,0.36,1) forwards';
+    btn.textContent = '\u2715';
+  }
+}
+function closeMobileNav() {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.getElementById('mobile-menu-btn');
+  if (!nav || nav.style.display !== 'flex') return;
+  nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
+  setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
+  if (btn) btn.textContent = '\u2630';
+}
+</script>
+
+<script>
+(function(){
+  const KONAMI=[38,38,40,40,37,39,37,39,66,65];
+  let idx=0;
+  document.addEventListener('keydown',function(e){
+    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;localStorage.setItem('gamesUnlocked','1');window.location='games.html';}}
+    else idx=0;
+  });
+})();
+</script>
+</body>
+</html>

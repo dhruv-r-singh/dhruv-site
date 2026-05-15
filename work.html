@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home | Dhruv Raj Singh</title>
+<title>Projects | Dhruv Raj Singh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
@@ -17,7 +17,7 @@
 <nav>
   <a href="index.html" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
   <div class="nav-links">
-    <a class="nav-link active" href="index.html">Home</a>
+    <a class="nav-link " href="index.html">Home</a>
     <div class="nav-dropdown" id="nav-games-wrap" style="display:none;">
       <a class="nav-link " href="games.html">Games</a>
       <div class="dropdown-menu">
@@ -27,7 +27,7 @@
     </div>
     <a class="nav-link " href="about.html">About</a>
     <div class="nav-dropdown">
-      <a class="nav-link " href="work.html">Projects</a>
+      <a class="nav-link active" href="work.html">Projects</a>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="proj-swarm.html">SWARM Systems</a>
         <a class="dropdown-item" href="proj-adaptflow.html">AdaptFlow</a>
@@ -66,29 +66,85 @@
   </div>
   <a href="contact.html" onclick="closeMobileNav()">Contact</a>
 </div>
-<div class="page active" id="page-home" style="display:flex;flex-direction:column;">
+<div class="page active" id="page-work">
 
-  <div class="home-hero">
-    <div class="home-hero-left">
-      <div class="hero-eyebrow fu fu1">2026</div>
-      <h1 class="hero-name fu fu2" style="color:#FFFFFF;">
-        Dhruv<br>
-        <span class="line2" style="color:#FFFFFF;opacity:1;">Raj Singh</span>
-      </h1>
-      <p class="hero-tagline fu fu3">My objective: Innovate the future.</p>
-      <div class="hero-ctas fu fu4">
-        <a class="btn btn-fill" href="work.html">View projects →</a>
-        <a class="btn btn-outline" href="contact.html">Reach out →</a>
+  <div class="work-header reveal">
+    <h2>Projects</h2>
+  </div>
+
+  <div class="work-list" id="work-list">
+    <div class="work-item reveal" onclick="window.location='proj-swarm.html'" style="cursor:pointer;">
+      <span class="wi-num">01</span>
+      <div>
+        <div class="wi-title">SWARM Systems</div>
+        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
+        <div class="wi-desc">Every drone in SWARM is identical hardware. What makes them different is what they're told to do and that changes in real time based on what the swarm actually needs. No central brain, no single point of failure. One node goes down, the rest pick up the slack and keep going. This one's still in progress.</div>
+      
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2025–</span>
+        <span class="wi-status status-active">Active</span>
       </div>
     </div>
-    <div class="home-hero-right" style="position:relative;">
-      <div style="width:100%;height:100%;"></div>
-      <div id="ascii-star" onclick="openGoats()" style="display:none;position:absolute;z-index:10;color:#ffffff;text-shadow:0 0 6px #fff;cursor:pointer;font-size:0.75rem;font-family:var(--font-mono);line-height:1;pointer-events:all;">★</div>
-      <pre id="ascii-art" style="font-family:var(--font-mono);font-size:0.62rem;line-height:1.35;color:rgba(136,136,136,0.6);user-select:none;letter-spacing:0.08em;position:absolute;top:0;left:0;right:0;bottom:0;padding:0;overflow:hidden;margin:0;white-space:pre;"></pre>
+
+    <div class="work-item reveal" onclick="window.location='proj-adaptflow.html'" style="cursor:pointer;">
+      <span class="wi-num">02</span>
+      <div>
+        <div class="wi-title">AdaptFlow</div>
+        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span></div>
+        <div class="wi-desc">A greywater management system that recycles household wastewater using sensors and AI to measure water quality and direct it where it can be safely reused. Selected as one of 23 teams globally for the MIT Regenerative Futures Challenge. Presented at the MIT Museum to over 500 people.</div>
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2025</span>
+        <span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span>
+      </div>
+    </div>
+
+    <div class="work-item reveal" onclick="window.location='proj-micromouse.html'" style="cursor:pointer;">
+      <span class="wi-num">03</span>
+      <div>
+        <div class="wi-title">The Micromouse Club</div>
+        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
+        <div class="wi-desc">Started this from scratch at my school. We teach embedded programming, PID control, and maze-solving algorithms basically everything you need to build a robot that navigates on its own. 50+ in person, 1,000+ online. First year, still going.</div>
+      
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2024–</span>
+        <span class="wi-status status-active">Active</span>
+      </div>
+    </div>
+
+    <div class="work-item reveal" onclick="window.location='proj-generator.html'" style="cursor:pointer;">
+      <span class="wi-num">04</span>
+      <div>
+        <div class="wi-title">Flowing Water Generator</div>
+        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
+        <div class="wi-desc">A low-cost fluvial kinetic energy harvester built for under $15. Uses an Archimedes screw turbine to convert flowing water into electricity via a DC generator, designed for off-grid homes, refugee camps, and emergency disaster zones.</div>
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2024</span>
+        <span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span>
+      </div>
+    </div>
+
+    <div class="work-item reveal" onclick="window.location='proj-youtube.html'" style="cursor:pointer;">
+      <span class="wi-num">05</span>
+      <div>
+        <div class="wi-title">Engineering YouTube Channel</div>
+        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
+        <div class="wi-desc">I started making videos because a lot of engineering content online is either too basic or too buried in jargon. I just wanted to explain things clearly. It started small now people from countries I've never visited are watching. That part still gets me.</div>
+      
+      </div>
+      <div class="wi-meta">
+        <span class="wi-year">2023–</span>
+        <span class="wi-status status-active">Active</span>
+      </div>
     </div>
   </div>
 
-  <footer>
+  
+
+<footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
     <div style="display:flex;gap:1.5rem;align-items:center;">
       <a href="https://www.instagram.com/dhruvrsingh_" target="_blank" style="font-family:var(--font-mono);font-size:0.67rem;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Instagram</a>
@@ -97,11 +153,6 @@
     </div>
     <span class="footer-r">Nashua, NH</span>
   </footer>
-
-</div>
-<div id="page-goats" style="display:none;position:fixed;inset:0;z-index:9999;background:#0A0A0A;align-items:center;justify-content:center;flex-direction:column;">
-  <div style="font-family:Georgia,serif;font-size:clamp(2rem,8vw,5rem);color:#F0F0F0;font-style:italic;">the goats</div>
-  <div onclick="hideGoats()" style="margin-top:2rem;font-family:var(--font-mono);font-size:0.7rem;color:#444;cursor:pointer;letter-spacing:0.1em;text-transform:uppercase;">click to close</div>
 </div>
 <script>
 function initReveal() {
@@ -135,95 +186,6 @@ function closeMobileNav() {
   nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
   setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
   if (btn) btn.textContent = '\u2630';
-}
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const chars = ['.', '+', '*', 'o', '·', ' ', ' ', ' ', ' ', ' '];
-  function initAscii() {
-    const el = document.getElementById('ascii-art');
-    if (!el) return;
-    function buildGrid() {
-      const span = document.createElement('span');
-      span.textContent = 'x';
-      span.style.cssText = 'visibility:hidden;position:absolute;';
-      el.appendChild(span);
-      const cr = span.getBoundingClientRect();
-      const charW = cr.width || 7.2;
-      const charH = cr.height || 13.5;
-      el.removeChild(span);
-      const rect = el.getBoundingClientRect();
-      const w = rect.width || el.offsetWidth;
-      const h = rect.height || el.offsetHeight;
-      const W = Math.max(10, Math.floor(w / charW) + 1);
-      const H = Math.max(5, Math.floor(h / charH) + 1);
-      return { W, H, charW, charH, grid: Array.from({length: H}, () =>
-        Array.from({length: W}, () => ({ c: ' ', t: Math.random() * 100 }))
-      )};
-    }
-    let state = buildGrid();
-    let star = null;
-    setInterval(() => {
-      const x = Math.floor(Math.random() * state.W);
-      const y = Math.floor(Math.random() * state.H);
-      star = { x, y, ticks: 50 };
-    }, 138000);
-    function tick() {
-      const el2 = document.getElementById('ascii-art');
-      if (!el2) return;
-      for (let y = 0; y < state.H; y++) {
-        for (let x = 0; x < state.W; x++) {
-          if (star && star.x === x && star.y === y) continue;
-          state.grid[y][x].t--;
-          if (state.grid[y][x].t <= 0) {
-            state.grid[y][x].c = chars[Math.floor(Math.random() * chars.length)];
-            state.grid[y][x].t = 40 + Math.random() * 140;
-          }
-        }
-      }
-      const starEl = document.getElementById('ascii-star');
-      if (star) {
-        star.ticks--;
-        if (star.ticks <= 0) {
-          star = null;
-          if (starEl) starEl.style.display = 'none';
-        } else if (starEl) {
-          const charW = state.charW || 7.2;
-          const charH = state.charH || 13.5;
-          starEl.style.display = 'block';
-          starEl.style.left = (star.x * charW) + 'px';
-          starEl.style.top = (star.y * charH) + 'px';
-        }
-      } else if (starEl) {
-        starEl.style.display = 'none';
-      }
-      el2.textContent = state.grid.map(row => row.map(c => c.c).join('')).join('\n');
-    }
-    setInterval(tick, 100);
-    const ro = new ResizeObserver(() => {
-      const newState = buildGrid();
-      if (newState.W === state.W && newState.H === state.H) return;
-      if (newState.W < 10 || newState.H < 5) return;
-      const newGrid = Array.from({length: newState.H}, (_, y) =>
-        Array.from({length: newState.W}, (_, x) => {
-          if (y < state.H && x < state.W) return state.grid[y][x];
-          return { c: ' ', t: Math.random() * 100 };
-        })
-      );
-      state = { W: newState.W, H: newState.H, charW: newState.charW, charH: newState.charH, grid: newGrid };
-    });
-    ro.observe(el);
-  }
-  setTimeout(initAscii, 400);
-});
-
-function openGoats() {
-  const el = document.getElementById('page-goats');
-  if (el) { el.style.display = 'flex'; }
-}
-function hideGoats() {
-  const el = document.getElementById('page-goats');
-  if (el) el.style.display = 'none';
 }
 </script>
 <script>
