@@ -402,32 +402,43 @@ function showMusicPlayer(){
 
   let playing=false;
   const pl=document.createElement('div');pl.id='music-player';
-  pl.style.cssText='position:fixed;bottom:16px;right:16px;width:240px;background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:18px 20px 14px;z-index:9999;box-shadow:0 8px 36px rgba(0,0,0,0.85);';
+  pl.style.cssText='position:fixed;bottom:16px;right:16px;width:290px;background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:20px 22px 16px;z-index:9999;box-shadow:0 8px 36px rgba(0,0,0,0.85);';
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:110px;height:110px;border-radius:50%;margin:0 auto 14px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
+  disc.style.cssText='width:140px;height:140px;border-radius:50%;margin:0 auto 16px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
   const coverImg=document.createElement('img');
   coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.35s ease;';
   coverImg.src='';
   disc.appendChild(coverImg);
   const cdLabel=document.createElement('div');
-  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
+  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
   const hole=document.createElement('div');
-  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:2;';
+  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:2;';
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
 
   function loadTrack(idx,autoplay){
     const t=TRACKS[idx];
     audio.src=t.src;
-    durEl.textContent='0:00';prog.value=0;timeEl.textContent='0:00';
+    prog.value=0;timeEl.textContent='0:00';
     if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
-    if(coverImg._fadeTimer)clearTimeout(coverImg._fadeTimer);
-    coverImg.style.opacity='0';lbl.style.opacity='0';
-    coverImg._fadeTimer=setTimeout(()=>{
-      coverImg.src=t.cover;coverImg.style.opacity='1';
-      lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';lbl.style.opacity='1';
-    },350);
+    coverImg.style.opacity='0';
+    lbl.style.opacity='0';
+    durEl.style.opacity='0';
+    const preload=new Image();
+    function doFadeIn(){
+      coverImg.src=t.cover;
+      lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';
+      durEl.textContent='0:00';
+      requestAnimationFrame(()=>requestAnimationFrame(()=>{
+        coverImg.style.opacity='1';
+        lbl.style.opacity='1';
+        durEl.style.opacity='1';
+      }));
+    }
+    preload.onload=doFadeIn;
+    preload.onerror=doFadeIn;
+    preload.src=t.cover;
   }
 
   // track label
@@ -465,7 +476,7 @@ function showMusicPlayer(){
   prog.style.cssText='width:100%;accent-color:#666;cursor:pointer;display:block;margin-bottom:4px;';
   const timeRow=document.createElement('div');timeRow.style.cssText='display:flex;justify-content:space-between;font-family:monospace;font-size:0.55rem;color:#444;';
   const timeEl=document.createElement('span');timeEl.textContent='0:00';
-  const durEl=document.createElement('span');durEl.textContent='0:00';
+  const durEl=document.createElement('span');durEl.textContent='0:00';durEl.style.transition='opacity 0.35s ease';
   timeRow.appendChild(timeEl);timeRow.appendChild(durEl);
   function fmt(s){const m=Math.floor(s/60);return m+':'+(String(Math.floor(s%60)).padStart(2,'0'));}
   let seeking=false;
@@ -473,7 +484,7 @@ function showMusicPlayer(){
   prog.addEventListener('mouseup',()=>{seeking=false;if(audio.duration)audio.currentTime=(prog.value/1000)*audio.duration;});
   prog.addEventListener('touchstart',()=>seeking=true);
   prog.addEventListener('touchend',()=>{seeking=false;if(audio.duration)audio.currentTime=(prog.value/1000)*audio.duration;});
-  audio.addEventListener('loadedmetadata',()=>{durEl.textContent=fmt(audio.duration);});
+  audio.addEventListener('loadedmetadata',()=>{durEl.style.opacity='0';requestAnimationFrame(()=>requestAnimationFrame(()=>{durEl.textContent=fmt(audio.duration);durEl.style.opacity='1';}));});
   (function raf(){
     if(!seeking&&audio.duration){
       prog.value=(audio.currentTime/audio.duration)*1000;
@@ -484,12 +495,25 @@ function showMusicPlayer(){
   })();
   pw.appendChild(prog);pw.appendChild(timeRow);
 
-  // Drag disc to scrub
-  let discDragActive=false,discPrevAngle=0;
+  // Drag disc to scrub (rotates visually, 30s per full revolution)
+  let discDragActive=false,discPrevAngle=0,discManualRot=0;
   disc.style.cursor='grab';
   function discAngle(cx,cy){const r=disc.getBoundingClientRect();return Math.atan2(cy-(r.top+r.height/2),cx-(r.left+r.width/2));}
-  disc.addEventListener('mousedown',function(e){if(!audio.duration)return;discDragActive=true;discPrevAngle=discAngle(e.clientX,e.clientY);disc.style.cursor='grabbing';e.preventDefault();});
-  disc.addEventListener('touchstart',function(e){if(!audio.duration)return;discDragActive=true;discPrevAngle=discAngle(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();},{passive:false});
+  function discFreeze(){
+    const m=window.getComputedStyle(disc).transform;
+    if(m&&m!=='none'){const v=m.match(/matrix\(([^)]+)\)/)[1].split(',');discManualRot=Math.atan2(parseFloat(v[1]),parseFloat(v[0]))*180/Math.PI;}
+    else{discManualRot=0;}
+    disc.style.animation='none';
+    disc.style.transform='rotate('+discManualRot+'deg)';
+  }
+  function discResume(){
+    const deg=((discManualRot%360)+360)%360;
+    disc.style.transform='';
+    disc.style.animation='mspin 5s '+(-(deg/360*5)).toFixed(3)+'s linear infinite';
+    disc.style.animationPlayState=playing?'running':'paused';
+  }
+  disc.addEventListener('mousedown',function(e){if(!audio.duration)return;discDragActive=true;discFreeze();discPrevAngle=discAngle(e.clientX,e.clientY);disc.style.cursor='grabbing';e.preventDefault();});
+  disc.addEventListener('touchstart',function(e){if(!audio.duration)return;discDragActive=true;discFreeze();discPrevAngle=discAngle(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();},{passive:false});
   function onDiscDrag(cx,cy){
     if(!discDragActive||!audio.duration)return;
     const angle=discAngle(cx,cy);
@@ -497,12 +521,14 @@ function showMusicPlayer(){
     if(delta>Math.PI)delta-=2*Math.PI;
     if(delta<-Math.PI)delta+=2*Math.PI;
     discPrevAngle=angle;
-    audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(delta/(2*Math.PI))*60));
+    discManualRot+=delta*180/Math.PI;
+    disc.style.transform='rotate('+discManualRot+'deg)';
+    audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(delta/(2*Math.PI))*30));
   }
   document.addEventListener('mousemove',function(e){onDiscDrag(e.clientX,e.clientY);});
   document.addEventListener('touchmove',function(e){if(discDragActive){onDiscDrag(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
-  document.addEventListener('mouseup',function(){discDragActive=false;disc.style.cursor='grab';});
-  document.addEventListener('touchend',function(){discDragActive=false;});
+  document.addEventListener('mouseup',function(){if(discDragActive){discDragActive=false;disc.style.cursor='grab';discResume();}});
+  document.addEventListener('touchend',function(){if(discDragActive){discDragActive=false;discResume();}});
 
   // volume
   const vw=document.createElement('div');vw.style.cssText='display:flex;align-items:center;gap:8px;';
