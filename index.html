@@ -222,12 +222,38 @@ function hideGoats() {
 </script>
 <script>
 (function(){
+  // Desktop: Konami code
   const KONAMI=[38,38,40,40,37,39,37,39,66,65];
   let idx=0;
   document.addEventListener('keydown',function(e){
     if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;sessionStorage.setItem('gamesUnlocked','1');window.location='games';}}
     else idx=0;
   });
+
+  // Mobile: swipe ↑↑↓↓←→←→ then double-tap
+  const SWIPES=['up','up','down','down','left','right','left','right'];
+  let sIdx=0,txStart=0,tyStart=0,lastTap=0,tapCount=0;
+  document.addEventListener('touchstart',function(e){
+    txStart=e.touches[0].clientX;tyStart=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    const dx=e.changedTouches[0].clientX-txStart;
+    const dy=e.changedTouches[0].clientY-tyStart;
+    const ax=Math.abs(dx),ay=Math.abs(dy);
+    if(ax<25&&ay<25){
+      // tap
+      if(sIdx===SWIPES.length){
+        const now=Date.now();
+        if(now-lastTap<400){tapCount++;if(tapCount>=2){sessionStorage.setItem('gamesUnlocked','1');window.location='games';}}
+        else tapCount=1;
+        lastTap=now;
+      } else {sIdx=0;tapCount=0;}
+      return;
+    }
+    const dir=ax>ay?(dx>0?'right':'left'):(dy>0?'down':'up');
+    if(dir===SWIPES[sIdx]){sIdx++;} else{sIdx=(dir===SWIPES[0]?1:0);}
+    tapCount=0;
+  },{passive:true});
 })();
 </script>
 </body>
