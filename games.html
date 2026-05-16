@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>if(!localStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
+<script>if(!sessionStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
 <link rel="icon" href="favicon.jpg" id="favicon">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -45,7 +45,7 @@
 <script>
 // Show games nav if previously unlocked
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');
@@ -148,7 +148,7 @@ function closeMobileNav() {
 <script>
 // Show games nav on games-section pages (only if already unlocked via Konami)
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');

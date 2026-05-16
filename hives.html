@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>if(!localStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
+<script>if(!sessionStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
 <link rel="icon" href="favicon.jpg" id="favicon">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -44,7 +44,7 @@
 <script>
 // Show games nav if previously unlocked
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');
@@ -741,6 +741,12 @@ function loadDay(dow){
 
 // --- Init ---
 document.getElementById(&#39;dateLabel&#39;).textContent=dateLabel();
+window.hives_reset_inner=function(){
+  try{localStorage.removeItem("hives_state");}catch(e){}
+  var pop=document.getElementById("hives-popup");
+  if(pop){pop.style.opacity="0";pop.style.display="none";}
+  loadDay(currentDay);
+};
 window.hives_solve=function(){
   if(gameSolved)return;
   drag=null;
@@ -824,7 +830,7 @@ function closeMobileNav() {
 <script>
 // Show games nav on games-section pages (only if already unlocked via Konami)
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');
@@ -848,6 +854,13 @@ window.hives_win = function() {
   var iframe = document.querySelector('iframe');
   if (iframe && iframe.contentWindow && iframe.contentWindow.hives_solve) {
     iframe.contentWindow.hives_solve();
+  }
+};
+// Console cheat: type hives_reset() to reset today's puzzle
+window.hives_reset = function() {
+  var iframe = document.querySelector('iframe');
+  if (iframe && iframe.contentWindow && iframe.contentWindow.hives_reset_inner) {
+    iframe.contentWindow.hives_reset_inner();
   }
 };
 </script>

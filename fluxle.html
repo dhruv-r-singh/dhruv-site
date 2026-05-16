@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<script>if(!localStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
+<script>if(!sessionStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
 <link rel="icon" href="favicon.jpg" id="favicon">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -45,7 +45,7 @@
 <script>
 // Show games nav if previously unlocked
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');
@@ -259,6 +259,7 @@ function pwSubmit(){
   if(!PW_VALID.has(pwCurrent)){document.getElementById('pw-msg').textContent='not a real word';return;}
   const res=pwScore(pwCurrent,pwWord);
   pwGuesses.push(res);
+  if(res.map(r=>r.letter).join('')==='MUSIC'&&!document.getElementById('music-sq')){const mSq=document.createElement('div');mSq.id='music-sq';mSq.style.cssText='position:fixed;bottom:16px;right:16px;width:24px;height:24px;background:#555;border-radius:3px;z-index:9999;opacity:0.6;';document.body.appendChild(mSq);}
   res.forEach(r=>{const p=pwKeys[r.letter];if(!p||p==='absent'||(p==='present'&&r.state==='correct'))pwKeys[r.letter]=r.state;});
   pwCurrent='';pwRender();
   const won = res.every(r=>r.state==='correct');
@@ -340,11 +341,13 @@ window.fluxle_win = function() {
   pwCurrent = pwWord;
   pwSubmit();
 };
+// Console cheat: type fluxle_reset() to reset today's puzzle
+window.fluxle_reset = fluxleReset;
 </script>
 <script>
 // Show games nav on games-section pages (only if already unlocked via Konami)
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');

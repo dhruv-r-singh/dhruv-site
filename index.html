@@ -44,7 +44,7 @@
 <script>
 // Show games nav if previously unlocked
 (function(){
-  if(localStorage.getItem('gamesUnlocked')){
+  if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
     if(el) el.style.display='';
     var m=document.getElementById('mobile-nav-games');
@@ -232,7 +232,7 @@ function hideGoats() {
   const KONAMI=[38,38,40,40,37,39,37,39,66,65];
   let idx=0;
   document.addEventListener('keydown',function(e){
-    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;localStorage.setItem('gamesUnlocked','1');window.location='games';}}
+    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;sessionStorage.setItem('gamesUnlocked','1');window.location='games';}}
     else idx=0;
   });
 })();
