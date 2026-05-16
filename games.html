@@ -99,41 +99,6 @@
     </div>
   </div>
 
-  <div style="max-width:700px;width:100%;margin:0 auto;padding:0 1.5rem 3rem;">
-    <div style="font-family:var(--font-mono);font-size:0.62rem;color:#333;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:1rem;padding-top:1.5rem;border-top:1px solid #1a1a1a;">Achievements</div>
-    <div id="ach-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;"></div>
-  </div>
-  <script>
-  (function(){
-    const ACHIEVEMENTS=[
-      {id:'konami',   icon:'⌨',  name:'Cheat Code',     desc:'Find the hidden games page',            check:()=>!!sessionStorage.getItem('gamesUnlocked')},
-      {id:'fluxle',   icon:'⚗',  name:'First Contact',  desc:'Solve your first Fluxle',               check:()=>{try{const s=JSON.parse(localStorage.getItem('fluxle_state')||'null');return!!(s&&s.done);}catch(e){return false;}}},
-      {id:'speed',    icon:'⚡',  name:'Speed of Light', desc:'Solve Fluxle in 2 guesses or fewer',    check:()=>{try{const s=JSON.parse(localStorage.getItem('fluxle_state')||'null');return!!(s&&s.done&&s.guesses&&s.guesses.length<=2);}catch(e){return false;}}},
-      {id:'music',    icon:'♪',   name:'Now Playing',    desc:'Discover the music player',             check:()=>localStorage.getItem('fluxle_music_found')==='1'},
-      {id:'hives',    icon:'⬡',  name:'Hive Mind',      desc:'Solve your first Hives puzzle',         check:()=>{try{const s=JSON.parse(localStorage.getItem('hives_state')||'null');return!!(s&&s.solved);}catch(e){return false;}}},
-      {id:'expert',   icon:'★',  name:'Expert',         desc:'Solve a Saturday Hives puzzle',         check:()=>{try{const s=JSON.parse(localStorage.getItem('hives_state')||'null');return!!(s&&s.solved&&s.dow===6);}catch(e){return false;}}},
-    ];
-    const grid=document.getElementById('ach-grid');
-    ACHIEVEMENTS.forEach(a=>{
-      const unlocked=a.check();
-      const card=document.createElement('div');
-      card.style.cssText='border:1px solid '+(unlocked?'#2a2a2a':'#181818')+';border-radius:8px;padding:1rem 1.1rem;display:flex;gap:0.75rem;align-items:flex-start;opacity:'+(unlocked?'1':'0.35')+';';
-      const ico=document.createElement('div');
-      ico.style.cssText='font-size:1.1rem;line-height:1;margin-top:1px;flex-shrink:0;';
-      ico.textContent=a.icon;
-      const info=document.createElement('div');
-      const nm=document.createElement('div');
-      nm.style.cssText='font-family:var(--font-mono);font-size:0.68rem;color:'+(unlocked?'#ccc':'#555')+';margin-bottom:0.25rem;';
-      nm.textContent=a.name;
-      const ds=document.createElement('div');
-      ds.style.cssText='font-family:var(--font-mono);font-size:0.6rem;color:#444;line-height:1.5;';
-      ds.textContent=a.desc;
-      info.appendChild(nm);info.appendChild(ds);
-      card.appendChild(ico);card.appendChild(info);
-      grid.appendChild(card);
-    });
-  })();
-  </script>
 
 
 <footer>

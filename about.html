@@ -42,8 +42,14 @@
   <button id="mobile-menu-btn" onclick="toggleMobileNav()" style="display:none;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text);font-size:1.2rem;line-height:1;flex-shrink:0;">☰</button>
 </nav>
 <script>
-// Show games nav if previously unlocked
-
+(function(){
+  if(sessionStorage.getItem('gamesUnlocked')){
+    var el=document.getElementById('nav-games-wrap');
+    if(el)el.style.display='';
+    var m=document.getElementById('mobile-nav-games');
+    if(m)m.style.display='';
+  }
+})();
 </script>
 
 <div class="mobile-nav" id="mobile-nav" style="display:none;">
