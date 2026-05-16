@@ -342,7 +342,7 @@ function showMusicPlayer(){
     s.textContent='@keyframes mspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
     document.head.appendChild(s);
   }
-  const audio=new Audio('music/INTUITION.mp3');
+  const audio=new Audio('https://dl.dropboxusercontent.com/scl/fo/aseqo9hg31uv0m0m4g8xi/AKYYQzb-3Ul-8bYR1dXYqy0/INTUITION.mp3?rlkey=l3k2x1hgxpnwo7rusnct1zz6v');
   audio.loop=true;
 
   let playing=false;
@@ -362,9 +362,8 @@ function showMusicPlayer(){
   cdLabel.style.cssText=[
     'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
     'width:66px;height:66px;border-radius:50%;',
-    'background:url("music/cover.jpg") center/cover;',
-    'border:2px solid rgba(255,255,255,0.08);',
-    'box-shadow:inset 0 0 8px rgba(0,0,0,0.6);'
+    'background:url("https://dl.dropboxusercontent.com/scl/fo/aseqo9hg31uv0m0m4g8xi/AKYYQzb-3Ul-8bYR1dXYqy0/cover.jpg?rlkey=l3k2x1hgxpnwo7rusnct1zz6v") center/cover,radial-gradient(circle,#1e1e1e 55%,#2e2e2e 100%);',
+    'border:1.5px solid #333;'
   ].join('');
   // spindle hole
   const hole=document.createElement('div');
