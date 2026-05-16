@@ -86,7 +86,10 @@
   <div class="work-header reveal">
     <a href="games" class="proj-back" style="margin-bottom:0.75rem;">← Games</a>
     <h2>Hives</h2>
-    <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
+      <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;"></div>
+      <div id="diffLabel" style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;"></div>
+    </div>
   </div>
 
   <div style="text-align:left;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.6rem 1rem 0.4rem 3rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
@@ -289,7 +292,7 @@ function computeLayout(radius){
     cv.style.height=canvasH+'px';
     cv.width=Math.round(screenW*dpr);
     cv.height=Math.round(canvasH*dpr);
-    cx.scale(dpr,dpr);
+    cx.setTransform(dpr,0,0,dpr,0,0);
     OX=screenW/2;
     OY=mobileSplit/2;
   } else {
@@ -309,7 +312,7 @@ function computeLayout(radius){
     cv.style.height=canvasH+'px';
     cv.width=Math.round(canvasW*dpr);
     cv.height=Math.round(canvasH*dpr);
-    cx.scale(dpr,dpr);
+    cx.setTransform(dpr,0,0,dpr,0,0);
     OX=boardW/2;
     OY=canvasH/2;
   }
@@ -654,7 +657,7 @@ function roundRect(x,y,w,h,rad){
 }
 
 function draw(){
-  var W=cv.width,H=cv.height;
+  var W=parseFloat(cv.style.width)||cv.width,H=parseFloat(cv.style.height)||cv.height;
   cx.clearRect(0,0,W,H);
   for(var i=0;i<BOARD.length;i++){
     var q=BOARD[i].q,r=BOARD[i].r;
