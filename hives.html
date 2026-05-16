@@ -230,18 +230,10 @@ function buildBoard(radius){
   return cells;
 }
 
-function hexRot60(q,r){return{q:-r,r:q+r};}
 function canonicalShape(cells){
-  var best=null;
-  var cur=cells.map(function(c){return{q:c.q-cells[0].q,r:c.r-cells[0].r};});
-  for(var rot=0;rot<6;rot++){
-    var minQ=cur[0].q,minR=cur[0].r;
-    for(var i=1;i<cur.length;i++){if(cur[i].q<minQ)minQ=cur[i].q;if(cur[i].r<minR)minR=cur[i].r;}
-    var s=cur.map(function(c){return(c.q-minQ)+","+(c.r-minR);}).sort().join("|");
-    if(best===null||s<best)best=s;
-    cur=cur.map(function(c){return hexRot60(c.q,c.r);});
-  }
-  return best;
+  var minQ=cells[0].q,minR=cells[0].r;
+  for(var i=1;i<cells.length;i++){if(cells[i].q<minQ)minQ=cells[i].q;if(cells[i].r<minR)minR=cells[i].r;}
+  return cells.map(function(c){return(c.q-minQ)+","+(c.r-minR);}).sort().join("|");
 }
 function partition(board,rng,maxPieces){
   if(!maxPieces)maxPieces=999;
