@@ -243,14 +243,15 @@ function pwRender(){
 
 function pwRenderKb(){
   const kb=document.getElementById('pw-kb');if(!kb)return;kb.innerHTML='';
+  if(window.innerWidth>=640)return;
   ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM'].forEach((r,ri)=>{
-    const rowEl=document.createElement('div');rowEl.style.cssText='display:flex;gap:3px;';
-    if(ri===2){const e=document.createElement('button');e.style.cssText='min-width:44px;height:32px;border:0.5px solid #333;border-radius:3px;background:#242424;color:#f0f0f0;font-family:monospace;font-size:10px;cursor:pointer;';e.textContent='ENTER';e.onclick=pwSubmit;rowEl.appendChild(e);}
+    const rowEl=document.createElement('div');rowEl.style.cssText='display:flex;gap:4px;';
+    if(ri===2){const e=document.createElement('button');e.style.cssText='min-width:52px;height:40px;border:0.5px solid #333;border-radius:3px;background:#242424;color:#f0f0f0;font-family:monospace;font-size:11px;cursor:pointer;';e.textContent='ENTER';e.onclick=pwSubmit;rowEl.appendChild(e);}
     r.split('').forEach(k=>{
-      const btn=document.createElement('button');btn.style.cssText='width:28px;height:32px;border:0.5px solid #333;border-radius:3px;background:'+(pwKeys[k]==='correct'?'#538d4e':pwKeys[k]==='present'?'#b59f3b':pwKeys[k]==='absent'?'#333':'#242424')+';color:'+(pwKeys[k]==='absent'?'#555':'#f0f0f0')+';font-family:monospace;font-size:11px;cursor:pointer;';
+      const btn=document.createElement('button');btn.style.cssText='width:32px;height:40px;border:0.5px solid #333;border-radius:3px;background:'+(pwKeys[k]==='correct'?'#538d4e':pwKeys[k]==='present'?'#b59f3b':pwKeys[k]==='absent'?'#333':'#242424')+';color:'+(pwKeys[k]==='absent'?'#555':'#f0f0f0')+';font-family:monospace;font-size:13px;cursor:pointer;';
       btn.textContent=k;btn.onclick=()=>pwType(k);rowEl.appendChild(btn);
     });
-    if(ri===2){const d=document.createElement('button');d.style.cssText='min-width:44px;height:32px;border:0.5px solid #333;border-radius:3px;background:#242424;color:#f0f0f0;font-family:monospace;font-size:10px;cursor:pointer;';d.textContent='⌫';d.onclick=pwDel;rowEl.appendChild(d);}
+    if(ri===2){const d=document.createElement('button');d.style.cssText='min-width:52px;height:40px;border:0.5px solid #333;border-radius:3px;background:#242424;color:#f0f0f0;font-family:monospace;font-size:11px;cursor:pointer;';d.textContent='⌫';d.onclick=pwDel;rowEl.appendChild(d);}
     kb.appendChild(rowEl);
   });
 }
