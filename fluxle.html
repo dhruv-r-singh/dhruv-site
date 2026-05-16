@@ -342,7 +342,8 @@ function showMusicPlayer(){
     s.textContent='@keyframes mspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
     document.head.appendChild(s);
   }
-  const audio=new Audio('https://dl.dropboxusercontent.com/scl/fo/aseqo9hg31uv0m0m4g8xi/AKYYQzb-3Ul-8bYR1dXYqy0/INTUITION.mp3?rlkey=l3k2x1hgxpnwo7rusnct1zz6v');
+  const audio=new Audio('https://dl.dropboxusercontent.com/scl/fi/eouzxi6ojetv0bbcltoak/INTUITION.mp3?rlkey=xoogpyz4v0u0iop3coa56v6y3');
+  audio.crossOrigin='anonymous';
   audio.loop=true;
 
   let playing=false;
@@ -362,7 +363,7 @@ function showMusicPlayer(){
   cdLabel.style.cssText=[
     'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
     'width:66px;height:66px;border-radius:50%;',
-    'background:url("https://dl.dropboxusercontent.com/scl/fo/aseqo9hg31uv0m0m4g8xi/AKYYQzb-3Ul-8bYR1dXYqy0/cover.jpg?rlkey=l3k2x1hgxpnwo7rusnct1zz6v") center/cover,radial-gradient(circle,#1e1e1e 55%,#2e2e2e 100%);',
+    'background:url("https://dl.dropboxusercontent.com/scl/fi/ywqlooxc7tj83taxtttgk/cover.jpg?rlkey=2guedf611ie4hy72p54h6f4hm") center/cover,radial-gradient(circle,#1e1e1e 55%,#2e2e2e 100%);',
     'border:1.5px solid #333;'
   ].join('');
   // spindle hole
@@ -398,20 +399,27 @@ function showMusicPlayer(){
 
   // progress bar
   const pw=document.createElement('div');pw.style.cssText='margin-bottom:10px;';
-  const prog=document.createElement('input');prog.type='range';prog.min='0';prog.max='100';prog.value='0';
-  prog.style.cssText='width:100%;height:2px;accent-color:#666;cursor:pointer;display:block;margin-bottom:4px;';
+  const prog=document.createElement('input');prog.type='range';prog.min='0';prog.max='1000';prog.value='0';
+  prog.style.cssText='width:100%;accent-color:#666;cursor:pointer;display:block;margin-bottom:4px;';
   const timeRow=document.createElement('div');timeRow.style.cssText='display:flex;justify-content:space-between;font-family:monospace;font-size:0.55rem;color:#444;';
   const timeEl=document.createElement('span');timeEl.textContent='0:00';
   const durEl=document.createElement('span');durEl.textContent='0:00';
   timeRow.appendChild(timeEl);timeRow.appendChild(durEl);
   function fmt(s){const m=Math.floor(s/60);return m+':'+(String(Math.floor(s%60)).padStart(2,'0'));}
-  audio.addEventListener('timeupdate',()=>{
-    if(!audio.duration)return;
-    prog.value=(audio.currentTime/audio.duration)*100;
-    timeEl.textContent=fmt(audio.currentTime);
-  });
+  let seeking=false;
+  prog.addEventListener('mousedown',()=>seeking=true);
+  prog.addEventListener('mouseup',()=>{seeking=false;if(audio.duration)audio.currentTime=(prog.value/1000)*audio.duration;});
+  prog.addEventListener('touchstart',()=>seeking=true);
+  prog.addEventListener('touchend',()=>{seeking=false;if(audio.duration)audio.currentTime=(prog.value/1000)*audio.duration;});
   audio.addEventListener('loadedmetadata',()=>{durEl.textContent=fmt(audio.duration);});
-  prog.oninput=()=>{if(audio.duration)audio.currentTime=(prog.value/100)*audio.duration;};
+  (function raf(){
+    if(!seeking&&audio.duration){
+      prog.value=(audio.currentTime/audio.duration)*1000;
+      timeEl.textContent=fmt(audio.currentTime);
+      if(audio.duration&&durEl.textContent==='0:00')durEl.textContent=fmt(audio.duration);
+    }
+    requestAnimationFrame(raf);
+  })();
   pw.appendChild(prog);pw.appendChild(timeRow);
 
   // volume
