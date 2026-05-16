@@ -256,12 +256,10 @@ function partition(board,rng,maxPieces){
     if(!availKeys.length)break;
     var rem=availKeys.length;
     var pLeft=maxPieces-pieces.length;
-    if(rem<2||pLeft<1)return null;
-    var lo=Math.max(2,Math.ceil(rem/pLeft));
+    var lo=pLeft>0?Math.max(2,Math.ceil(rem/pLeft)):rem;
     var hi=Math.min(5,rem);
-    if(lo>hi)return null;
-    var target=lo+Math.floor(rng()*(hi-lo+1));
-    if(rem-target===1)target++;
+    var target=lo>hi?rem:lo+Math.floor(rng()*(hi-lo+1));
+    if(rem-target===1&amp;&amp;target<rem)target++;
     var shuffled=seededShuffle(availKeys,rng);
     var start=shuffled[0];
     var group=[start];
@@ -279,7 +277,6 @@ function partition(board,rng,maxPieces){
       var sf=seededShuffle(frontier,rng);
       group.push(sf[0]);delete avail[sf[0]];
     }
-    if(group.length<2)return null;
     var pcells=[];
     for(var gi=0;gi<group.length;gi++)pcells.push({q:map[group[gi]].q,r:map[group[gi]].r});
     pieces.push(pcells);
@@ -361,8 +358,7 @@ function buildPuzzle(dow){
     var rng2=makeRng(seed+attempts*997);
     raw=partition(playable,rng2,cfg.maxPieces);
     attempts++;
-  }while(attempts<500&amp;&amp;(!raw||raw.length<cfg.minPieces||hasDupShape(raw)));
-  if(!raw)raw=[];
+  }while(attempts<500&amp;&amp;(raw.length<cfg.minPieces||raw.some(function(p){return p.length<2;})||hasDupShape(raw)));
   var n=raw.length;
   var cssH=parseFloat(cv.style.height)||700;
   var cssW=parseFloat(cv.style.width)||880;
