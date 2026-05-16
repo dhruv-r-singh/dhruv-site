@@ -13,20 +13,6 @@
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 <script src="prefetch.js" defer></script>
-<style>
-#hives-game-area{flex:1;position:relative;overflow:hidden;background:transparent;}
-#hc{display:block;cursor:grab;background:transparent;touch-action:none;}
-#hc:active{cursor:grabbing;}
-#tray-panel{position:fixed;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:visible;-webkit-overflow-scrolling:touch;}
-#tray-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;pointer-events:none;width:100%;}
-.piece-slot{display:flex;align-items:center;justify-content:center;pointer-events:none;}
-.piece-slot canvas{pointer-events:auto;cursor:grab;display:block;}
-.piece-slot canvas:active{cursor:grabbing;}
-#hmsg{font-size:13px;position:absolute;bottom:18px;left:0;right:0;text-align:center;pointer-events:none;color:rgba(255,255,255,0.75);}
-#hives-game-area button{font-size:12px;padding:5px 11px;border:1px solid rgba(0,0,0,0.2);border-radius:8px;background:white;cursor:pointer;color:#1a1a1a;}
-#hives-game-area button:hover{background:#f0f0f0;}
-#hives-game-area button.active{background:#1a1a1a;color:white;border-color:#1a1a1a;}
-</style>
 </head>
 <body>
 <nav>
@@ -56,6 +42,7 @@
   <button id="mobile-menu-btn" onclick="toggleMobileNav()" style="display:none;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text);font-size:1.2rem;line-height:1;flex-shrink:0;">☰</button>
 </nav>
 <script>
+// Show games nav if previously unlocked
 (function(){
   if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
@@ -80,40 +67,69 @@
   </div>
   <a href="contact" onclick="closeMobileNav()">Contact</a>
 </div>
-
-<div class="page active" id="page-hives" style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
+<div class="page active" id="page-hives" style="display:flex;flex-direction:column;height:auto;min-height:100vh;">
 
   <div class="work-header reveal">
     <a href="games" class="proj-back" style="margin-bottom:0.75rem;">← Games</a>
     <h2>Hives</h2>
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
-      <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;"></div>
-      <div id="diffLabel" style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;"></div>
-    </div>
+    <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
   </div>
 
-  <div style="text-align:left;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.6rem 1rem 0.4rem 3rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+  <div style="text-align:center;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.5rem 1rem 0.75rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
 
-  <div id="hives-game-area">
-    <canvas id="hc"></canvas>
-    <div id="tray-panel"><div id="tray-grid"></div></div>
-    <button id="reset-btn" onclick="resetGame()" style="display:none;position:fixed;transform:translateX(-50%);font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;background:none;border:1px solid #333;border-radius:6px;padding:6px 16px;cursor:pointer;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color='#aaa';this.style.borderColor='#555'" onmouseout="this.style.color='#555';this.style.borderColor='#333'">Reset</button>
-    <div id="hmsg"></div>
-    <div id="hives-popup" style="display:none;position:fixed;z-index:999;top:0;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;opacity:0;transition:opacity 0.4s ease;">
-      <div style="background:#111;border:1px solid #333;border-radius:12px;padding:3rem 3.5rem;text-align:center;display:flex;flex-direction:column;gap:0.75rem;max-width:420px;width:90%;">
-        <div style="font-family:monospace;font-size:0.65rem;color:#666;letter-spacing:0.16em;text-transform:uppercase;">Hive complete</div>
-        <div id="hives-popup-day" style="font-family:Georgia,serif;font-size:2rem;color:#F0F0F0;letter-spacing:0.04em;line-height:1;margin:0.25rem 0;"></div>
-        <div id="hives-popup-msg" style="font-family:monospace;font-size:0.7rem;color:#888;letter-spacing:0.06em;line-height:1.6;margin-bottom:0.5rem;"></div>
-        <div style="display:flex;gap:0.75rem;justify-content:center;border-top:1px solid #333;padding-top:1.25rem;margin-top:0.5rem;">
-          <button onclick="document.getElementById('hives-popup').style.display='none'" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#888;background:none;border:1px solid #444;border-radius:6px;padding:9px 20px;cursor:pointer;">close</button>
-          <button onclick="window.location.href='games'" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#0A0A0A;background:#F0F0F0;border:1px solid #F0F0F0;border-radius:6px;padding:9px 20px;cursor:pointer;">more games</button>
-        </div>
-      </div>
+  <iframe srcdoc='<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hives</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:transparent;display:flex;justify-content:center;padding:0;margin:0;height:100vh;overflow:hidden;position:relative}
+h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
+.date{font-size:13px;color:#888;margin-bottom:2px}
+.difficulty{font-size:12px;font-weight:500;margin-bottom:4px}
+.sub{font-size:12px;color:#aaa;margin-bottom:14px;text-align:center}
+#hc{display:block;cursor:grab;background:transparent;touch-action:none}
+#hc:active{cursor:grabbing}
+#tray-panel{position:fixed;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:visible}
+#tray-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;pointer-events:none;width:100%}
+.piece-slot{display:flex;align-items:center;justify-content:center;pointer-events:none}
+.piece-slot canvas{pointer-events:auto;cursor:grab;display:block}
+.piece-slot canvas:active{cursor:grabbing}
+.msg{font-size:13px;position:absolute;bottom:18px;left:0;right:0;text-align:center;pointer-events:none;color:rgba(255,255,255,0.75)}
+.win{color:#4ade80;font-weight:600}
+.streak{font-size:12px;color:#888;margin-top:4px;text-align:center}
+.btns{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+button{font-size:12px;padding:5px 11px;border:1px solid rgba(0,0,0,0.2);border-radius:8px;background:white;cursor:pointer;color:#1a1a1a}
+button:hover{background:#f0f0f0}
+button.active{background:#1a1a1a;color:white;border-color:#1a1a1a}
+.legend{font-size:11px;color:#aaa;margin-top:6px;text-align:center}
+</style>
+</head>
+<body>
+<h1 style="display:none">Hives</h1>
+<div class="date" id="dateLabel" style="display:none"></div>
+<div class="difficulty" id="diffLabel" style="display:none"></div>
+<div class="sub" style="display:none">Fill every hex — no gaps, no overlaps.</div>
+<canvas id="hc"></canvas>
+<div id="tray-panel"><div id="tray-grid"></div></div>
+<button id="reset-btn" onclick="resetGame()" style="display:none;position:fixed;transform:translateX(-50%);font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;background:none;border:1px solid #333;border-radius:6px;padding:6px 16px;cursor:pointer;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color=&#39;#aaa&#39;;this.style.borderColor=&#39;#555&#39;" onmouseout="this.style.color=&#39;#555&#39;;this.style.borderColor=&#39;#333&#39;">Reset</button>
+<div class="msg" id="hmsg"></div>
+<div id="hives-popup" style="display:none;position:fixed;z-index:999;top:0;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;opacity:0;transition:opacity 0.4s ease;">
+  <div style="background:#111;border:1px solid #333;border-radius:12px;padding:3rem 3.5rem;text-align:center;display:flex;flex-direction:column;gap:0.75rem;max-width:420px;width:90%;">
+    <div style="font-family:monospace;font-size:0.65rem;color:#666;letter-spacing:0.16em;text-transform:uppercase;">Hive complete</div>
+    <div id="hives-popup-day" style="font-family:Georgia,serif;font-size:2rem;color:#F0F0F0;letter-spacing:0.04em;line-height:1;margin:0.25rem 0;"></div>
+    <div id="hives-popup-msg" style="font-family:monospace;font-size:0.7rem;color:#888;letter-spacing:0.06em;line-height:1.6;margin-bottom:0.5rem;"></div>
+    <div style="display:flex;gap:0.75rem;justify-content:center;border-top:1px solid #333;padding-top:1.25rem;margin-top:0.5rem;">
+      <button onclick="document.getElementById(&#39;hives-popup&#39;).style.display=&#39;none&#39;" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#888;background:none;border:1px solid #444;border-radius:6px;padding:9px 20px;cursor:pointer;">close</button>
+      <button onclick="window.parent.location.href=&#39;games.html&#39;" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#0A0A0A;background:#F0F0F0;border:1px solid #F0F0F0;border-radius:6px;padding:9px 20px;cursor:pointer;">more games</button>
     </div>
   </div>
-
 </div>
-
+<div class="streak" id="streak"></div>
+<div class="btns" id="dayBtns" style="display:none"></div>
+<div class="legend" id="legendLabel"></div>
 <script>
 // --- Seeded RNG ---
 function makeRng(seed){
@@ -130,23 +146,27 @@ function dateSeed(){
   var d=new Date();
   return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
 }
+function dateLabel(){
+  var d=new Date();
+  return d.toLocaleDateString(&#39;en-US&#39;,{weekday:&#39;long&#39;,month:&#39;long&#39;,day:&#39;numeric&#39;,year:&#39;numeric&#39;});
+}
 
 // Day of week config (0=Sun ... 6=Sat)
 var DAY_CONFIG=[
-  {name:'Sunday',    radius:2, maxBlanks:0, maxPreplaced:0},
-  {name:'Monday',    radius:2, maxBlanks:0, maxPreplaced:0},
-  {name:'Tuesday',   radius:3, maxBlanks:0, maxPreplaced:0},
-  {name:'Wednesday', radius:3, maxBlanks:3, maxPreplaced:1},
-  {name:'Thursday',  radius:3, maxBlanks:4, maxPreplaced:2},
-  {name:'Friday',    radius:4, maxBlanks:5, maxPreplaced:2},
-  {name:'Saturday',  radius:5, maxBlanks:7, maxPreplaced:3}
+  {name:&#39;Sunday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Monday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Tuesday&#39;,   radius:3, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Wednesday&#39;, radius:3, maxBlanks:3, maxPreplaced:1},
+  {name:&#39;Thursday&#39;,  radius:3, maxBlanks:4, maxPreplaced:2},
+  {name:&#39;Friday&#39;,    radius:4, maxBlanks:5, maxPreplaced:2},
+  {name:&#39;Saturday&#39;,  radius:5, maxBlanks:7, maxPreplaced:3}
 ];
-var DIFF_LABELS=['Easy','Easy','Medium','Medium','Hard','Hard','Expert'];
-var DIFF_COLORS=['#1D9E75','#1D9E75','#BA7517','#BA7517','#D85A30','#D85A30','#c0392b'];
-var DAY_NAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var DIFF_LABELS=[&#39;Easy&#39;,&#39;Easy&#39;,&#39;Medium&#39;,&#39;Medium&#39;,&#39;Hard&#39;,&#39;Hard&#39;,&#39;Expert&#39;];
+var DIFF_COLORS=[&#39;#1D9E75&#39;,&#39;#1D9E75&#39;,&#39;#BA7517&#39;,&#39;#BA7517&#39;,&#39;#D85A30&#39;,&#39;#D85A30&#39;,&#39;#c0392b&#39;];
+var DAY_NAMES=[&#39;Sun&#39;,&#39;Mon&#39;,&#39;Tue&#39;,&#39;Wed&#39;,&#39;Thu&#39;,&#39;Fri&#39;,&#39;Sat&#39;];
 
 // --- Hex math ---
-var COLORS=['#1E90FF','#00BFA5','#FF6200','#6B5CFF','#FF9500','#FF4F93','#78C825','#A829E0','#F53535','#6B3317','#1E9940','#1A4FCC','#CC1535','#FF6040','#E01F8C','#FF1A8C','#FFE0AB','#FFFFFF','#FFD600','#00E5FF','#8540FB','#004536','#FFA98A','#FFE875'];
+var COLORS=[&#39;#1E90FF&#39;,&#39;#00BFA5&#39;,&#39;#FF6200&#39;,&#39;#6B5CFF&#39;,&#39;#FF9500&#39;,&#39;#FF4F93&#39;,&#39;#78C825&#39;,&#39;#A829E0&#39;,&#39;#F53535&#39;,&#39;#A0622A&#39;,&#39;#1E9940&#39;,&#39;#1A4FCC&#39;,&#39;#CC1535&#39;,&#39;#FF6040&#39;,&#39;#E01F8C&#39;,&#39;#FF1A8C&#39;,&#39;#FFE0AB&#39;,&#39;#FFFFFF&#39;];
 var DIRS=[{q:1,r:0},{q:-1,r:0},{q:0,r:1},{q:0,r:-1},{q:1,r:-1},{q:-1,r:1}];
 function drawLock(x,y,sz){
   var bw=sz*0.65,bh=sz*0.44;
@@ -154,16 +174,16 @@ function drawLock(x,y,sz){
   var cr=bw*0.13,lw=sz*0.14;
   var lx1=x-bw*0.18,lx2=x+bw*0.18;
   var arcR=(lx2-lx1)/2;
-  var legTop=by-bh*0.32;
+  var legTop=by-bh*0.52;
   cx.save();
-  cx.strokeStyle='#111';cx.lineWidth=lw;cx.lineCap='butt';
+  cx.strokeStyle=&#39;#111&#39;;cx.lineWidth=lw;cx.lineCap=&#39;butt&#39;;
   cx.beginPath();
   cx.moveTo(lx1,by+bh*0.25);
   cx.lineTo(lx1,legTop);
   cx.arc(x,legTop,arcR,Math.PI,0);
   cx.lineTo(lx2,by+bh*0.25);
   cx.stroke();
-  cx.fillStyle='#111';
+  cx.fillStyle=&#39;#111&#39;;
   cx.beginPath();
   cx.moveTo(bx+cr,by);cx.lineTo(bx+bw-cr,by);
   cx.arcTo(bx+bw,by,bx+bw,by+cr,cr);
@@ -177,14 +197,14 @@ function drawLock(x,y,sz){
   cx.restore();
 }
 
-function k(q,r){return q+'_'+r;}
+function k(q,r){return q+&#39;_&#39;+r;}
 function toXY(q,r,ox,oy,R){return{x:ox+R*Math.sqrt(3)*(q+r/2),y:oy+R*1.5*r};}
 function toQR(x,y,ox,oy,R){
   var dx=x-ox,dy=y-oy,S3=Math.sqrt(3);
   var fq=(dx*S3/3-dy/3)/R,fr=dy*2/3/R;
   var q=Math.round(fq),r=Math.round(fr),s=Math.round(-fq-fr);
   var dq=Math.abs(q-fq),dr=Math.abs(r-fr),ds=Math.abs(s-(-fq-fr));
-  if(dq>dr&&dq>ds)q=-r-s; else if(dr>ds)r=-q-s;
+  if(dq>dr&amp;&amp;dq>ds)q=-r-s; else if(dr>ds)r=-q-s;
   return{q:q,r:r};
 }
 function cen(cells){
@@ -210,63 +230,54 @@ function buildBoard(radius){
   return cells;
 }
 
-function normalizeShape(cells){
-  var minQ=cells[0].q,minR=cells[0].r;
-  for(var i=1;i<cells.length;i++){if(cells[i].q<minQ)minQ=cells[i].q;if(cells[i].r<minR)minR=cells[i].r;}
-  var n=cells.map(function(c){return{q:c.q-minQ,r:c.r-minR};});
-  n.sort(function(a,b){return a.q!==b.q?a.q-b.q:a.r-b.r;});
-  return n.map(function(c){return c.q+','+c.r;}).join('|');
-}
-function partition(board,rng,maxPieces){
-  if(!maxPieces)maxPieces=999;
+function partition(board,rng){
   var avail={},map={};
-  for(var i=0;i<board.length;i++){var key=k(board[i].q,board[i].r);avail[key]=true;map[key]={q:board[i].q,r:board[i].r};}
-  var pieces=[],usedShapes={};
+  for(var i=0;i<board.length;i++){
+    var key=k(board[i].q,board[i].r);
+    avail[key]=true;
+    map[key]={q:board[i].q,r:board[i].r};
+  }
+  var pieces=[];
   while(true){
     var availKeys=Object.keys(avail);
     if(!availKeys.length)break;
     var rem=availKeys.length;
-    var pLeft=maxPieces-pieces.length;
-    if(rem===1)return null;
-    var lo=Math.max(2,Math.ceil(rem/pLeft));
-    var hi=Math.min(5,rem);
-    if(lo>hi)return null;
-    var target=lo+Math.floor(rng()*(hi-lo+1));
-    if(rem-target===1&&target<rem)target++;
+    var target=rem<=4?rem:3+Math.floor(rng()*3);
     var shuffled=seededShuffle(availKeys,rng);
     var start=shuffled[0];
     var group=[start];
     delete avail[start];
     while(group.length<target){
       var frontier=[];
-      for(var gi=0;gi<group.length;gi++){var c=map[group[gi]];for(var di=0;di<DIRS.length;di++){var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);if(avail[nk]&&frontier.indexOf(nk)===-1)frontier.push(nk);}}
+      for(var gi=0;gi<group.length;gi++){
+        var c=map[group[gi]];
+        for(var di=0;di<DIRS.length;di++){
+          var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);
+          if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);
+        }
+      }
       if(!frontier.length)break;
       var sf=seededShuffle(frontier,rng);
       group.push(sf[0]);delete avail[sf[0]];
     }
-    if(group.length<2)return null;
-    var pcells=group.map(function(key){return{q:map[key].q,r:map[key].r};});
-    var shapeKey=normalizeShape(pcells);
-    if(usedShapes[shapeKey])return null;
-    usedShapes[shapeKey]=true;
+    var pcells=[];
+    for(var gi=0;gi<group.length;gi++)pcells.push({q:map[group[gi]].q,r:map[group[gi]].r});
     pieces.push(pcells);
   }
   return pieces;
 }
 
 // --- Canvas ---
-var cv=document.getElementById('hc');
-var cx=cv.getContext('2d');
+var cv=document.getElementById(&#39;hc&#39;);
+var cx=cv.getContext(&#39;2d&#39;);
 
 // Game state
-var R=18;
-var TR=18;
-var isMobile=false;
+var R=18; // hex size, adjusted per radius
+var TR=18; // tray piece display size (~0.7x R)
 var OX,OY;
 var BOARD=[],BSET={},BLANKS={};
 var pieces=[],placed={},drag=null,mx=0,my=0;
-var preplaced=[];
-var _gameW=0,_gameH=0;
+var preplaced=[]; // {id, pq, pr} locked pieces
 
 var currentDay=new Date().getDay();
 var gameSolved=false;
@@ -275,48 +286,29 @@ function getDayConfig(dow){
   return DAY_CONFIG[dow];
 }
 
-var mobileSplit=0;
 function computeLayout(radius){
-  isMobile=window.innerWidth<640;
+  // fit board in canvas nicely
+  var maxR;
+  if(radius<=2)maxR=58;
+  else if(radius===3)maxR=40;
+  else if(radius===4)maxR=30;
+  else maxR=24;
+  R=maxR;
+  TR=Math.round(R*0.55);
+  var boardW=500;
+  var trayW=380;
+  var canvasW=boardW+trayW;
+  var canvasH=window.innerHeight||700;
   var dpr=window.devicePixelRatio||1;
-  var gameArea=document.getElementById('hives-game-area');
-  _gameW=gameArea?gameArea.clientWidth:window.innerWidth;
-  _gameH=gameArea?gameArea.clientHeight:Math.max(400,window.innerHeight-200);
-  if(isMobile){
-    var screenW=_gameW;
-    var canvasH=_gameH||600;
-    R=Math.max(12,Math.floor((screenW*0.88)/(Math.sqrt(3)*(2*radius+1))));
-    mobileSplit=Math.min(Math.ceil(R*(3*radius+4)),Math.floor(canvasH*0.50));
-    mobileSplit=Math.max(mobileSplit,240);
-    cv.style.width=screenW+'px';
-    cv.style.height=canvasH+'px';
-    cv.width=Math.round(screenW*dpr);
-    cv.height=Math.round(canvasH*dpr);
-    cx.setTransform(dpr,0,0,dpr,0,0);
-    OX=screenW/2;
-    OY=mobileSplit/2;
-  } else {
-    mobileSplit=0;
-    var maxR;
-    if(radius<=2)maxR=58;
-    else if(radius===3)maxR=40;
-    else if(radius===4)maxR=30;
-    else maxR=24;
-    R=maxR;
-    TR=Math.round(R*0.55);
-    var boardW=500;
-    var trayW=380;
-    var canvasW=boardW+trayW;
-    var canvasH=_gameH||600;
-    cv.style.width=canvasW+'px';
-    cv.style.height=canvasH+'px';
-    cv.width=Math.round(canvasW*dpr);
-    cv.height=Math.round(canvasH*dpr);
-    cx.setTransform(dpr,0,0,dpr,0,0);
-    OX=boardW/2;
-    OY=canvasH/2;
-  }
+  cv.style.width=canvasW+&#39;px&#39;;
+  cv.style.height=canvasH+&#39;px&#39;;
+  cv.width=Math.round(canvasW*dpr);
+  cv.height=Math.round(canvasH*dpr);
+  cx.scale(dpr,dpr);
+  OX=boardW/2;
+  OY=canvasH/2;
 }
+
 
 function buildPuzzle(dow){
   var cfg=getDayConfig(dow);
@@ -328,27 +320,34 @@ function buildPuzzle(dow){
   BSET={};
   for(var i=0;i<BOARD.length;i++)BSET[k(BOARD[i].q,BOARD[i].r)]=true;
 
+  // Pick blanks
   BLANKS={};
   if(cfg.maxBlanks>0){
     var numBlanks=1+Math.floor(rng()*(cfg.maxBlanks));
     var shuffled=seededShuffle(BOARD.slice(),rng);
+    // avoid center cell
     var candidates=shuffled.filter(function(c){return Math.abs(c.q)>0||Math.abs(c.r)>0;});
-    for(var i=0;i<numBlanks&&i<candidates.length;i++){
+    for(var i=0;i<numBlanks&amp;&amp;i<candidates.length;i++){
       BLANKS[k(candidates[i].q,candidates[i].r)]=true;
     }
   }
 
+  // Build playable board (board minus blanks)
   var playable=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];});
 
+  // Partition playable cells
   var raw,attempts=0;
   do{
     var rng2=makeRng(seed+attempts*997);
-    raw=partition(playable,rng2,24);
+    raw=partition(playable,rng2);
     attempts++;
-  }while(attempts<300&&(!raw||raw.length<3));
-  if(!raw)raw=[];
+  }while(attempts<300&amp;&amp;(raw.length<3||raw.some(function(p){return p.length<2;})));
 
   var n=raw.length;
+  var cssH=parseFloat(cv.style.height)||700;
+  var cssW=parseFloat(cv.style.width)||880;
+  var trayW=cssW-500;
+  var padX=trayW*0.06;
 
   var rExts=[];
   for(var i=0;i<n;i++){
@@ -366,30 +365,13 @@ function buildPuzzle(dow){
   xExts.sort(function(a,b){return a-b;});
   var p80XEx=xExts[Math.min(n-1,Math.floor(n*0.8))];
 
-  if(isMobile){
-    var trayAvailW=_gameW;
-    var trayAvailH=_gameH-mobileSplit;
-    var cols=5;
-    var padX=6;
-    var rows=Math.ceil(n/cols);
-    var colW=(trayAvailW-padX*2)/cols;
-    var rowH=Math.max(36,(trayAvailH-16)/rows);
-    var trV=Math.floor(rowH/pieceH);
-    var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
-    TR=Math.max(10,Math.min(Math.round(R*0.85),trV,trH));
-  } else {
-    var cssH=parseFloat(cv.style.height)||600;
-    var cssW=parseFloat(cv.style.width)||880;
-    var trayW=cssW-500;
-    var padX=trayW*0.06;
-    var cols=4;
-    var rows=Math.ceil(n/cols);
-    var colW=(trayW-padX*2)/cols;
-    var rowH=Math.min(cssH*0.9/rows,colW*1.5);
-    var trV=Math.floor(rowH/pieceH);
-    var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
-    TR=Math.max(12,Math.min(Math.round(R),trV,trH));
-  }
+  var cols=4;
+  var rows=Math.ceil(n/cols);
+  var colW=(trayW-padX*2)/cols;
+  var rowH=Math.min(cssH*0.9/rows,colW*1.5);
+  var trV=Math.floor(rowH/pieceH);
+  var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
+  TR=Math.max(12,Math.min(Math.round(R),trV,trH));
 
   pieces=[];
   for(var i=0;i<n;i++){
@@ -400,17 +382,20 @@ function buildPuzzle(dow){
     var cn=cen(norm);
     pieces.push({id:i,cells:norm,cn:cn,color:COLORS[i%COLORS.length],placed:false,pq:0,pr:0,locked:false,solq:mn.q,solr:mn.r});
   }
+  // Pre-place some pieces
   preplaced=[];
   placed={};
   if(cfg.maxPreplaced>0){
     var numPre=1+Math.floor(rng()*(cfg.maxPreplaced));
     var rng3=makeRng(seed+12345);
     var idxs=seededShuffle(pieces.map(function(_,i){return i;}),rng3);
-    for(var i=0;i<numPre&&i<idxs.length;i++){
+    for(var i=0;i<numPre&amp;&amp;i<idxs.length;i++){
       var p=pieces[idxs[i]];
+      // find where this piece originally belonged
       var origCells=raw[idxs[i]];
       var mn=origCells[0];
       var pq=mn.q-p.cells[0].q, pr=mn.r-p.cells[0].r;
+      // verify no overlap
       var ok=true;
       for(var j=0;j<p.cells.length;j++){
         var ck=k(p.cells[j].q+pq,p.cells[j].r+pr);
@@ -431,7 +416,7 @@ function resetGame(){
   if(gameSolved)return;
   for(var i=0;i<pieces.length;i++){
     var p=pieces[i];
-    if(p.placed&&!p.locked){
+    if(p.placed&amp;&amp;!p.locked){
       for(var j=0;j<p.cells.length;j++)delete placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)];
       p.placed=false;
       if(p.pieceCanvas)p.pieceCanvas.style.visibility="visible";
@@ -470,7 +455,7 @@ function getSnap(p,sx,sy){
     if(!BSET[ck]||BLANKS[ck])onBoard=false;
     if(placed[ck]!==undefined)free=false;
   }
-  return{pq:pq,pr:pr,cells:cells,onBoard:onBoard,valid:onBoard&&free};
+  return{pq:pq,pr:pr,cells:cells,onBoard:onBoard,valid:onBoard&amp;&amp;free};
 }
 
 function onDown(e){
@@ -529,34 +514,16 @@ function updateTrayPanel(){
   var panel=document.getElementById("tray-panel");
   if(!panel)return;
   var r=cv.getBoundingClientRect();
-  if(isMobile){
-    panel.style.left="0px";
-    panel.style.top=(r.top+mobileSplit)+"px";
-    panel.style.width=_gameW+"px";
-    panel.style.height=(_gameH-mobileSplit)+"px";
-    panel.style.display="flex";
-    panel.style.overflowY="auto";
-    panel.style.alignItems="flex-start";
-    var btn=document.getElementById("reset-btn");
-    if(btn){
-      btn.style.left=(_gameW/2)+"px";
-      btn.style.top=(r.top+mobileSplit+8)+"px";
-      btn.style.display=gameSolved?"none":"block";
-    }
-  } else {
-    panel.style.overflowY="";
-    panel.style.alignItems="center";
-    panel.style.left=(r.left+500)+"px";
-    panel.style.top=r.top+"px";
-    panel.style.width="380px";
-    panel.style.height=r.height+"px";
-    panel.style.display="flex";
-    var btn=document.getElementById("reset-btn");
-    if(btn){
-      btn.style.left=(r.left+250)+"px";
-      btn.style.top=(r.top+r.height-116)+"px";
-      btn.style.display=gameSolved?"none":"block";
-    }
+  panel.style.left=(r.left+500)+"px";
+  panel.style.top=r.top+"px";
+  panel.style.width="380px";
+  panel.style.height=r.height+"px";
+  panel.style.display="flex";
+  var btn=document.getElementById("reset-btn");
+  if(btn){
+    btn.style.left=(r.left+250)+"px";
+    btn.style.top=(r.top+r.height-116)+"px";
+    btn.style.display=gameSolved?"none":"block";
   }
 }
 
@@ -565,10 +532,7 @@ function renderTray(){
   if(!grid)return;
   grid.innerHTML="";
   var n=pieces.length;
-  var cols=isMobile?5:4;
-  grid.style.gridTemplateColumns="repeat("+cols+",1fr)";
-  grid.style.gap=isMobile?"6px":"10px";
-  grid.style.padding=isMobile?"8px":"14px";
+  var cols=4;
   var lastK=n%cols;
   if(lastK===0)lastK=cols;
   var lastRowStart=(Math.ceil(n/cols)-1)*cols;
@@ -643,7 +607,7 @@ function drawHex(x,y,r,fill,stroke,alpha){
   }
   cx.closePath();
   cx.fillStyle=fill;cx.fill();
-  cx.strokeStyle=stroke||'rgba(255,255,255,0.2)';cx.lineWidth=1.5;cx.stroke();
+  cx.strokeStyle=stroke||&#39;rgba(255,255,255,0.2)&#39;;cx.lineWidth=1.5;cx.stroke();
   cx.globalAlpha=1;
 }
 function roundRect(x,y,w,h,rad){
@@ -657,8 +621,10 @@ function roundRect(x,y,w,h,rad){
 }
 
 function draw(){
-  var W=parseFloat(cv.style.width)||cv.width,H=parseFloat(cv.style.height)||cv.height;
+  var W=cv.width,H=cv.height;
   cx.clearRect(0,0,W,H);
+
+  // Board cells
   for(var i=0;i<BOARD.length;i++){
     var q=BOARD[i].q,r=BOARD[i].r;
     var pt=toXY(q,r,OX,OY,R);
@@ -666,43 +632,65 @@ function draw(){
     if(BLANKS[bk]){
       cx.beginPath();
       for(var vi=0;vi<6;vi++){var va=Math.PI/3*vi-Math.PI/6;if(vi===0)cx.moveTo(pt.x+R*Math.cos(va),pt.y+R*Math.sin(va));else cx.lineTo(pt.x+R*Math.cos(va),pt.y+R*Math.sin(va));}
-      cx.closePath();cx.fillStyle='#0A0A0A';cx.fill();
+      cx.closePath();cx.fillStyle=&#39;#0A0A0A&#39;;cx.fill();
     } else {
       var pid=placed[bk];
-      var fill=pid!==undefined?pieces[pid].color:'rgba(255,255,255,0.10)';
-      var locked=pid!==undefined&&pieces[pid].locked;
-      drawHex(pt.x,pt.y,R-1,fill,locked?'rgba(255,255,255,0.65)':'rgba(255,255,255,0.5)');
+      var fill=pid!==undefined?pieces[pid].color:&#39;rgba(255,255,255,0.10)&#39;;
+      var locked=pid!==undefined&amp;&amp;pieces[pid].locked;
+      drawHex(pt.x,pt.y,R-1,fill,locked?&#39;rgba(255,255,255,0.65)&#39;:&#39;rgba(255,255,255,0.5)&#39;);
     }
   }
-  if(!isMobile){
-    cx.setLineDash([3,4]);
-    cx.strokeStyle='rgba(255,255,255,0.12)';cx.lineWidth=1;
-    cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
-    cx.setLineDash([]);
-  }
+
+  // Tray divider
+  cx.setLineDash([3,4]);
+  cx.strokeStyle=&#39;rgba(255,255,255,0.12)&#39;;cx.lineWidth=1;
+  cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
+  cx.setLineDash([]);
+
+  // Dragging
   if(drag){
     var sn=getSnap(drag,mx,my);
     if(sn.onBoard){
       for(var i=0;i<sn.cells.length;i++){
         var pt=toXY(sn.cells[i].q,sn.cells[i].r,OX,OY,R);
-        drawHex(pt.x,pt.y,R-2,drag.color,sn.valid?drag.color:'#E24B4A',sn.valid?0.8:0.3);
+        drawHex(pt.x,pt.y,R-2,drag.color,sn.valid?drag.color:&#39;#E24B4A&#39;,sn.valid?0.8:0.3);
       }
     } else {
       for(var i=0;i<drag.cells.length;i++){
         var c=drag.cells[i];
         var pt=toXY(c.q-drag.cn.q,c.r-drag.cn.r,mx,my,R);
-        drawHex(pt.x,pt.y,R-2,drag.color,'rgba(255,255,255,0.15)',0.85);
+        drawHex(pt.x,pt.y,R-2,drag.color,&#39;rgba(255,255,255,0.15)&#39;,0.85);
       }
     }
   }
+
+  // Lock icons — drawn last on top of everything
   for(var i=0;i<BOARD.length;i++){
     var bk=k(BOARD[i].q,BOARD[i].r);
     if(BLANKS[bk])continue;
     var pid=placed[bk];
-    if(pid!==undefined&&pieces[pid].locked){
+    if(pid!==undefined&amp;&amp;pieces[pid].locked){
       var pt=toXY(BOARD[i].q,BOARD[i].r,OX,OY,R);
       drawLock(pt.x,pt.y,R*0.8);
     }
+  }
+}
+
+// --- Day buttons ---
+function buildDayButtons(){
+  var container=document.getElementById(&#39;dayBtns&#39;);
+  container.innerHTML=&#39;&#39;;
+  for(var d=0;d<7;d++){
+    (function(dow){
+      var btn=document.createElement(&#39;button&#39;);
+      btn.textContent=DAY_NAMES[dow];
+      btn.id=&#39;daybtn&#39;+dow;
+      btn.onclick=function(){
+        currentDay=dow;
+        loadDay(dow);
+      };
+      container.appendChild(btn);
+    })(d);
   }
 }
 
@@ -711,14 +699,14 @@ function checkAlreadySolved(dow){
     var saved=JSON.parse(localStorage.getItem("hives_state")||"null");
     var td=new Date();td.setHours(0,0,0,0);
     var todayStr=td.toISOString().split("T")[0];
-    if(saved&&saved.date===todayStr&&saved.dow===dow&&saved.solved){
+    if(saved&amp;&amp;saved.date===todayStr&amp;&amp;saved.dow===dow&amp;&amp;saved.solved){
       gameSolved=true;
       var rb=document.getElementById("reset-btn");if(rb)rb.style.display="none";
       if(saved.placements){
         for(var i=0;i<saved.placements.length;i++){
           var pm=saved.placements[i];
           var piece=pieces[pm.id];
-          if(piece&&pm.placed&&!piece.locked){
+          if(piece&amp;&amp;pm.placed&amp;&amp;!piece.locked){
             piece.placed=true;piece.pq=pm.pq;piece.pr=pm.pr;
             for(var j=0;j<piece.cells.length;j++)placed[k(piece.cells[j].q+piece.pq,piece.cells[j].r+piece.pr)]=piece.id;
             if(piece.pieceCanvas)piece.pieceCanvas.style.visibility="hidden";
@@ -732,54 +720,85 @@ function checkAlreadySolved(dow){
 
 function loadDay(dow){
   placed={};drag=null;gameSolved=false;
-  document.getElementById('hmsg').textContent='';
+  document.getElementById(&#39;hmsg&#39;).textContent=&#39;&#39;;
   buildPuzzle(dow);
-  document.getElementById('diffLabel').textContent=DIFF_LABELS[dow];
-  document.getElementById('diffLabel').style.color=DIFF_COLORS[dow];
+  var cfg=DAY_CONFIG[dow];
+  document.getElementById(&#39;diffLabel&#39;).textContent=DIFF_LABELS[dow];
+  document.getElementById(&#39;diffLabel&#39;).style.color=DIFF_COLORS[dow];
   checkAlreadySolved(dow);
+
+
+  // highlight active button
+  for(var d=0;d<7;d++){
+    var b=document.getElementById(&#39;daybtn&#39;+d);
+    if(b)b.className=d===dow?&#39;active&#39;:&#39;&#39;;
+  }
   draw();
 }
 
 // --- Init ---
-(function(){
-  var start = new Date('2026-05-15T00:00:00');
-  var today = new Date();
-  today.setHours(0,0,0,0);
-  var diff = Math.max(0, Math.floor((today - start) / (1000*60*60*24)));
-  var dateStr = today.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-  var el = document.getElementById('hives-number');
-  if (el) el.textContent = '#' + (diff+1) + ' | ' + dateStr;
-})();
-
-window.addEventListener('load', function(){ loadDay(currentDay); });
-
-// Console cheats
-window.hives_win = function(){
+document.getElementById(&#39;dateLabel&#39;).textContent=dateLabel();
+window.hives_reset_inner=function(){
+  try{localStorage.removeItem("hives_state");}catch(e){}
+  var pop=document.getElementById("hives-popup");
+  if(pop){pop.style.opacity="0";pop.style.display="none";}
+  loadDay(currentDay);
+};
+window.hives_solve=function(){
   if(gameSolved)return;
   drag=null;
-  for(var i=0;i<pieces.length;i++){var p=pieces[i];if(p.locked)continue;if(p.placed){for(var j=0;j<p.cells.length;j++)delete placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)];p.placed=false;if(p.pieceCanvas)p.pieceCanvas.style.visibility="visible";}}
-  for(var i=0;i<pieces.length;i++){var p=pieces[i];if(p.locked)continue;p.placed=true;p.pq=p.solq;p.pr=p.solr;for(var j=0;j<p.cells.length;j++)placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)]=p.id;if(p.pieceCanvas)p.pieceCanvas.style.visibility="hidden";}
+  // clear any user-placed (non-locked) pieces first so stale entries do not block solution
+  for(var i=0;i<pieces.length;i++){
+    var p=pieces[i];
+    if(p.locked)continue;
+    if(p.placed){
+      for(var j=0;j<p.cells.length;j++)delete placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)];
+      p.placed=false;
+      if(p.pieceCanvas)p.pieceCanvas.style.visibility="visible";
+    }
+  }
+  // place every non-locked piece at its solution position
+  for(var i=0;i<pieces.length;i++){
+    var p=pieces[i];
+    if(p.locked)continue;
+    p.placed=true;p.pq=p.solq;p.pr=p.solr;
+    for(var j=0;j<p.cells.length;j++)placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)]=p.id;
+    if(p.pieceCanvas)p.pieceCanvas.style.visibility="hidden";
+  }
   draw();
   var playable=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];}).length;
   if(Object.keys(placed).length===playable){
     gameSolved=true;
     try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
     setTimeout(function(){
-      var pop=document.getElementById("hives-popup");var dd=document.getElementById("hives-popup-day");var dm=document.getElementById("hives-popup-msg");
-      var start=new Date("2026-05-15T00:00:00");var today=new Date();today.setHours(0,0,0,0);var diff=Math.max(0,Math.floor((today-start)/864e5));
-      if(dd)dd.textContent="#"+(diff+1);if(dm)dm.textContent="You solved it! Come back tomorrow for #"+(diff+2)+".";
+      var pop=document.getElementById("hives-popup");
+      var dd=document.getElementById("hives-popup-day");
+      var dm=document.getElementById("hives-popup-msg");
+      var start=new Date("2026-05-15T00:00:00");
+      var today=new Date();today.setHours(0,0,0,0);
+      var diff=Math.max(0,Math.floor((today-start)/864e5));
+      if(dd)dd.textContent="#"+(diff+1);
+      if(dm)dm.textContent="You solved it! Come back tomorrow for #"+(diff+2)+".";
       if(pop){pop.style.display="flex";requestAnimationFrame(function(){requestAnimationFrame(function(){pop.style.opacity="1";});});}
     },500);
   }
 };
-window.hives_reset = function(){
-  try{localStorage.removeItem("hives_state");}catch(e){}
-  var pop=document.getElementById("hives-popup");
-  if(pop){pop.style.opacity="0";pop.style.display="none";}
-  loadDay(currentDay);
-};
+loadDay(currentDay);
 </script>
+</body>
+</html>
+' style="width:100%;height:700px;border:none;background:transparent;"></iframe>
+  <footer>
+    <span class="footer-l">Dhruv Raj Singh © 2026</span>
+    <div style="display:flex;gap:1.5rem;align-items:center;">
+      <a href="https://www.instagram.com/dhruvrsingh_" target="_blank" style="font-family:var(--font-mono);font-size:0.67rem;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Instagram</a>
+      <a href="https://github.com/dhruv-r-singh" target="_blank" style="font-family:var(--font-mono);font-size:0.67rem;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+      <a href="https://www.linkedin.com/in/dhruv-raj-singh-6b8441370/" target="_blank" style="font-family:var(--font-mono);font-size:0.67rem;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">LinkedIn</a>
+    </div>
+    <span class="footer-r">Nashua, NH</span>
+  </footer>
 
+</div>
 <script>
 function initReveal() {
   const observer = new IntersectionObserver(entries => {
@@ -798,11 +817,11 @@ function toggleMobileNav() {
   if (isOpen) {
     nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
     setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
-    btn.textContent = '☰';
+    btn.textContent = '\u2630';
   } else {
     nav.style.display = 'flex';
     nav.style.animation = 'slideInRight 0.32s cubic-bezier(0.22,1,0.36,1) forwards';
-    btn.textContent = '✕';
+    btn.textContent = '\u2715';
   }
 }
 function closeMobileNav() {
@@ -811,11 +830,13 @@ function closeMobileNav() {
   if (!nav || nav.style.display !== 'flex') return;
   nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
   setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
-  if (btn) btn.textContent = '☰';
+  if (btn) btn.textContent = '\u2630';
 }
 </script>
 
+
 <script>
+// Show games nav on games-section pages (only if already unlocked via Konami)
 (function(){
   if(sessionStorage.getItem('gamesUnlocked')){
     var el=document.getElementById('nav-games-wrap');
@@ -824,6 +845,32 @@ function closeMobileNav() {
     if(m) m.style.display='';
   }
 })();
+</script>
+<script>
+(function(){
+  var start = new Date('2026-05-15T00:00:00');
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var diff = Math.max(0, Math.floor((today - start) / (1000*60*60*24)));
+  var dateStr = today.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+  var el = document.getElementById('hives-number');
+  if (el) el.textContent = '#' + (diff+1) + ' | ' + dateStr;
+})();
+
+// Console cheat: type hives_win() to solve today's puzzle
+window.hives_win = function() {
+  var iframe = document.querySelector('iframe');
+  if (iframe && iframe.contentWindow && iframe.contentWindow.hives_solve) {
+    iframe.contentWindow.hives_solve();
+  }
+};
+// Console cheat: type hives_reset() to reset today's puzzle
+window.hives_reset = function() {
+  var iframe = document.querySelector('iframe');
+  if (iframe && iframe.contentWindow && iframe.contentWindow.hives_reset_inner) {
+    iframe.contentWindow.hives_reset_inner();
+  }
+};
 </script>
 </body>
 </html>
