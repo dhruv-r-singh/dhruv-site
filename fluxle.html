@@ -342,9 +342,74 @@ function showMusicPlayer(){
     s.textContent='@keyframes mspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
     document.head.appendChild(s);
   }
-  const audio=new Audio('https://dl.dropboxusercontent.com/scl/fi/eouzxi6ojetv0bbcltoak/INTUITION.mp3?rlkey=xoogpyz4v0u0iop3coa56v6y3');
+
+  // ── ADD MORE SONGS HERE ──────────────────────────────────────────
+  const TRACKS=[
+    {
+      title:'after hours',
+      artist:'Avenoir',
+      src:'https://dl.dropboxusercontent.com/scl/fi/m6q98qkx6xiv899ljn9cg/AFTER-HOURS.mp3?rlkey=xx1bnkqajhhcx60z0frc2wt5w',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/uivwtylrvas89xsc04wyu/avenoir.jpeg?rlkey=2876fcs1t3y9ee2ivmm2uwpgg'
+    },
+    {
+      title:'fuck the world',
+      artist:'Brent Faiyaz',
+      src:'https://dl.dropboxusercontent.com/scl/fi/g1z8zpaz042aya8jplbf6/Fuck-The-World-Summer-in-London.mp3?rlkey=ak9eirc4b87uxx3gjfe1ga6tz',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/wz1ljnr1copzdpydztiow/brentfaiyaz.jpeg?rlkey=1zny93lbulpixsl5hhcqymdk3'
+    },
+    {
+      title:'find a topic (homies begged)',
+      artist:'Isaiah Rashad',
+      src:'https://dl.dropboxusercontent.com/scl/fi/luu1j6aemszti6ypocgml/Find-a-Topic-homies-begged.mp3?rlkey=g2pwnwx67et0jv2c1cc86bqww',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/2h2subg5bcu5e5yd7aefn/isaiahrashad.jpeg?rlkey=1z9w648df47hvp61cwzh1i2gv'
+    },
+    {
+      title:'garden kisses',
+      artist:'Giveon',
+      src:'https://dl.dropboxusercontent.com/scl/fi/riy4ik2m3z7m794q28a0s/Garden-Kisses.mp3?rlkey=maoygbm3nls15jhvbsq8dg5au',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/1knufgpp8v5hqcwehmyt5/giveon.jpeg?rlkey=tucuk6jy08toj6r8mbw4tus17'
+    },
+    {
+      title:'miami',
+      artist:'Chase Shakur',
+      src:'https://dl.dropboxusercontent.com/scl/fi/p79ta93gwno3xl1gpdml7/Miami-feat.-Leon-Thomas.mp3?rlkey=5yasuuh6647km58o6bdi4vfe5',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/jnkzdqdsy6l82wyq139tu/chaseshakur.jpeg?rlkey=h0fw4rehr2hqxsqycwfkj2274'
+    },
+    {
+      title:'talk to me',
+      artist:'Odeal',
+      src:'https://dl.dropboxusercontent.com/scl/fi/44b60n19enrtpa38qrrhj/Talk-To-Me.mp3?rlkey=55j2w6zl86bdhe5r8af8zv24p',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/tefzot4r26a7udpcufylq/odeal.jpeg?rlkey=b6dg5m2mwxb0oleo1yef7yaje'
+    },
+    {
+      title:'where da luv',
+      artist:'Mazb',
+      src:'https://dl.dropboxusercontent.com/scl/fi/9jp090rc77m3o8n5p2ol3/where-da-luv-feat.-Girlfriend.mp3?rlkey=r3q8damueqwrcfvrg3xx8imdk',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/lx2d4zdkbian16eptxsu2/mazb.jpeg?rlkey=qihhz96s9ie4lh7bwn1f00xu2'
+    },
+    {
+      title:'yo no soy celoso',
+      artist:'Bad Bunny',
+      src:'https://dl.dropboxusercontent.com/scl/fi/catsz2o404lq3e5ahpig5/Yo-No-Soy-Celoso.mp3?rlkey=v9e8fm8yn2yrsx2ydc6ywjxhy',
+      cover:'https://dl.dropboxusercontent.com/scl/fi/nmij1y2quh3wiwcl9i2mc/badbunny.jpeg?rlkey=uyjlz6g0q1h9cgtudaswdub2v'
+    },
+  ];
+  // ────────────────────────────────────────────────────────────────
+
+  let trackIdx=0;
+  const audio=new Audio();
   audio.crossOrigin='anonymous';
-  audio.loop=true;
+  audio.loop=false;
+
+  function loadTrack(idx,autoplay){
+    const t=TRACKS[idx];
+    audio.src=t.src;
+    lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';
+    cdLabel.style.background='url("'+t.cover+'") center/cover,radial-gradient(circle,#1e1e1e 55%,#2e2e2e 100%)';
+    hole.style.cssText=hole.style.cssText; // re-apply so it stays on top
+    durEl.textContent='0:00';prog.value=0;timeEl.textContent='0:00';
+    if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
+  }
 
   let playing=false;
   const pl=document.createElement('div');pl.id='music-player';
@@ -358,23 +423,19 @@ function showMusicPlayer(){
     '#b0b0b0,#e8e8e8,#c0c0c0,#f0f0f0,#a8a8a8,#dcdcdc,#b8b8b8,#f5f5f5,#aaa,#e0e0e0,#bbb,#b0b0b0);',
     'box-shadow:0 3px 18px rgba(0,0,0,0.7);'
   ].join('');
-  // centre label — album art
   const cdLabel=document.createElement('div');
   cdLabel.style.cssText=[
     'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);',
     'width:66px;height:66px;border-radius:50%;',
-    'background:url("https://dl.dropboxusercontent.com/scl/fi/ywqlooxc7tj83taxtttgk/cover.jpg?rlkey=2guedf611ie4hy72p54h6f4hm") center/cover,radial-gradient(circle,#1e1e1e 55%,#2e2e2e 100%);',
     'border:1.5px solid #333;'
   ].join('');
-  // spindle hole
   const hole=document.createElement('div');
-  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);';
+  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:1;';
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
 
   // track label
   const lbl=document.createElement('div');
   lbl.style.cssText='font-family:monospace;font-size:0.58rem;color:#444;text-align:center;letter-spacing:0.13em;text-transform:uppercase;margin-bottom:13px;';
-  lbl.innerHTML='intuition<br><span style="color:#333;">Avenoir</span>';
 
   // controls
   const ctrl=document.createElement('div');
@@ -392,10 +453,14 @@ function showMusicPlayer(){
     on?audio.play().catch(e=>console.warn('Audio play failed:',e)):audio.pause();
   }
   const playBtn=mkBtn('▶',()=>setPlaying(!playing));
-  audio.addEventListener('ended',()=>setPlaying(false));
-  ctrl.appendChild(mkBtn('⏮',()=>{if(audio.src){audio.currentTime=0;}setPlaying(true);}));
+  audio.addEventListener('ended',()=>{
+    trackIdx=(trackIdx+1)%TRACKS.length;
+    loadTrack(trackIdx,true);
+    playing=true;disc.style.animation='mspin 5s linear infinite';playBtn.textContent='⏸';playBtn.style.color='#ddd';
+  });
+  ctrl.appendChild(mkBtn('⏮',()=>{trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length;loadTrack(trackIdx,playing);}));
   ctrl.appendChild(playBtn);
-  ctrl.appendChild(mkBtn('⏭',()=>setPlaying(false)));
+  ctrl.appendChild(mkBtn('⏭',()=>{trackIdx=(trackIdx+1)%TRACKS.length;loadTrack(trackIdx,playing);}));
 
   // progress bar
   const pw=document.createElement('div');pw.style.cssText='margin-bottom:10px;';
@@ -416,7 +481,7 @@ function showMusicPlayer(){
     if(!seeking&&audio.duration){
       prog.value=(audio.currentTime/audio.duration)*1000;
       timeEl.textContent=fmt(audio.currentTime);
-      if(audio.duration&&durEl.textContent==='0:00')durEl.textContent=fmt(audio.duration);
+      if(durEl.textContent==='0:00')durEl.textContent=fmt(audio.duration);
     }
     requestAnimationFrame(raf);
   })();
@@ -433,6 +498,7 @@ function showMusicPlayer(){
 
   pl.appendChild(disc);pl.appendChild(lbl);pl.appendChild(ctrl);pl.appendChild(pw);pl.appendChild(vw);
   document.body.appendChild(pl);
+  loadTrack(0,false);
 }
 
 // Auto-init on standalone page load
