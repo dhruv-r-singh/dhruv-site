@@ -281,6 +281,23 @@ function partition(board,rng,maxPieces){
     for(var gi=0;gi<group.length;gi++)pcells.push({q:map[group[gi]].q,r:map[group[gi]].r});
     pieces.push(pcells);
   }
+  var si=0;
+  while(si<pieces.length){
+    if(pieces[si].length>=2){si++;continue;}
+    var sc=pieces[si][0],smerged=false;
+    for(var sdi=0;sdi<DIRS.length&amp;&amp;!smerged;sdi++){
+      var snk=k(sc.q+DIRS[sdi].q,sc.r+DIRS[sdi].r);
+      for(var spj=0;spj<pieces.length&amp;&amp;!smerged;spj++){
+        if(spj===si)continue;
+        for(var sci2=0;sci2<pieces[spj].length&amp;&amp;!smerged;sci2++){
+          if(k(pieces[spj][sci2].q,pieces[spj][sci2].r)===snk){
+            pieces[spj].push(sc);pieces.splice(si,1);smerged=true;
+          }
+        }
+      }
+    }
+    if(!smerged)si++;
+  }
   return pieces;
 }
 
@@ -353,12 +370,17 @@ function buildPuzzle(dow){
   var playable=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];});
 
   // Partition playable cells
-  var raw,attempts=0;
-  do{
+  var raw=null,fallback=null,attempts=0;
+  while(attempts<500){
     var rng2=makeRng(seed+attempts*997);
-    raw=partition(playable,rng2,cfg.maxPieces);
+    var cand=partition(playable,rng2,cfg.maxPieces);
+    if(cand.length>=cfg.minPieces){
+      if(!hasDupShape(cand)){raw=cand;break;}
+      if(!fallback)fallback=cand;
+    }
     attempts++;
-  }while(attempts<500&amp;&amp;(raw.length<cfg.minPieces||raw.some(function(p){return p.length<2;})||hasDupShape(raw)));
+  }
+  if(!raw)raw=fallback||[];
   var n=raw.length;
   var cssH=parseFloat(cv.style.height)||700;
   var cssW=parseFloat(cv.style.width)||880;
