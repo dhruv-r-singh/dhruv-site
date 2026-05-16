@@ -398,19 +398,7 @@ function showMusicPlayer(){
 
   let trackIdx=0;
   const audio=new Audio();
-  audio.crossOrigin='anonymous';
   audio.loop=false;
-
-  function loadTrack(idx,autoplay){
-    const t=TRACKS[idx];
-    audio.src=t.src;
-    lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';
-    disc.style.backgroundImage='url("'+t.cover+'")';
-    disc.style.backgroundSize='cover';
-    disc.style.backgroundPosition='center';
-    durEl.textContent='0:00';prog.value=0;timeEl.textContent='0:00';
-    if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
-  }
 
   let playing=false;
   const pl=document.createElement('div');pl.id='music-player';
@@ -418,12 +406,25 @@ function showMusicPlayer(){
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:110px;height:110px;border-radius:50%;margin:0 auto 14px;position:relative;background:#1e1e1e;background-size:cover;background-position:center;box-shadow:0 3px 18px rgba(0,0,0,0.7);';
+  disc.style.cssText='width:110px;height:110px;border-radius:50%;margin:0 auto 14px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;';
+  const coverImg=document.createElement('img');
+  coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;';
+  coverImg.src='';
+  disc.appendChild(coverImg);
   const cdLabel=document.createElement('div');
-  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);';
+  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
   const hole=document.createElement('div');
-  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:1;';
+  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:2;';
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
+
+  function loadTrack(idx,autoplay){
+    const t=TRACKS[idx];
+    audio.src=t.src;
+    lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';
+    coverImg.src=t.cover;
+    durEl.textContent='0:00';prog.value=0;timeEl.textContent='0:00';
+    if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
+  }
 
   // track label
   const lbl=document.createElement('div');
