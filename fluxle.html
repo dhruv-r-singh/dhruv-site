@@ -259,12 +259,13 @@ function pwSubmit(){
   if(!PW_VALID.has(pwCurrent)){document.getElementById('pw-msg').textContent='not a real word';return;}
   const res=pwScore(pwCurrent,pwWord);
   pwGuesses.push(res);
-  if(res.map(r=>r.letter).join('')==='MUSIC'&&!document.getElementById('music-sq')){const mSq=document.createElement('div');mSq.id='music-sq';mSq.style.cssText='position:fixed;bottom:16px;right:16px;width:24px;height:24px;background:#555;border-radius:3px;z-index:9999;opacity:0.6;';document.body.appendChild(mSq);}
+  if(res.map(r=>r.letter).join('')==='MUSIC')showMusicPlayer();
   res.forEach(r=>{const p=pwKeys[r.letter];if(!p||p==='absent'||(p==='present'&&r.state==='correct'))pwKeys[r.letter]=r.state;});
   pwCurrent='';pwRender();
   const won = res.every(r=>r.state==='correct');
   if(won){document.getElementById('pw-msg').textContent='🎉 '+pwWord;pwDone=true;pwSaveState(true);const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent='You got it! Come back tomorrow for #'+(diff+2)+'.';}setTimeout(()=>{const pop=document.getElementById('fluxle-popup');const pw=document.getElementById('fluxle-popup-word');const pm=document.getElementById('fluxle-popup-msg');if(pop&&pw){pw.textContent=pwWord;if(pm)pm.textContent='You did it! Come back tomorrow for #'+(diff+2)+'!';pop.classList.add('show');requestAnimationFrame(()=>requestAnimationFrame(()=>pop.classList.add('visible')));} },3000);}
   else if(pwGuesses.length===6){document.getElementById('pw-msg').textContent='Answer: '+pwWord;pwDone=true;pwSaveState(false);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent='Come back tomorrow for a new word.';}}
+  if(!pwDone)pwSaveState(false);
 }
 
 function pwScore(g,t){
@@ -329,6 +330,46 @@ function showGames(){
   window.location='games';
 }
 
+
+function showMusicPlayer(){
+  if(document.getElementById('music-player'))return;
+  if(!document.getElementById('music-spin-style')){
+    const s=document.createElement('style');s.id='music-spin-style';
+    s.textContent='@keyframes mspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}';
+    document.head.appendChild(s);
+  }
+  let playing=false;
+  const pl=document.createElement('div');pl.id='music-player';
+  pl.style.cssText='position:fixed;bottom:16px;right:16px;width:188px;background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:12px 14px;z-index:9999;box-shadow:0 4px 24px rgba(0,0,0,0.7);';
+  const disc=document.createElement('div');disc.id='music-disc';
+  disc.style.cssText='width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,#1a1a1a 25%,#444 27%,#999 46%,#666 62%,#3a3a3a 78%,#222 100%);margin:0 auto 10px;border:2px solid #333;';
+  const lbl=document.createElement('div');
+  lbl.style.cssText='font-family:monospace;font-size:0.58rem;color:#555;text-align:center;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:10px;';
+  lbl.textContent='— no signal —';
+  const ctrl=document.createElement('div');
+  ctrl.style.cssText='display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:10px;';
+  function mkBtn(t,fn){
+    const b=document.createElement('button');
+    b.style.cssText='background:none;border:none;color:#555;font-size:1rem;cursor:pointer;padding:3px;line-height:1;transition:color .15s;';
+    b.textContent=t;b.onmouseover=()=>b.style.color='#ccc';b.onmouseout=()=>b.style.color=playing&&b===playBtn?'#ccc':'#555';b.onclick=fn;return b;
+  }
+  const playBtn=mkBtn('▶',function(){
+    playing=!playing;
+    playBtn.textContent=playing?'⏸':'▶';
+    disc.style.animation=playing?'mspin 4s linear infinite':'';
+    playBtn.style.color=playing?'#ccc':'#555';
+  });
+  ctrl.appendChild(mkBtn('⏮',()=>{}));
+  ctrl.appendChild(playBtn);
+  ctrl.appendChild(mkBtn('⏭',()=>{}));
+  const vw=document.createElement('div');vw.style.cssText='display:flex;align-items:center;gap:7px;';
+  const vi=document.createElement('span');vi.style.cssText='font-size:0.7rem;color:#444;';vi.textContent='♪';
+  const vs=document.createElement('input');vs.type='range';vs.min='0';vs.max='100';vs.value='70';
+  vs.style.cssText='flex:1;height:2px;accent-color:#444;cursor:pointer;';
+  vw.appendChild(vi);vw.appendChild(vs);
+  pl.appendChild(disc);pl.appendChild(lbl);pl.appendChild(ctrl);pl.appendChild(vw);
+  document.body.appendChild(pl);
+}
 
 // Auto-init on standalone page load
 document.addEventListener('DOMContentLoaded', function() {

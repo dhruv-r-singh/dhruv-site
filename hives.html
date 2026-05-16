@@ -476,6 +476,7 @@ function dropPiece(){
     var playableCount=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];}).length;
     if(Object.keys(placed).length===playableCount){
       gameSolved=true;
+      var rb=document.getElementById("reset-btn");if(rb)rb.style.display="none";
       try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
       setTimeout(function(){
         var pop=document.getElementById("hives-popup");
@@ -519,7 +520,7 @@ function updateTrayPanel(){
   if(btn){
     btn.style.left=(r.left+250)+"px";
     btn.style.top=(r.top+r.height-116)+"px";
-    btn.style.display="block";
+    btn.style.display=gameSolved?"none":"block";
   }
 }
 
@@ -709,14 +710,6 @@ function checkAlreadySolved(dow){
         }
         draw();
       }
-      var start=new Date("2026-05-15T00:00:00");
-      var diff=Math.max(0,Math.floor((td-start)/864e5));
-      var pop=document.getElementById("hives-popup");
-      var dd=document.getElementById("hives-popup-day");
-      var dm=document.getElementById("hives-popup-msg");
-      if(dd)dd.textContent="#"+(diff+1);
-      if(dm)dm.textContent="You already solved today! Come back tomorrow for #"+(diff+2)+".";
-      if(pop){pop.style.display="flex";requestAnimationFrame(function(){requestAnimationFrame(function(){pop.style.opacity="1";});});}
     }
   }catch(e){}
 }
