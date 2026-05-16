@@ -745,9 +745,20 @@ window.hives_reset_inner=function(){
 window.hives_solve=function(){
   if(gameSolved)return;
   drag=null;
+  // clear any user-placed (non-locked) pieces first so stale entries don't block solution
   for(var i=0;i<pieces.length;i++){
     var p=pieces[i];
-    if(p.locked||p.placed)continue;
+    if(p.locked)continue;
+    if(p.placed){
+      for(var j=0;j<p.cells.length;j++)delete placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)];
+      p.placed=false;
+      if(p.pieceCanvas)p.pieceCanvas.style.visibility="visible";
+    }
+  }
+  // place every non-locked piece at its solution position
+  for(var i=0;i<pieces.length;i++){
+    var p=pieces[i];
+    if(p.locked)continue;
     p.placed=true;p.pq=p.solq;p.pr=p.solr;
     for(var j=0;j<p.cells.length;j++)placed[k(p.cells[j].q+p.pq,p.cells[j].r+p.pr)]=p.id;
     if(p.pieceCanvas)p.pieceCanvas.style.visibility="hidden";
