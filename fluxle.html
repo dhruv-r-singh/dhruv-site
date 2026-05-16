@@ -413,7 +413,7 @@ function showMusicPlayer(){
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:168px;height:168px;border-radius:50%;margin:0 auto 18px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7),0 0 0 5px rgba(200,200,200,0.12);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
+  disc.style.cssText='width:168px;height:168px;border-radius:50%;margin:0 auto 18px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7),0 0 0 5px rgba(200,200,200,0.35);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
   const coverImg=document.createElement('img');
   coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.35s ease;';
   coverImg.src='';
@@ -519,7 +519,6 @@ function showMusicPlayer(){
     disc.style.transform='rotate('+discManualRot+'deg)';
   }
   function discResume(){
-    if(audio.duration)audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(discTotalDelta/(2*Math.PI))*30));
     const deg=((discManualRot%360)+360)%360;
     disc.style.transform='';
     disc.style.animation='mspin 5s '+(-(deg/360*5)).toFixed(3)+'s linear infinite';
@@ -537,6 +536,7 @@ function showMusicPlayer(){
     discTotalDelta+=delta;
     discManualRot+=delta*180/Math.PI;
     disc.style.transform='rotate('+discManualRot+'deg)';
+    audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(delta/(2*Math.PI))*30));
   }
   document.addEventListener('mousemove',function(e){onDiscDrag(e.clientX,e.clientY);});
   document.addEventListener('touchmove',function(e){if(discDragActive){onDiscDrag(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
