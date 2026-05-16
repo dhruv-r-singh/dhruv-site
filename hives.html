@@ -411,6 +411,7 @@ function buildPuzzle(dow){
 }
 
 function resetGame(){
+  if(gameSolved)return;
   for(var i=0;i<pieces.length;i++){
     var p=pieces[i];
     if(p.placed&amp;&amp;!p.locked){
@@ -698,6 +699,7 @@ function checkAlreadySolved(dow){
     var todayStr=td.toISOString().split("T")[0];
     if(saved&amp;&amp;saved.date===todayStr&amp;&amp;saved.dow===dow&amp;&amp;saved.solved){
       gameSolved=true;
+      var rb=document.getElementById("reset-btn");if(rb)rb.style.display="none";
       if(saved.placements){
         for(var i=0;i<saved.placements.length;i++){
           var pm=saved.placements[i];
