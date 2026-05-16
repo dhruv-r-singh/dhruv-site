@@ -75,7 +75,7 @@
     <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
   </div>
 
-  <div style="text-align:center;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.5rem 1rem 0.75rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+  <div style="text-align:left;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:1.25rem 1rem 0.5rem 3rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
 
   <iframe srcdoc='<!DOCTYPE html>
 <html>
@@ -92,7 +92,7 @@ h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
 .sub{font-size:12px;color:#aaa;margin-bottom:14px;text-align:center}
 #hc{display:block;cursor:grab;background:transparent;touch-action:none}
 #hc:active{cursor:grabbing}
-#tray-panel{position:fixed;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:visible}
+#tray-panel{position:fixed;display:none;align-items:center;justify-content:center;pointer-events:none;overflow:visible;-webkit-overflow-scrolling:touch}
 #tray-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:14px;pointer-events:none;width:100%}
 .piece-slot{display:flex;align-items:center;justify-content:center;pointer-events:none}
 .piece-slot canvas{pointer-events:auto;cursor:grab;display:block}
@@ -123,7 +123,7 @@ button.active{background:#1a1a1a;color:white;border-color:#1a1a1a}
     <div id="hives-popup-msg" style="font-family:monospace;font-size:0.7rem;color:#888;letter-spacing:0.06em;line-height:1.6;margin-bottom:0.5rem;"></div>
     <div style="display:flex;gap:0.75rem;justify-content:center;border-top:1px solid #333;padding-top:1.25rem;margin-top:0.5rem;">
       <button onclick="document.getElementById(&#39;hives-popup&#39;).style.display=&#39;none&#39;" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#888;background:none;border:1px solid #444;border-radius:6px;padding:9px 20px;cursor:pointer;">close</button>
-      <button onclick="window.parent.location.href=&#39;games.html&#39;" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#0A0A0A;background:#F0F0F0;border:1px solid #F0F0F0;border-radius:6px;padding:9px 20px;cursor:pointer;">more games</button>
+      <button onclick="window.parent.location.href=&#39;games&#39;" style="font-family:monospace;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;color:#0A0A0A;background:#F0F0F0;border:1px solid #F0F0F0;border-radius:6px;padding:9px 20px;cursor:pointer;">more games</button>
     </div>
   </div>
 </div>
@@ -166,7 +166,7 @@ var DIFF_COLORS=[&#39;#1D9E75&#39;,&#39;#1D9E75&#39;,&#39;#BA7517&#39;,&#39;#BA7
 var DAY_NAMES=[&#39;Sun&#39;,&#39;Mon&#39;,&#39;Tue&#39;,&#39;Wed&#39;,&#39;Thu&#39;,&#39;Fri&#39;,&#39;Sat&#39;];
 
 // --- Hex math ---
-var COLORS=[&#39;#1E90FF&#39;,&#39;#00BFA5&#39;,&#39;#FF6200&#39;,&#39;#6B5CFF&#39;,&#39;#FF9500&#39;,&#39;#FF4F93&#39;,&#39;#78C825&#39;,&#39;#A829E0&#39;,&#39;#F53535&#39;,&#39;#A0622A&#39;,&#39;#1E9940&#39;,&#39;#1A4FCC&#39;,&#39;#CC1535&#39;,&#39;#FF6040&#39;,&#39;#E01F8C&#39;,&#39;#FF1A8C&#39;,&#39;#FFE0AB&#39;,&#39;#FFFFFF&#39;];
+var COLORS=[&#39;#1E90FF&#39;,&#39;#00BFA5&#39;,&#39;#FF6200&#39;,&#39;#6B5CFF&#39;,&#39;#FF9500&#39;,&#39;#FF4F93&#39;,&#39;#78C825&#39;,&#39;#A829E0&#39;,&#39;#F53535&#39;,&#39;#6B3317&#39;,&#39;#1E9940&#39;,&#39;#1A4FCC&#39;,&#39;#CC1535&#39;,&#39;#FF6040&#39;,&#39;#E01F8C&#39;,&#39;#FF1A8C&#39;,&#39;#FFE0AB&#39;,&#39;#FFFFFF&#39;,&#39;#FFD600&#39;,&#39;#00E5FF&#39;,&#39;#8540FB&#39;,&#39;#004536&#39;,&#39;#FFA98A&#39;,&#39;#FFE875&#39;];
 var DIRS=[{q:1,r:0},{q:-1,r:0},{q:0,r:1},{q:0,r:-1},{q:1,r:-1},{q:-1,r:1}];
 function drawLock(x,y,sz){
   var bw=sz*0.65,bh=sz*0.44;
@@ -174,7 +174,7 @@ function drawLock(x,y,sz){
   var cr=bw*0.13,lw=sz*0.14;
   var lx1=x-bw*0.18,lx2=x+bw*0.18;
   var arcR=(lx2-lx1)/2;
-  var legTop=by-bh*0.52;
+  var legTop=by-bh*0.32;
   cx.save();
   cx.strokeStyle=&#39;#111&#39;;cx.lineWidth=lw;cx.lineCap=&#39;butt&#39;;
   cx.beginPath();
@@ -230,38 +230,45 @@ function buildBoard(radius){
   return cells;
 }
 
-function partition(board,rng){
+function normalizeShape(cells){
+  var minQ=cells[0].q,minR=cells[0].r;
+  for(var i=1;i<cells.length;i++){if(cells[i].q<minQ)minQ=cells[i].q;if(cells[i].r<minR)minR=cells[i].r;}
+  var n=cells.map(function(c){return{q:c.q-minQ,r:c.r-minR};});
+  n.sort(function(a,b){return a.q!==b.q?a.q-b.q:a.r-b.r;});
+  return n.map(function(c){return c.q+&#39;,&#39;+c.r;}).join(&#39;|&#39;);
+}
+function partition(board,rng,maxPieces){
+  if(!maxPieces)maxPieces=999;
   var avail={},map={};
-  for(var i=0;i<board.length;i++){
-    var key=k(board[i].q,board[i].r);
-    avail[key]=true;
-    map[key]={q:board[i].q,r:board[i].r};
-  }
-  var pieces=[];
+  for(var i=0;i<board.length;i++){var key=k(board[i].q,board[i].r);avail[key]=true;map[key]={q:board[i].q,r:board[i].r};}
+  var pieces=[],usedShapes={};
   while(true){
     var availKeys=Object.keys(avail);
     if(!availKeys.length)break;
     var rem=availKeys.length;
-    var target=rem<=4?rem:3+Math.floor(rng()*3);
+    var pLeft=maxPieces-pieces.length;
+    if(rem===1)return null;
+    var lo=Math.max(2,Math.ceil(rem/pLeft));
+    var hi=Math.min(5,rem);
+    if(lo>hi)return null;
+    var target=lo+Math.floor(rng()*(hi-lo+1));
+    if(rem-target===1&amp;&amp;target<rem)target++;
     var shuffled=seededShuffle(availKeys,rng);
     var start=shuffled[0];
     var group=[start];
     delete avail[start];
     while(group.length<target){
       var frontier=[];
-      for(var gi=0;gi<group.length;gi++){
-        var c=map[group[gi]];
-        for(var di=0;di<DIRS.length;di++){
-          var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);
-          if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);
-        }
-      }
+      for(var gi=0;gi<group.length;gi++){var c=map[group[gi]];for(var di=0;di<DIRS.length;di++){var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);}}
       if(!frontier.length)break;
       var sf=seededShuffle(frontier,rng);
       group.push(sf[0]);delete avail[sf[0]];
     }
-    var pcells=[];
-    for(var gi=0;gi<group.length;gi++)pcells.push({q:map[group[gi]].q,r:map[group[gi]].r});
+    if(group.length<2)return null;
+    var pcells=group.map(function(key){return{q:map[key].q,r:map[key].r};});
+    var shapeKey=normalizeShape(pcells);
+    if(usedShapes[shapeKey])return null;
+    usedShapes[shapeKey]=true;
     pieces.push(pcells);
   }
   return pieces;
@@ -274,6 +281,7 @@ var cx=cv.getContext(&#39;2d&#39;);
 // Game state
 var R=18; // hex size, adjusted per radius
 var TR=18; // tray piece display size (~0.7x R)
+var isMobile=false;
 var OX,OY;
 var BOARD=[],BSET={},BLANKS={};
 var pieces=[],placed={},drag=null,mx=0,my=0;
@@ -286,27 +294,44 @@ function getDayConfig(dow){
   return DAY_CONFIG[dow];
 }
 
+var mobileSplit=0; // y at which tray starts (mobile only)
 function computeLayout(radius){
-  // fit board in canvas nicely
-  var maxR;
-  if(radius<=2)maxR=58;
-  else if(radius===3)maxR=40;
-  else if(radius===4)maxR=30;
-  else maxR=24;
-  R=maxR;
-  TR=Math.round(R*0.55);
-  var boardW=500;
-  var trayW=380;
-  var canvasW=boardW+trayW;
-  var canvasH=window.innerHeight||700;
+  isMobile=window.innerWidth<640;
   var dpr=window.devicePixelRatio||1;
-  cv.style.width=canvasW+&#39;px&#39;;
-  cv.style.height=canvasH+&#39;px&#39;;
-  cv.width=Math.round(canvasW*dpr);
-  cv.height=Math.round(canvasH*dpr);
-  cx.scale(dpr,dpr);
-  OX=boardW/2;
-  OY=canvasH/2;
+  if(isMobile){
+    var screenW=window.innerWidth;
+    var canvasH=window.innerHeight||700;
+    R=Math.max(12,Math.floor((screenW*0.88)/(Math.sqrt(3)*(2*radius+1))));
+    mobileSplit=Math.min(Math.ceil(R*(3*radius+4)),Math.floor(canvasH*0.50));
+    mobileSplit=Math.max(mobileSplit,240);
+    cv.style.width=screenW+&#39;px&#39;;
+    cv.style.height=canvasH+&#39;px&#39;;
+    cv.width=Math.round(screenW*dpr);
+    cv.height=Math.round(canvasH*dpr);
+    cx.scale(dpr,dpr);
+    OX=screenW/2;
+    OY=mobileSplit/2;
+  } else {
+    mobileSplit=0;
+    var maxR;
+    if(radius<=2)maxR=58;
+    else if(radius===3)maxR=40;
+    else if(radius===4)maxR=30;
+    else maxR=24;
+    R=maxR;
+    TR=Math.round(R*0.55);
+    var boardW=500;
+    var trayW=380;
+    var canvasW=boardW+trayW;
+    var canvasH=window.innerHeight||700;
+    cv.style.width=canvasW+&#39;px&#39;;
+    cv.style.height=canvasH+&#39;px&#39;;
+    cv.width=Math.round(canvasW*dpr);
+    cv.height=Math.round(canvasH*dpr);
+    cx.scale(dpr,dpr);
+    OX=boardW/2;
+    OY=canvasH/2;
+  }
 }
 
 
@@ -339,15 +364,12 @@ function buildPuzzle(dow){
   var raw,attempts=0;
   do{
     var rng2=makeRng(seed+attempts*997);
-    raw=partition(playable,rng2);
+    raw=partition(playable,rng2,24);
     attempts++;
-  }while(attempts<300&amp;&amp;(raw.length<3||raw.some(function(p){return p.length<2;})));
+  }while(attempts<300&amp;&amp;(!raw||raw.length<3));
+  if(!raw)raw=[];
 
   var n=raw.length;
-  var cssH=parseFloat(cv.style.height)||700;
-  var cssW=parseFloat(cv.style.width)||880;
-  var trayW=cssW-500;
-  var padX=trayW*0.06;
 
   var rExts=[];
   for(var i=0;i<n;i++){
@@ -365,13 +387,30 @@ function buildPuzzle(dow){
   xExts.sort(function(a,b){return a-b;});
   var p80XEx=xExts[Math.min(n-1,Math.floor(n*0.8))];
 
-  var cols=4;
-  var rows=Math.ceil(n/cols);
-  var colW=(trayW-padX*2)/cols;
-  var rowH=Math.min(cssH*0.9/rows,colW*1.5);
-  var trV=Math.floor(rowH/pieceH);
-  var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
-  TR=Math.max(12,Math.min(Math.round(R),trV,trH));
+  if(isMobile){
+    var trayAvailW=window.innerWidth;
+    var trayAvailH=(window.innerHeight||700)-mobileSplit;
+    var cols=5;
+    var padX=6;
+    var rows=Math.ceil(n/cols);
+    var colW=(trayAvailW-padX*2)/cols;
+    var rowH=Math.max(36,(trayAvailH-16)/rows);
+    var trV=Math.floor(rowH/pieceH);
+    var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
+    TR=Math.max(10,Math.min(Math.round(R*0.85),trV,trH));
+  } else {
+    var cssH=parseFloat(cv.style.height)||700;
+    var cssW=parseFloat(cv.style.width)||880;
+    var trayW=cssW-500;
+    var padX=trayW*0.06;
+    var cols=4;
+    var rows=Math.ceil(n/cols);
+    var colW=(trayW-padX*2)/cols;
+    var rowH=Math.min(cssH*0.9/rows,colW*1.5);
+    var trV=Math.floor(rowH/pieceH);
+    var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
+    TR=Math.max(12,Math.min(Math.round(R),trV,trH));
+  }
 
   pieces=[];
   for(var i=0;i<n;i++){
@@ -514,16 +553,34 @@ function updateTrayPanel(){
   var panel=document.getElementById("tray-panel");
   if(!panel)return;
   var r=cv.getBoundingClientRect();
-  panel.style.left=(r.left+500)+"px";
-  panel.style.top=r.top+"px";
-  panel.style.width="380px";
-  panel.style.height=r.height+"px";
-  panel.style.display="flex";
-  var btn=document.getElementById("reset-btn");
-  if(btn){
-    btn.style.left=(r.left+250)+"px";
-    btn.style.top=(r.top+r.height-116)+"px";
-    btn.style.display=gameSolved?"none":"block";
+  if(isMobile){
+    panel.style.left="0px";
+    panel.style.top=(r.top+mobileSplit)+"px";
+    panel.style.width=window.innerWidth+"px";
+    panel.style.height=(window.innerHeight-mobileSplit)+"px";
+    panel.style.display="flex";
+    panel.style.overflowY="auto";
+    panel.style.alignItems="flex-start";
+    var btn=document.getElementById("reset-btn");
+    if(btn){
+      btn.style.left=(window.innerWidth/2)+"px";
+      btn.style.top=(r.top+mobileSplit+8)+"px";
+      btn.style.display=gameSolved?"none":"block";
+    }
+  } else {
+    panel.style.overflowY="";
+    panel.style.alignItems="center";
+    panel.style.left=(r.left+500)+"px";
+    panel.style.top=r.top+"px";
+    panel.style.width="380px";
+    panel.style.height=r.height+"px";
+    panel.style.display="flex";
+    var btn=document.getElementById("reset-btn");
+    if(btn){
+      btn.style.left=(r.left+250)+"px";
+      btn.style.top=(r.top+r.height-116)+"px";
+      btn.style.display=gameSolved?"none":"block";
+    }
   }
 }
 
@@ -532,7 +589,10 @@ function renderTray(){
   if(!grid)return;
   grid.innerHTML="";
   var n=pieces.length;
-  var cols=4;
+  var cols=isMobile?5:4;
+  grid.style.gridTemplateColumns="repeat("+cols+",1fr)";
+  grid.style.gap=isMobile?"6px":"10px";
+  grid.style.padding=isMobile?"8px":"14px";
   var lastK=n%cols;
   if(lastK===0)lastK=cols;
   var lastRowStart=(Math.ceil(n/cols)-1)*cols;
@@ -641,11 +701,13 @@ function draw(){
     }
   }
 
-  // Tray divider
-  cx.setLineDash([3,4]);
-  cx.strokeStyle=&#39;rgba(255,255,255,0.12)&#39;;cx.lineWidth=1;
-  cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
-  cx.setLineDash([]);
+  // Tray divider (desktop only)
+  if(!isMobile){
+    cx.setLineDash([3,4]);
+    cx.strokeStyle=&#39;rgba(255,255,255,0.12)&#39;;cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
+    cx.setLineDash([]);
+  }
 
   // Dragging
   if(drag){
