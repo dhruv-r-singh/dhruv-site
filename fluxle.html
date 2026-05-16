@@ -389,7 +389,7 @@ function showMusicPlayer(){
     playBtn.textContent=on?'⏸':'▶';
     disc.style.animation=on?'mspin 5s linear infinite':'none';
     playBtn.style.color=on?'#ddd':'#555';
-    if(audio.src){on?audio.play().catch(()=>{}):audio.pause();}
+    on?audio.play().catch(e=>console.warn('Audio play failed:',e)):audio.pause();
   }
   const playBtn=mkBtn('▶',()=>setPlaying(!playing));
   audio.addEventListener('ended',()=>setPlaying(false));
@@ -397,16 +397,34 @@ function showMusicPlayer(){
   ctrl.appendChild(playBtn);
   ctrl.appendChild(mkBtn('⏭',()=>setPlaying(false)));
 
+  // progress bar
+  const pw=document.createElement('div');pw.style.cssText='margin-bottom:10px;';
+  const prog=document.createElement('input');prog.type='range';prog.min='0';prog.max='100';prog.value='0';
+  prog.style.cssText='width:100%;height:2px;accent-color:#666;cursor:pointer;display:block;margin-bottom:4px;';
+  const timeRow=document.createElement('div');timeRow.style.cssText='display:flex;justify-content:space-between;font-family:monospace;font-size:0.55rem;color:#444;';
+  const timeEl=document.createElement('span');timeEl.textContent='0:00';
+  const durEl=document.createElement('span');durEl.textContent='0:00';
+  timeRow.appendChild(timeEl);timeRow.appendChild(durEl);
+  function fmt(s){const m=Math.floor(s/60);return m+':'+(String(Math.floor(s%60)).padStart(2,'0'));}
+  audio.addEventListener('timeupdate',()=>{
+    if(!audio.duration)return;
+    prog.value=(audio.currentTime/audio.duration)*100;
+    timeEl.textContent=fmt(audio.currentTime);
+  });
+  audio.addEventListener('loadedmetadata',()=>{durEl.textContent=fmt(audio.duration);});
+  prog.oninput=()=>{if(audio.duration)audio.currentTime=(prog.value/100)*audio.duration;};
+  pw.appendChild(prog);pw.appendChild(timeRow);
+
   // volume
   const vw=document.createElement('div');vw.style.cssText='display:flex;align-items:center;gap:8px;';
-  const vi=document.createElement('span');vi.style.cssText='font-size:0.72rem;color:#3a3a3a;';vi.textContent='♪';
+  const vi=document.createElement('span');vi.style.cssText='font-size:0.75rem;color:#666;line-height:1;';vi.textContent='♪';
   const vs=document.createElement('input');vs.type='range';vs.min='0';vs.max='100';vs.value='70';
-  vs.style.cssText='flex:1;height:2px;accent-color:#555;cursor:pointer;';
+  vs.style.cssText='flex:1;height:2px;accent-color:#666;cursor:pointer;';
   vs.oninput=()=>{audio.volume=vs.value/100;};
   audio.volume=0.7;
   vw.appendChild(vi);vw.appendChild(vs);
 
-  pl.appendChild(disc);pl.appendChild(lbl);pl.appendChild(ctrl);pl.appendChild(vw);
+  pl.appendChild(disc);pl.appendChild(lbl);pl.appendChild(ctrl);pl.appendChild(pw);pl.appendChild(vw);
   document.body.appendChild(pl);
 }
 

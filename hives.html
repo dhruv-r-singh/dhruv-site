@@ -745,7 +745,7 @@ window.hives_reset_inner=function(){
 window.hives_solve=function(){
   if(gameSolved)return;
   drag=null;
-  // clear any user-placed (non-locked) pieces first so stale entries don't block solution
+  // clear any user-placed (non-locked) pieces first so stale entries do not block solution
   for(var i=0;i<pieces.length;i++){
     var p=pieces[i];
     if(p.locked)continue;
