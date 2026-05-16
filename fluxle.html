@@ -403,10 +403,17 @@ function showMusicPlayer(){
   let playing=false;
   const pl=document.createElement('div');pl.id='music-player';
   pl.style.cssText='position:fixed;bottom:16px;right:16px;width:300px;background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:26px 24px 20px;z-index:9999;box-shadow:0 8px 36px rgba(0,0,0,0.85);';
+  const closeBtn=document.createElement('button');
+  closeBtn.textContent='×';
+  closeBtn.style.cssText='position:absolute;top:10px;right:12px;background:none;border:none;color:#444;font-size:1.1rem;cursor:pointer;line-height:1;padding:2px 4px;transition:color .15s;';
+  closeBtn.onmouseover=()=>closeBtn.style.color='#aaa';
+  closeBtn.onmouseout=()=>closeBtn.style.color='#444';
+  closeBtn.onclick=()=>{audio.pause();pl.remove();};
+  pl.appendChild(closeBtn);
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:168px;height:168px;border-radius:50%;margin:0 auto 18px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
+  disc.style.cssText='width:168px;height:168px;border-radius:50%;margin:0 auto 18px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7),0 0 0 5px rgba(200,200,200,0.12);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
   const coverImg=document.createElement('img');
   coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.35s ease;';
   coverImg.src='';
@@ -500,17 +507,19 @@ function showMusicPlayer(){
   pw.appendChild(prog);pw.appendChild(timeRow);
 
   // Drag disc to scrub (rotates visually, 30s per full revolution)
-  let discDragActive=false,discPrevAngle=0,discManualRot=0;
+  let discDragActive=false,discPrevAngle=0,discManualRot=0,discTotalDelta=0;
   disc.style.cursor='grab';
   function discAngle(cx,cy){const r=disc.getBoundingClientRect();return Math.atan2(cy-(r.top+r.height/2),cx-(r.left+r.width/2));}
   function discFreeze(){
     const m=window.getComputedStyle(disc).transform;
     if(m&&m!=='none'){const v=m.match(/matrix\(([^)]+)\)/)[1].split(',');discManualRot=Math.atan2(parseFloat(v[1]),parseFloat(v[0]))*180/Math.PI;}
     else{discManualRot=0;}
+    discTotalDelta=0;
     disc.style.animation='none';
     disc.style.transform='rotate('+discManualRot+'deg)';
   }
   function discResume(){
+    if(audio.duration)audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(discTotalDelta/(2*Math.PI))*30));
     const deg=((discManualRot%360)+360)%360;
     disc.style.transform='';
     disc.style.animation='mspin 5s '+(-(deg/360*5)).toFixed(3)+'s linear infinite';
@@ -525,9 +534,9 @@ function showMusicPlayer(){
     if(delta>Math.PI)delta-=2*Math.PI;
     if(delta<-Math.PI)delta+=2*Math.PI;
     discPrevAngle=angle;
+    discTotalDelta+=delta;
     discManualRot+=delta*180/Math.PI;
     disc.style.transform='rotate('+discManualRot+'deg)';
-    audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(delta/(2*Math.PI))*30));
   }
   document.addEventListener('mousemove',function(e){onDiscDrag(e.clientX,e.clientY);});
   document.addEventListener('touchmove',function(e){if(discDragActive){onDiscDrag(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
