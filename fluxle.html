@@ -406,13 +406,13 @@ function showMusicPlayer(){
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:110px;height:110px;border-radius:50%;margin:0 auto 14px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;';
+  disc.style.cssText='width:110px;height:110px;border-radius:50%;margin:0 auto 14px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
   const coverImg=document.createElement('img');
-  coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;';
+  coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.35s ease;';
   coverImg.src='';
   disc.appendChild(coverImg);
   const cdLabel=document.createElement('div');
-  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
+  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
   const hole=document.createElement('div');
   hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:2;';
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
@@ -420,15 +420,19 @@ function showMusicPlayer(){
   function loadTrack(idx,autoplay){
     const t=TRACKS[idx];
     audio.src=t.src;
-    lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';
-    coverImg.src=t.cover;
     durEl.textContent='0:00';prog.value=0;timeEl.textContent='0:00';
     if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
+    if(coverImg._fadeTimer)clearTimeout(coverImg._fadeTimer);
+    coverImg.style.opacity='0';lbl.style.opacity='0';
+    coverImg._fadeTimer=setTimeout(()=>{
+      coverImg.src=t.cover;coverImg.style.opacity='1';
+      lbl.innerHTML=t.title+'<br><span style="color:#333;">'+t.artist+'</span>';lbl.style.opacity='1';
+    },350);
   }
 
   // track label
   const lbl=document.createElement('div');
-  lbl.style.cssText='font-family:monospace;font-size:0.58rem;color:#444;text-align:center;letter-spacing:0.13em;text-transform:uppercase;margin-bottom:13px;';
+  lbl.style.cssText='font-family:monospace;font-size:0.58rem;color:#444;text-align:center;letter-spacing:0.13em;text-transform:uppercase;margin-bottom:13px;transition:opacity 0.35s ease;';
 
   // controls
   const ctrl=document.createElement('div');
@@ -441,7 +445,7 @@ function showMusicPlayer(){
   function setPlaying(on){
     playing=on;
     playBtn.textContent=on?'⏸':'▶';
-    disc.style.animation=on?'mspin 5s linear infinite':'none';
+    disc.style.animationPlayState=on?'running':'paused';
     playBtn.style.color=on?'#ddd':'#555';
     on?audio.play().catch(e=>console.warn('Audio play failed:',e)):audio.pause();
   }
@@ -449,7 +453,7 @@ function showMusicPlayer(){
   audio.addEventListener('ended',()=>{
     trackIdx=(trackIdx+1)%TRACKS.length;
     loadTrack(trackIdx,true);
-    playing=true;disc.style.animation='mspin 5s linear infinite';playBtn.textContent='⏸';playBtn.style.color='#ddd';
+    playing=true;disc.style.animationPlayState='running';playBtn.textContent='⏸';playBtn.style.color='#ddd';
   });
   ctrl.appendChild(mkBtn('⏮',()=>{trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length;loadTrack(trackIdx,playing);}));
   ctrl.appendChild(playBtn);
@@ -479,6 +483,26 @@ function showMusicPlayer(){
     requestAnimationFrame(raf);
   })();
   pw.appendChild(prog);pw.appendChild(timeRow);
+
+  // Drag disc to scrub
+  let discDragActive=false,discPrevAngle=0;
+  disc.style.cursor='grab';
+  function discAngle(cx,cy){const r=disc.getBoundingClientRect();return Math.atan2(cy-(r.top+r.height/2),cx-(r.left+r.width/2));}
+  disc.addEventListener('mousedown',function(e){if(!audio.duration)return;discDragActive=true;discPrevAngle=discAngle(e.clientX,e.clientY);disc.style.cursor='grabbing';e.preventDefault();});
+  disc.addEventListener('touchstart',function(e){if(!audio.duration)return;discDragActive=true;discPrevAngle=discAngle(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();},{passive:false});
+  function onDiscDrag(cx,cy){
+    if(!discDragActive||!audio.duration)return;
+    const angle=discAngle(cx,cy);
+    let delta=angle-discPrevAngle;
+    if(delta>Math.PI)delta-=2*Math.PI;
+    if(delta<-Math.PI)delta+=2*Math.PI;
+    discPrevAngle=angle;
+    audio.currentTime=Math.max(0,Math.min(audio.duration,audio.currentTime+(delta/(2*Math.PI))*60));
+  }
+  document.addEventListener('mousemove',function(e){onDiscDrag(e.clientX,e.clientY);});
+  document.addEventListener('touchmove',function(e){if(discDragActive){onDiscDrag(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();}},{passive:false});
+  document.addEventListener('mouseup',function(){discDragActive=false;disc.style.cursor='grab';});
+  document.addEventListener('touchend',function(){discDragActive=false;});
 
   // volume
   const vw=document.createElement('div');vw.style.cssText='display:flex;align-items:center;gap:8px;';
