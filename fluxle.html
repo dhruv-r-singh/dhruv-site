@@ -413,7 +413,7 @@ function showMusicPlayer(){
   disc.appendChild(coverImg);
   // Opaque ring: outer radius 38 (76px), inner radius 30 (60px)
   const cdRing=document.createElement('div');
-  cdRing.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:#1a1a1a;z-index:1;';
+  cdRing.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;box-sizing:border-box;border-radius:50%;background:transparent;border:8px solid rgba(255,255,255,0.1);z-index:1;';
   disc.appendChild(cdRing);
   const cdLabel=document.createElement('div');
   cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:#0e0e0e;z-index:2;';
