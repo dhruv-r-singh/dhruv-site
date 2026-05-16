@@ -230,16 +230,23 @@ function buildBoard(radius){
   return cells;
 }
 
-function canonicalShape(cells){
+function shapeKey(cells){
   var minQ=cells[0].q,minR=cells[0].r;
   for(var i=1;i<cells.length;i++){if(cells[i].q<minQ)minQ=cells[i].q;if(cells[i].r<minR)minR=cells[i].r;}
-  return cells.map(function(c){return(c.q-minQ)+","+(c.r-minR);}).sort().join("|");
+  var parts=[];
+  for(var i=0;i<cells.length;i++)parts.push((cells[i].q-minQ)+","+(cells[i].r-minR));
+  return parts.sort().join("|");
+}
+function hasShapeDup(pcs){
+  var seen={};
+  for(var i=0;i<pcs.length;i++){var s=shapeKey(pcs[i]);if(seen[s])return true;seen[s]=true;}
+  return false;
 }
 function partition(board,rng,maxPieces){
   if(!maxPieces)maxPieces=999;
-  var avail={},map={};
-  for(var i=0;i<board.length;i++){var key=k(board[i].q,board[i].r);avail[key]=true;map[key]={q:board[i].q,r:board[i].r};}
-  var pieces=[],usedShapes={};
+  var avail={},coordMap={};
+  for(var i=0;i<board.length;i++){var bk=k(board[i].q,board[i].r);avail[bk]=true;coordMap[bk]={q:board[i].q,r:board[i].r};}
+  var pieces=[];
   while(true){
     var availKeys=Object.keys(avail);
     if(!availKeys.length)break;
@@ -257,16 +264,14 @@ function partition(board,rng,maxPieces){
     delete avail[start];
     while(group.length<target){
       var frontier=[];
-      for(var gi=0;gi<group.length;gi++){var c=map[group[gi]];for(var di=0;di<DIRS.length;di++){var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);}}
+      for(var gi=0;gi<group.length;gi++){var c=coordMap[group[gi]];for(var di=0;di<DIRS.length;di++){var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);}}
       if(!frontier.length)break;
       var sf=seededShuffle(frontier,rng);
       group.push(sf[0]);delete avail[sf[0]];
     }
     if(group.length<2)return null;
-    var pcells=group.map(function(key){return{q:map[key].q,r:map[key].r};});
-    var shape=canonicalShape(pcells);
-    if(usedShapes[shape])return null;
-    usedShapes[shape]=true;
+    var pcells=[];
+    for(var gi=0;gi<group.length;gi++)pcells.push({q:coordMap[group[gi]].q,r:coordMap[group[gi]].r});
     pieces.push(pcells);
   }
   return pieces;
@@ -346,7 +351,7 @@ function buildPuzzle(dow){
     var rng2=makeRng(seed+attempts*997);
     raw=partition(playable,rng2,cfg.maxPieces);
     attempts++;
-  }while(attempts<300&amp;&amp;(!raw||raw.length<cfg.minPieces));
+  }while(attempts<500&amp;&amp;(!raw||raw.length<cfg.minPieces||hasShapeDup(raw)));
   if(!raw)raw=[];
   var n=raw.length;
   var cssH=parseFloat(cv.style.height)||700;
