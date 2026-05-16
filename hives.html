@@ -153,13 +153,13 @@ function dateLabel(){
 
 // Day of week config (0=Sun ... 6=Sat)
 var DAY_CONFIG=[
-  {name:&#39;Sunday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:999},
-  {name:&#39;Monday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:999},
-  {name:&#39;Tuesday&#39;,   radius:3, maxBlanks:0, maxPreplaced:0, minPieces:6,  maxPieces:999},
-  {name:&#39;Wednesday&#39;, radius:3, maxBlanks:3, maxPreplaced:1, minPieces:7,  maxPieces:999},
-  {name:&#39;Thursday&#39;,  radius:3, maxBlanks:4, maxPreplaced:2, minPieces:8,  maxPieces:999},
-  {name:&#39;Friday&#39;,    radius:4, maxBlanks:5, maxPreplaced:2, minPieces:10, maxPieces:999},
-  {name:&#39;Saturday&#39;,  radius:5, maxBlanks:7, maxPreplaced:3, minPieces:12, maxPieces:24}
+  {name:&#39;Sunday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Monday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Tuesday&#39;,   radius:3, maxBlanks:0, maxPreplaced:0},
+  {name:&#39;Wednesday&#39;, radius:3, maxBlanks:3, maxPreplaced:1},
+  {name:&#39;Thursday&#39;,  radius:3, maxBlanks:4, maxPreplaced:2},
+  {name:&#39;Friday&#39;,    radius:4, maxBlanks:5, maxPreplaced:2},
+  {name:&#39;Saturday&#39;,  radius:5, maxBlanks:7, maxPreplaced:3}
 ];
 var DIFF_LABELS=[&#39;Easy&#39;,&#39;Easy&#39;,&#39;Medium&#39;,&#39;Medium&#39;,&#39;Hard&#39;,&#39;Hard&#39;,&#39;Expert&#39;];
 var DIFF_COLORS=[&#39;#1D9E75&#39;,&#39;#1D9E75&#39;,&#39;#BA7517&#39;,&#39;#BA7517&#39;,&#39;#D85A30&#39;,&#39;#D85A30&#39;,&#39;#c0392b&#39;];
@@ -230,48 +230,38 @@ function buildBoard(radius){
   return cells;
 }
 
-function shapeKey(cells){
-  var minQ=cells[0].q,minR=cells[0].r;
-  for(var i=1;i<cells.length;i++){if(cells[i].q<minQ)minQ=cells[i].q;if(cells[i].r<minR)minR=cells[i].r;}
-  var parts=[];
-  for(var i=0;i<cells.length;i++)parts.push((cells[i].q-minQ)+","+(cells[i].r-minR));
-  return parts.sort().join("|");
-}
-function hasShapeDup(pcs){
-  var seen={};
-  for(var i=0;i<pcs.length;i++){var s=shapeKey(pcs[i]);if(seen[s])return true;seen[s]=true;}
-  return false;
-}
-function partition(board,rng,maxPieces){
-  if(!maxPieces)maxPieces=999;
-  var avail={},coordMap={};
-  for(var i=0;i<board.length;i++){var bk=k(board[i].q,board[i].r);avail[bk]=true;coordMap[bk]={q:board[i].q,r:board[i].r};}
+function partition(board,rng){
+  var avail={},map={};
+  for(var i=0;i<board.length;i++){
+    var key=k(board[i].q,board[i].r);
+    avail[key]=true;
+    map[key]={q:board[i].q,r:board[i].r};
+  }
   var pieces=[];
   while(true){
     var availKeys=Object.keys(avail);
     if(!availKeys.length)break;
     var rem=availKeys.length;
-    var pLeft=maxPieces-pieces.length;
-    if(rem===1||pLeft<1)return null;
-    var lo=Math.max(2,Math.ceil(rem/pLeft));
-    var hi=Math.min(5,rem);
-    if(lo>hi)return null;
-    var target=lo+Math.floor(rng()*(hi-lo+1));
-    if(rem-target===1&amp;&amp;target<rem)target++;
+    var target=rem<=4?rem:3+Math.floor(rng()*3);
     var shuffled=seededShuffle(availKeys,rng);
     var start=shuffled[0];
     var group=[start];
     delete avail[start];
     while(group.length<target){
       var frontier=[];
-      for(var gi=0;gi<group.length;gi++){var c=coordMap[group[gi]];for(var di=0;di<DIRS.length;di++){var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);}}
+      for(var gi=0;gi<group.length;gi++){
+        var c=map[group[gi]];
+        for(var di=0;di<DIRS.length;di++){
+          var nk=k(c.q+DIRS[di].q,c.r+DIRS[di].r);
+          if(avail[nk]&amp;&amp;frontier.indexOf(nk)===-1)frontier.push(nk);
+        }
+      }
       if(!frontier.length)break;
       var sf=seededShuffle(frontier,rng);
       group.push(sf[0]);delete avail[sf[0]];
     }
-    if(group.length<2)return null;
     var pcells=[];
-    for(var gi=0;gi<group.length;gi++)pcells.push({q:coordMap[group[gi]].q,r:coordMap[group[gi]].r});
+    for(var gi=0;gi<group.length;gi++)pcells.push({q:map[group[gi]].q,r:map[group[gi]].r});
     pieces.push(pcells);
   }
   return pieces;
@@ -349,10 +339,9 @@ function buildPuzzle(dow){
   var raw,attempts=0;
   do{
     var rng2=makeRng(seed+attempts*997);
-    raw=partition(playable,rng2,cfg.maxPieces);
+    raw=partition(playable,rng2);
     attempts++;
-  }while(attempts<500&amp;&amp;(!raw||raw.length<cfg.minPieces||hasShapeDup(raw)));
-  if(!raw)raw=[];
+  }while(attempts<300&amp;&amp;(raw.length<3||raw.some(function(p){return p.length<2;})));
   var n=raw.length;
   var cssH=parseFloat(cv.style.height)||700;
   var cssW=parseFloat(cv.style.width)||880;
@@ -383,8 +372,6 @@ function buildPuzzle(dow){
   var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
   TR=Math.max(12,Math.min(Math.round(R),trV,trH));
 
-  var colorRng=makeRng(seed+99999);
-  var colorPool=seededShuffle(COLORS.slice(),colorRng);
   pieces=[];
   for(var i=0;i<n;i++){
     var cells=raw[i];
@@ -392,7 +379,7 @@ function buildPuzzle(dow){
     var norm=[];
     for(var j=0;j<cells.length;j++)norm.push({q:cells[j].q-mn.q,r:cells[j].r-mn.r});
     var cn=cen(norm);
-    pieces.push({id:i,cells:norm,cn:cn,color:colorPool[i%colorPool.length],placed:false,pq:0,pr:0,locked:false,solq:mn.q,solr:mn.r});
+    pieces.push({id:i,cells:norm,cn:cn,color:COLORS[i%COLORS.length],placed:false,pq:0,pr:0,locked:false,solq:mn.q,solr:mn.r});
   }
   // Pre-place some pieces
   preplaced=[];
