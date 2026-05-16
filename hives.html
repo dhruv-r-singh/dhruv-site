@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>if(!localStorage.getItem('gamesUnlocked'))window.location.replace('/');</script>
 <link rel="icon" href="favicon.jpg" id="favicon">
 <meta name="theme-color" content="#0A0A0A">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -475,7 +476,7 @@ function dropPiece(){
     var playableCount=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];}).length;
     if(Object.keys(placed).length===playableCount){
       gameSolved=true;
-      try{var td=new Date();td.setHours(0,0,0,0);localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true}));}catch(e){}
+      try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
       setTimeout(function(){
         var pop=document.getElementById("hives-popup");
         var dd=document.getElementById("hives-popup-day");
@@ -696,6 +697,18 @@ function checkAlreadySolved(dow){
     var todayStr=td.toISOString().split("T")[0];
     if(saved&amp;&amp;saved.date===todayStr&amp;&amp;saved.dow===dow&amp;&amp;saved.solved){
       gameSolved=true;
+      if(saved.placements){
+        for(var i=0;i<saved.placements.length;i++){
+          var pm=saved.placements[i];
+          var piece=pieces[pm.id];
+          if(piece&amp;&amp;pm.placed&amp;&amp;!piece.locked){
+            piece.placed=true;piece.pq=pm.pq;piece.pr=pm.pr;
+            for(var j=0;j<piece.cells.length;j++)placed[k(piece.cells[j].q+piece.pq,piece.cells[j].r+piece.pr)]=piece.id;
+            if(piece.pieceCanvas)piece.pieceCanvas.style.visibility="hidden";
+          }
+        }
+        draw();
+      }
       var start=new Date("2026-05-15T00:00:00");
       var diff=Math.max(0,Math.floor((td-start)/864e5));
       var pop=document.getElementById("hives-popup");
@@ -742,7 +755,7 @@ window.hives_solve=function(){
   var playable=BOARD.filter(function(c){return !BLANKS[k(c.q,c.r)];}).length;
   if(Object.keys(placed).length===playable){
     gameSolved=true;
-    try{var td=new Date();td.setHours(0,0,0,0);localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true}));}catch(e){}
+    try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
     setTimeout(function(){
       var pop=document.getElementById("hives-popup");
       var dd=document.getElementById("hives-popup-day");
