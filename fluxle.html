@@ -402,19 +402,23 @@ function showMusicPlayer(){
 
   let playing=false;
   const pl=document.createElement('div');pl.id='music-player';
-  pl.style.cssText='position:fixed;bottom:16px;right:16px;width:290px;background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:20px 22px 16px;z-index:9999;box-shadow:0 8px 36px rgba(0,0,0,0.85);';
+  pl.style.cssText='position:fixed;bottom:16px;right:16px;width:300px;background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:26px 24px 20px;z-index:9999;box-shadow:0 8px 36px rgba(0,0,0,0.85);';
 
   // CD disc
   const disc=document.createElement('div');disc.id='music-disc';
-  disc.style.cssText='width:140px;height:140px;border-radius:50%;margin:0 auto 16px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
+  disc.style.cssText='width:168px;height:168px;border-radius:50%;margin:0 auto 18px;position:relative;background:#1e1e1e;box-shadow:0 3px 18px rgba(0,0,0,0.7);overflow:hidden;animation:mspin 5s linear infinite;animation-play-state:paused;';
   const coverImg=document.createElement('img');
   coverImg.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;transition:opacity 0.35s ease;';
   coverImg.src='';
   disc.appendChild(coverImg);
+  // Opaque ring: outer radius 38 (76px), inner radius 30 (60px)
+  const cdRing=document.createElement('div');
+  cdRing.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:76px;height:76px;border-radius:50%;background:#1a1a1a;z-index:1;';
+  disc.appendChild(cdRing);
   const cdLabel=document.createElement('div');
-  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);z-index:1;';
+  cdLabel.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:#0e0e0e;z-index:2;';
   const hole=document.createElement('div');
-  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#0e0e0e;border:1px solid rgba(0,0,0,0.8);z-index:2;';
+  hole.style.cssText='position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#111;border:1px solid rgba(0,0,0,0.8);';
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
 
   function loadTrack(idx,autoplay){
