@@ -116,8 +116,8 @@ button.active{background:#1a1a1a;color:white;border-color:#1a1a1a}
 <div class="difficulty" id="diffLabel" style="display:none"></div>
 <div class="sub" style="display:none">Fill every hex — no gaps, no overlaps.</div>
 <canvas id="hc"></canvas>
-<div id="tray-panel"><div id="tray-grid"></div></div>
-<button id="reset-btn" onclick="resetGame()" style="display:none;position:fixed;transform:translateX(-50%);font-family:monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;background:none;border:1px solid #333;border-radius:6px;padding:6px 16px;cursor:pointer;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color=&#39;#aaa&#39;;this.style.borderColor=&#39;#555&#39;" onmouseout="this.style.color=&#39;#555&#39;;this.style.borderColor=&#39;#333&#39;">Reset</button>
+<div id="tray-panel"><div id="tray-grid"></div><div id="hives-solved-msg" style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:10px;pointer-events:auto;"></div></div>
+<button id="reset-btn" onclick="resetGame()" style="display:none;position:fixed;transform:translateX(-50%);font-family:monospace;font-size:0.65rem;letter-spacing:0.05em;color:#555;background:none;border:1px solid #333;border-radius:6px;padding:6px 16px;cursor:pointer;transition:color 0.2s,border-color 0.2s;" onmouseover="this.style.color=&#39;#aaa&#39;;this.style.borderColor=&#39;#555&#39;" onmouseout="this.style.color=&#39;#555&#39;;this.style.borderColor=&#39;#333&#39;">Reset</button>
 <div class="msg" id="hmsg"></div>
 <div id="hives-popup" style="display:none;position:fixed;z-index:999;top:0;bottom:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;opacity:0;transition:opacity 0.4s ease;">
   <div style="background:#111;border:1px solid #333;border-radius:12px;padding:3rem 3.5rem;text-align:center;display:flex;flex-direction:column;gap:0.75rem;max-width:420px;width:90%;">
@@ -540,6 +540,7 @@ function dropPiece(){
       gameSolved=true;
       var rb=document.getElementById("reset-btn");if(rb)rb.style.display="none";
       try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
+      showTraySolvedMsg();
       setTimeout(function(){
         var pop=document.getElementById("hives-popup");
         var dd=document.getElementById("hives-popup-day");
@@ -766,8 +767,10 @@ function buildDayButtons(){
       btn.textContent=DAY_NAMES[dow];
       btn.id=&#39;daybtn&#39;+dow;
       btn.onclick=function(){
+        _dateSeedOverride=null;
         currentDay=dow;
         loadDay(dow);
+        try{parent.postMessage({type:"hivesResetToToday"},"*");}catch(e){}
       };
       container.appendChild(btn);
     })(d);
@@ -800,6 +803,7 @@ function checkAlreadySolved(dow){
 
 function loadDay(dow){
   placed={};drag=null;gameSolved=false;
+  var sm=document.getElementById("hives-solved-msg");if(sm){sm.style.display="none";sm.innerHTML="";}
   document.getElementById(&#39;hmsg&#39;).textContent=&#39;&#39;;
   buildPuzzle(dow);
   var cfg=DAY_CONFIG[dow];
@@ -850,6 +854,7 @@ window.hives_solve=function(){
   if(Object.keys(placed).length===playable){
     gameSolved=true;
     try{var td=new Date();td.setHours(0,0,0,0);var pls=pieces.map(function(p){return {id:p.id,pq:p.pq,pr:p.pr,placed:p.placed};});localStorage.setItem("hives_state",JSON.stringify({date:td.toISOString().split("T")[0],dow:currentDay,solved:true,placements:pls}));}catch(e){}
+    showTraySolvedMsg();
     setTimeout(function(){
       var pop=document.getElementById("hives-popup");
       var dd=document.getElementById("hives-popup-day");
@@ -863,6 +868,16 @@ window.hives_solve=function(){
     },500);
   }
 };
+function showTraySolvedMsg(puzzleNum){
+  var msg=document.getElementById("hives-solved-msg");
+  if(!msg)return;
+  var start=new Date("2026-05-15T00:00:00");
+  var today=new Date();today.setHours(0,0,0,0);
+  var diff=Math.max(0,Math.floor((today-start)/864e5));
+  msg.innerHTML="<div style=\"font-family:monospace;font-size:0.68rem;color:#888;letter-spacing:0.06em;line-height:2;text-align:center;\">You did it!<br>Come back tomorrow for #"+(diff+2)+".</div>"+
+    "<button onclick=\"try{parent.openHivesArchive();}catch(e){}\" style=\"font-family:monospace;font-size:0.6rem;color:#666;background:none;border:1px solid #2a2a2a;border-radius:4px;padding:4px 12px;cursor:pointer;letter-spacing:0.06em;\">Archive</button>";
+  msg.style.display="flex";
+}
 window.loadDayWithDate=function(dateNum,dow){
   _dateSeedOverride=dateNum;
   currentDay=dow;
@@ -1033,8 +1048,8 @@ function renderHivesArchiveCal(){
       cell.style.cursor = 'pointer';
       cell.style.transition = 'background .12s';
       (function(cd){
-        cell.onmouseover = function(){ cell.style.background='#1a1a1a'; };
-        cell.onmouseout = function(){ cell.style.background=''; };
+        cell.onmouseover = function(){ this.style.background='#1a1a1a'; };
+        cell.onmouseout = function(){ this.style.background=''; };
         cell.onclick = function(){ loadHivesArchivePuzzle(cd); };
       })(cellDate);
     }
@@ -1061,6 +1076,17 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeHive
 document.addEventListener('DOMContentLoaded', function(){
   var m = document.getElementById('hives-archive-modal');
   if(m) m.addEventListener('click', function(e){ if(e.target===this) closeHivesArchive(); });
+});
+
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'hivesResetToToday'){
+    var start = new Date('2026-05-15T00:00:00');
+    var today = new Date(); today.setHours(0,0,0,0);
+    var diff = Math.max(0, Math.floor((today - start) / (1000*60*60*24)));
+    var dateStr = today.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    var el = document.getElementById('hives-number');
+    if(el) el.textContent = '#' + (diff+1) + ' | ' + dateStr;
+  }
 });
 
 // Console cheat: type hives_win() to solve today's puzzle

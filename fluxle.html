@@ -676,7 +676,7 @@ function renderArchiveCal(){
       else cell.style.color = '#666';
       cell.style.cursor = 'pointer';
       cell.style.transition = 'background .12s';
-      (function(cd){ cell.onmouseover = function(){ cell.style.background='#1a1a1a'; }; cell.onmouseout = function(){ cell.style.background=''; }; cell.onclick = function(){ loadArchivePuzzle(cd); }; })(cellDate);
+      (function(cd){ cell.onmouseover = function(){ this.style.background='#1a1a1a'; }; cell.onmouseout = function(){ this.style.background=''; }; cell.onclick = function(){ loadArchivePuzzle(cd); }; })(cellDate);
     }
     cal.appendChild(cell);
   }
