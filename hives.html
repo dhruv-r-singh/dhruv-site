@@ -323,18 +323,25 @@ function getDayConfig(dow){
 function computeLayout(radius){
   var isMobile=(window.innerWidth||640)<640;
   window._isMobile=isMobile;
-  var maxR;
-  if(radius<=2)maxR=isMobile?35:58;
-  else if(radius===3)maxR=isMobile?24:40;
-  else if(radius===4)maxR=isMobile?18:30;
-  else maxR=isMobile?14:24;
-  R=maxR;
-  TR=Math.round(R*0.55);
   var iframeH=window.innerHeight||700;
   var boardW=isMobile?(window.innerWidth||375):500;
-  var trayW=isMobile?(window.innerWidth||375):380;
+  var maxR;
+  if(!isMobile){
+    if(radius<=2)maxR=58;
+    else if(radius===3)maxR=40;
+    else if(radius===4)maxR=30;
+    else maxR=24;
+  } else {
+    var boardH=Math.round(iframeH*0.44);
+    var byH=Math.floor(boardH/((2*radius+1)*1.5));
+    var byW=Math.floor(boardW*0.46/(radius*Math.sqrt(3)));
+    maxR=Math.max(10,Math.min(byH,byW));
+  }
+  R=maxR;
+  TR=Math.round(R*0.55);
+  var trayW=isMobile?boardW:380;
   window._boardW=boardW;window._trayW=trayW;
-  window._trayH=isMobile?Math.round(iframeH*0.48):iframeH;
+  window._trayH=isMobile?Math.round(iframeH*0.54):iframeH;
   var canvasW=isMobile?boardW:(boardW+trayW);
   var canvasH=iframeH;
   var dpr=window.devicePixelRatio||1;
@@ -344,7 +351,7 @@ function computeLayout(radius){
   cv.height=Math.round(canvasH*dpr);
   cx.scale(dpr,dpr);
   OX=boardW/2;
-  OY=isMobile?Math.round(iframeH*0.26):iframeH/2;
+  OY=isMobile?Math.round(iframeH*0.23):iframeH/2;
 }
 
 
@@ -415,7 +422,7 @@ function buildPuzzle(dow){
   var rowH=Math.min(trayH*0.9/rows,colW*1.5);
   var trV=Math.floor(rowH/pieceH);
   var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
-  var trCap=isMobile?Math.round(R*0.8):Math.round(R);
+  var trCap=isMobile?Math.round(R*0.65):Math.round(R);
   TR=Math.max(isMobile?8:12,Math.min(trCap,trV,trH));
 
   var colorRng=makeRng(seed+77777);
@@ -569,20 +576,24 @@ function updateTrayPanel(){
   var iH=window.innerHeight||700;
   if(isMobile){
     panel.style.left="0px";
-    panel.style.top=Math.round(iH*0.52)+"px";
+    panel.style.top=Math.round(iH*0.46)+"px";
     panel.style.width=(window.innerWidth||375)+"px";
-    panel.style.height=Math.round(iH*0.48)+"px";
+    panel.style.height=Math.round(iH*0.54)+"px";
+    panel.style.pointerEvents="auto";
+    panel.style.touchAction="pan-y";
   } else {
     panel.style.left=(r.left+500)+"px";
     panel.style.top=r.top+"px";
     panel.style.width="380px";
     panel.style.height=r.height+"px";
+    panel.style.pointerEvents="none";
+    panel.style.touchAction="";
   }
   panel.style.display="flex";
   var btn=document.getElementById("reset-btn");
   if(btn){
     btn.style.left=isMobile?"50%":(r.left+250)+"px";
-    btn.style.top=isMobile?(Math.round(iH*0.52)+8)+"px":(r.top+r.height-116)+"px";
+    btn.style.top=isMobile?(Math.round(iH*0.46)+8)+"px":(r.top+r.height-116)+"px";
     btn.style.display=gameSolved?"none":"block";
   }
 }
@@ -623,6 +634,7 @@ function renderTray(){
     pc.style.width=pcW+"px";
     pc.style.height=pcH+"px";
     pc.style.display="block";
+    if(window._isMobile)pc.style.touchAction="none";
     if(p.placed)pc.style.visibility="hidden";
     p.pieceCanvas=pc;
     var pctx=pc.getContext("2d");
@@ -851,7 +863,7 @@ loadDay(currentDay);
 </body>
 </html>
 ' id="hives-iframe" style="width:100%;height:700px;border:none;background:transparent;display:block;"></iframe>
-<script>(function(){var f=document.getElementById("hives-iframe");if(window.innerWidth<640){f.style.height=(window.innerHeight||700)+"px";}})();</script>
+<script>(function(){var f=document.getElementById("hives-iframe");if(window.innerWidth<640){f.style.height=Math.round((window.innerHeight||700)*0.65)+"px";}})();</script>
   <footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
     <div style="display:flex;gap:1.5rem;align-items:center;">
