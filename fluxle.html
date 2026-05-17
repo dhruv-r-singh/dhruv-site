@@ -261,6 +261,7 @@ function pwDel(){if(!pwDone&&pwCurrent.length){pwCurrent=pwCurrent.slice(0,-1);p
 function pwSubmit(){
   if(pwDone)return;
   if(pwCurrent.length<pwWord.length){document.getElementById('pw-msg').textContent='not enough letters';return;}
+  if(pwCurrent==='SHAMU'){showMusicPlayer(8);return;}
   if(!PW_VALID.has(pwCurrent)){document.getElementById('pw-msg').textContent='not a real word';return;}
   const res=pwScore(pwCurrent,pwWord);
   pwGuesses.push(res);
@@ -339,7 +340,7 @@ function showGames(){
 }
 
 
-function showMusicPlayer(){
+function showMusicPlayer(startIdx=0){
   if(document.getElementById('music-player'))return;
   localStorage.setItem('fluxle_music_found','1');
   if(!document.getElementById('music-spin-style')){
@@ -398,10 +399,16 @@ function showMusicPlayer(){
       src:'https://dl.dropboxusercontent.com/scl/fi/catsz2o404lq3e5ahpig5/Yo-No-Soy-Celoso.mp3?rlkey=v9e8fm8yn2yrsx2ydc6ywjxhy',
       cover:'https://www.dropbox.com/scl/fi/nmij1y2quh3wiwcl9i2mc/badbunny.jpeg?rlkey=uyjlz6g0q1h9cgtudaswdub2v&dl=1'
     },
+    {
+      title:'like i want you',
+      artist:'Giveon',
+      src:'https://dl.dropboxusercontent.com/scl/fi/p6hamofzhpdmi7vf8daki/Like-I-Want-You.mp3?rlkey=1dpv5bam554z1e2juvwb765pb&st=c5zwb0in',
+      cover:'https://www.dropbox.com/scl/fi/cdcgj81p7w2ernhjtwnv4/giveonliwy.jpeg?rlkey=kk3h5mq5f50l5yoxvk9vq3wky&st=7l2jp2bo&dl=1'
+    },
   ];
   // ────────────────────────────────────────────────────────────────
 
-  let trackIdx=0;
+  let trackIdx=startIdx;
   const audio=new Audio();
   audio.loop=false;
 
@@ -559,7 +566,7 @@ function showMusicPlayer(){
 
   pl.appendChild(disc);pl.appendChild(lbl);pl.appendChild(ctrl);pl.appendChild(pw);pl.appendChild(vw);
   document.body.appendChild(pl);
-  loadTrack(0,false);
+  loadTrack(startIdx,false);
 }
 
 // Auto-init on standalone page load
