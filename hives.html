@@ -324,10 +324,10 @@ function computeLayout(radius){
   var isMobile=(window.innerWidth||640)<640;
   window._isMobile=isMobile;
   var maxR;
-  if(radius<=2)maxR=isMobile?44:58;
-  else if(radius===3)maxR=isMobile?30:40;
-  else if(radius===4)maxR=isMobile?23:30;
-  else maxR=isMobile?18:24;
+  if(radius<=2)maxR=isMobile?35:58;
+  else if(radius===3)maxR=isMobile?24:40;
+  else if(radius===4)maxR=isMobile?18:30;
+  else maxR=isMobile?14:24;
   R=maxR;
   TR=Math.round(R*0.55);
   var iframeH=window.innerHeight||700;
@@ -415,7 +415,8 @@ function buildPuzzle(dow){
   var rowH=Math.min(trayH*0.9/rows,colW*1.5);
   var trV=Math.floor(rowH/pieceH);
   var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
-  TR=Math.max(12,Math.min(Math.round(R),trV,trH));
+  var trCap=isMobile?Math.round(R*0.8):Math.round(R);
+  TR=Math.max(isMobile?8:12,Math.min(trCap,trV,trH));
 
   var colorRng=makeRng(seed+77777);
   var colorPool=seededShuffle(COLORS.slice(),colorRng);
@@ -590,6 +591,7 @@ function renderTray(){
   var grid=document.getElementById("tray-grid");
   if(!grid)return;
   grid.innerHTML="";
+  grid.style.paddingTop=window._isMobile?"48px":"14px";
   var n=pieces.length;
   var cols=4;
   var lastK=n%cols;
