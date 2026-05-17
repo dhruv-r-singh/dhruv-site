@@ -73,7 +73,11 @@
   <div class="work-header reveal">
     <a href="games" class="proj-back" style="margin-bottom:0.75rem;">← Games</a>
     <h2>Fluxle</h2>
-    <div id="fluxle-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
+      <div id="fluxle-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;"></div>
+      <button onclick="openArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">archive</button>
+      <button id="fluxle-today-btn" onclick="returnToToday()" style="display:none;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">← today</button>
+    </div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1.5rem;gap:10px;">
     <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;">decode the equations — find the word</div>
@@ -104,6 +108,19 @@
     </div>
   </div>
 </div>
+<div id="archive-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:22px 20px 18px;width:272px;max-width:92vw;position:relative;box-shadow:0 8px 36px rgba(0,0,0,0.85);">
+    <button onclick="closeArchive()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:#444;font-size:1.1rem;cursor:pointer;line-height:1;padding:2px 6px;transition:color .15s;" onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#444'">×</button>
+    <div style="font-family:var(--font-mono);font-size:0.65rem;color:#555;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;">archive</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <button id="arch-prev" onclick="archPrevMonth()" style="background:none;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0 6px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">‹</button>
+      <span id="arch-month-label" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.06em;"></span>
+      <button id="arch-next" onclick="archNextMonth()" style="background:none;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0 6px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">›</button>
+    </div>
+    <div id="arch-cal" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+  </div>
+</div>
+
 <script>
 function initReveal() {
   const observer = new IntersectionObserver(entries => {
@@ -188,12 +205,13 @@ function fluxleInit() {
 }
 
 function pwSaveState(won) {
-  const today = new Date(); today.setHours(0,0,0,0);
   try {
-    localStorage.setItem('fluxle_state', JSON.stringify({
-      date: today.toISOString().split('T')[0],
-      guesses: pwGuesses, done: pwDone, keys: pwKeys, won: won
-    }));
+    if(window._replayDate){
+      localStorage.setItem('fluxle_replay_'+window._replayDate, JSON.stringify({guesses:pwGuesses,done:pwDone,keys:pwKeys,won:won}));
+    } else {
+      const today = new Date(); today.setHours(0,0,0,0);
+      localStorage.setItem('fluxle_state', JSON.stringify({date:today.toISOString().split('T')[0],guesses:pwGuesses,done:pwDone,keys:pwKeys,won:won}));
+    }
   } catch(e) {}
 }
 
@@ -269,8 +287,8 @@ function pwSubmit(){
   res.forEach(r=>{const p=pwKeys[r.letter];if(!p||p==='absent'||(p==='present'&&r.state==='correct'))pwKeys[r.letter]=r.state;});
   pwCurrent='';pwRender();
   const won = res.every(r=>r.state==='correct');
-  if(won){document.getElementById('pw-msg').textContent='🎉 '+pwWord;pwDone=true;pwSaveState(true);const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent='You got it! Come back tomorrow for #'+(diff+2)+'.';}setTimeout(()=>{const pop=document.getElementById('fluxle-popup');const pw=document.getElementById('fluxle-popup-word');const pm=document.getElementById('fluxle-popup-msg');if(pop&&pw){pw.textContent=pwWord;if(pm)pm.textContent='You did it! Come back tomorrow for #'+(diff+2)+'!';pop.classList.add('show');requestAnimationFrame(()=>requestAnimationFrame(()=>pop.classList.add('visible')));} },3000);}
-  else if(pwGuesses.length===6){document.getElementById('pw-msg').textContent='Answer: '+pwWord;pwDone=true;pwSaveState(false);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent='Come back tomorrow for a new word.';}}
+  if(won){document.getElementById('pw-msg').textContent='🎉 '+pwWord;pwDone=true;pwSaveState(true);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';if(window._replayDate){d.textContent='You got it! (archive)';}else{const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));d.textContent='You got it! Come back tomorrow for #'+(diff+2)+'.';}}if(!window._replayDate){setTimeout(()=>{const pop=document.getElementById('fluxle-popup');const pw=document.getElementById('fluxle-popup-word');const pm=document.getElementById('fluxle-popup-msg');if(pop&&pw){const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));pw.textContent=pwWord;if(pm)pm.textContent='You did it! Come back tomorrow for #'+(diff+2)+'!';pop.classList.add('show');requestAnimationFrame(()=>requestAnimationFrame(()=>pop.classList.add('visible')));} },3000);}}
+  else if(pwGuesses.length===6){document.getElementById('pw-msg').textContent='Answer: '+pwWord;pwDone=true;pwSaveState(false);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent=window._replayDate?'Better luck next time.':'Come back tomorrow for a new word.';}}
   if(!pwDone)pwSaveState(false);
 }
 
@@ -573,6 +591,148 @@ function showMusicPlayer(startIdx=0){
 document.addEventListener('DOMContentLoaded', function() {
   setTimeout(fluxleInit, 50);
 });
+
+// ── ARCHIVE ──
+var archYear, archMonth;
+var ARCH_LAUNCH = new Date('2026-05-15T00:00:00');
+var ARCH_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function openArchive(){
+  var today = new Date(); today.setHours(0,0,0,0);
+  archYear = today.getFullYear(); archMonth = today.getMonth();
+  renderArchiveCal();
+  var m = document.getElementById('archive-modal');
+  m.style.display = 'flex';
+}
+
+function closeArchive(){
+  document.getElementById('archive-modal').style.display = 'none';
+}
+
+function archPrevMonth(){
+  archMonth--;
+  if(archMonth < 0){ archMonth = 11; archYear--; }
+  renderArchiveCal();
+}
+
+function archNextMonth(){
+  archMonth++;
+  if(archMonth > 11){ archMonth = 0; archYear++; }
+  renderArchiveCal();
+}
+
+function renderArchiveCal(){
+  var today = new Date(); today.setHours(0,0,0,0);
+  var launchMonth = ARCH_LAUNCH.getFullYear()*12 + ARCH_LAUNCH.getMonth();
+  var todayMonth = today.getFullYear()*12 + today.getMonth();
+  var curMonth = archYear*12 + archMonth;
+
+  document.getElementById('arch-month-label').textContent = ARCH_MONTHS[archMonth] + ' ' + archYear;
+  var prev = document.getElementById('arch-prev');
+  var next = document.getElementById('arch-next');
+  prev.style.opacity = curMonth <= launchMonth ? '0.2' : '1';
+  prev.style.pointerEvents = curMonth <= launchMonth ? 'none' : '';
+  next.style.opacity = curMonth >= todayMonth ? '0.2' : '1';
+  next.style.pointerEvents = curMonth >= todayMonth ? 'none' : '';
+
+  var cal = document.getElementById('arch-cal');
+  cal.innerHTML = '';
+
+  // Day headers
+  ['S','M','T','W','T','F','S'].forEach(function(d){
+    var h = document.createElement('div');
+    h.textContent = d;
+    h.style.cssText = 'text-align:center;font-family:var(--font-mono);font-size:9px;color:#3a3a3a;padding-bottom:2px;';
+    cal.appendChild(h);
+  });
+
+  var firstDay = new Date(archYear, archMonth, 1).getDay();
+  var daysInMonth = new Date(archYear, archMonth+1, 0).getDate();
+
+  for(var i = 0; i < firstDay; i++) cal.appendChild(document.createElement('div'));
+
+  for(var d = 1; d <= daysInMonth; d++){
+    var cellDate = new Date(archYear, archMonth, d);
+    cellDate.setHours(0,0,0,0);
+    var cell = document.createElement('div');
+    cell.textContent = d;
+    cell.style.cssText = 'text-align:center;border-radius:4px;padding:4px 0;font-family:var(--font-mono);font-size:10px;line-height:1;';
+
+    var isBeforeLaunch = cellDate < ARCH_LAUNCH;
+    var isToday = cellDate.getTime() === today.getTime();
+    var isFuture = cellDate > today;
+
+    if(isBeforeLaunch || isFuture){
+      cell.style.color = '#2a2a2a';
+    } else if(isToday){
+      cell.style.color = '#fff';
+      cell.style.background = '#1e1e1e';
+      cell.style.cursor = 'default';
+    } else {
+      var ds = cellDate.toISOString().split('T')[0];
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem('fluxle_replay_'+ds)||'null'); } catch(e){}
+      if(saved && saved.won) cell.style.color = '#4ade80';
+      else if(saved && saved.done) cell.style.color = '#f87171';
+      else cell.style.color = '#666';
+      cell.style.cursor = 'pointer';
+      cell.style.transition = 'background .12s';
+      (function(cd){ cell.onmouseover = function(){ cell.style.background='#1a1a1a'; }; cell.onmouseout = function(){ cell.style.background=''; }; cell.onclick = function(){ loadArchivePuzzle(cd); }; })(cellDate);
+    }
+    cal.appendChild(cell);
+  }
+}
+
+function loadArchivePuzzle(date){
+  closeArchive();
+  var diff = Math.floor((date - ARCH_LAUNCH) / (1000*60*60*24));
+  var word = PW_ANSWERS[diff % PW_ANSWERS.length];
+  var dateStr = date.toISOString().split('T')[0];
+
+  window._replayDate = dateStr;
+
+  var saved = null;
+  try { saved = JSON.parse(localStorage.getItem('fluxle_replay_'+dateStr)||'null'); } catch(e){}
+
+  pwWord = word;
+  pwGuesses = saved ? saved.guesses : [];
+  pwDone = saved ? saved.done : false;
+  pwKeys = saved ? saved.keys : {};
+  pwCurrent = '';
+
+  var numEl = document.getElementById('fluxle-number');
+  if(numEl){
+    var label = date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    numEl.textContent = '#'+(diff+1)+' | '+label+' — archive';
+  }
+
+  var todayBtn = document.getElementById('fluxle-today-btn');
+  if(todayBtn) todayBtn.style.display = '';
+
+  var doneEl = document.getElementById('fluxle-done-msg');
+  if(doneEl){
+    if(pwDone){
+      doneEl.style.display = 'block';
+      doneEl.textContent = saved && saved.won ? 'You got it! (archive)' : 'The word was '+word+'.';
+    } else {
+      doneEl.style.display = 'none';
+    }
+  }
+  document.getElementById('pw-msg').textContent = '';
+  pwRender();
+}
+
+function returnToToday(){
+  window._replayDate = null;
+  var todayBtn = document.getElementById('fluxle-today-btn');
+  if(todayBtn) todayBtn.style.display = 'none';
+  var doneEl = document.getElementById('fluxle-done-msg');
+  if(doneEl) doneEl.style.display = 'none';
+  fluxleInit();
+}
+
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeArchive(); });
+document.getElementById('archive-modal').addEventListener('click', function(e){ if(e.target===this) closeArchive(); });
 
 // Console cheat: type fluxle_win() to solve today's puzzle
 window.fluxle_win = function() {
