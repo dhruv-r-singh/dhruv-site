@@ -73,11 +73,7 @@
   <div class="work-header reveal">
     <a href="games" class="proj-back" style="margin-bottom:0.75rem;">← Games</a>
     <h2>Fluxle</h2>
-    <div style="display:flex;align-items:center;gap:0.75rem;margin-top:0.4rem;">
-      <div id="fluxle-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;"></div>
-      <button onclick="openArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">archive</button>
-      <button id="fluxle-today-btn" onclick="returnToToday()" style="display:none;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:2px 7px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">← today</button>
-    </div>
+    <div id="fluxle-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;align-items:center;padding:2.5rem 1.5rem;gap:10px;">
     <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);letter-spacing:.1em;text-transform:uppercase;">decode the equations — find the word</div>
@@ -85,6 +81,7 @@
     <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);height:14px;text-align:center;" id="pw-msg"></div>
     <div id="pw-kb" style="display:flex;flex-direction:column;gap:4px;align-items:center;"></div>
     <div id="fluxle-done-msg" style="display:none;font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);text-align:center;margin-top:0.5rem;"></div>
+    <button onclick="openArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:3px 10px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;margin-top:2px;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">Archive</button>
   </div>
   <footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
@@ -109,15 +106,15 @@
   </div>
 </div>
 <div id="archive-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;align-items:center;justify-content:center;">
-  <div style="background:#0e0e0e;border:1px solid #252525;border-radius:14px;padding:22px 20px 18px;width:272px;max-width:92vw;position:relative;box-shadow:0 8px 36px rgba(0,0,0,0.85);">
-    <button onclick="closeArchive()" style="position:absolute;top:10px;right:12px;background:none;border:none;color:#444;font-size:1.1rem;cursor:pointer;line-height:1;padding:2px 6px;transition:color .15s;" onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#444'">×</button>
-    <div style="font-family:var(--font-mono);font-size:0.65rem;color:#555;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:14px;">archive</div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-      <button id="arch-prev" onclick="archPrevMonth()" style="background:none;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0 6px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">‹</button>
-      <span id="arch-month-label" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.06em;"></span>
-      <button id="arch-next" onclick="archNextMonth()" style="background:none;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0 6px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">›</button>
+  <div style="background:#0e0e0e;border:1px solid #252525;border-radius:16px;padding:28px 26px 22px;width:340px;max-width:92vw;position:relative;box-shadow:0 8px 36px rgba(0,0,0,0.85);">
+    <button onclick="closeArchive()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#444;font-size:1.2rem;cursor:pointer;line-height:1;padding:2px 6px;transition:color .15s;" onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#444'">×</button>
+    <div style="font-family:'League Spartan',sans-serif;font-size:0.78rem;font-weight:500;color:#555;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Archive</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <button id="arch-prev" onclick="archPrevMonth()" style="background:none;border:none;color:#555;font-size:1.2rem;cursor:pointer;padding:0 8px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">‹</button>
+      <span id="arch-month-label" style="font-family:'League Spartan',sans-serif;font-size:0.82rem;font-weight:400;color:var(--muted);letter-spacing:0.04em;"></span>
+      <button id="arch-next" onclick="archNextMonth()" style="background:none;border:none;color:#555;font-size:1.2rem;cursor:pointer;padding:0 8px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">›</button>
     </div>
-    <div id="arch-cal" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;"></div>
+    <div id="arch-cal" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
   </div>
 </div>
 
@@ -279,11 +276,12 @@ function pwDel(){if(!pwDone&&pwCurrent.length){pwCurrent=pwCurrent.slice(0,-1);p
 function pwSubmit(){
   if(pwDone)return;
   if(pwCurrent.length<pwWord.length){document.getElementById('pw-msg').textContent='not enough letters';return;}
-  if(pwCurrent==='SHAMU'){showMusicPlayer(8);return;}
-  if(!PW_VALID.has(pwCurrent)){document.getElementById('pw-msg').textContent='not a real word';return;}
+  const isShamu=pwCurrent==='SHAMU';
+  if(!PW_VALID.has(pwCurrent)&&!isShamu){document.getElementById('pw-msg').textContent='not a real word';return;}
   const res=pwScore(pwCurrent,pwWord);
   pwGuesses.push(res);
-  if(res.map(r=>r.letter).join('')==='MUSIC')showMusicPlayer();
+  if(isShamu)showMusicPlayer(8,true);
+  else if(res.map(r=>r.letter).join('')==='MUSIC')showMusicPlayer();
   res.forEach(r=>{const p=pwKeys[r.letter];if(!p||p==='absent'||(p==='present'&&r.state==='correct'))pwKeys[r.letter]=r.state;});
   pwCurrent='';pwRender();
   const won = res.every(r=>r.state==='correct');
@@ -358,7 +356,7 @@ function showGames(){
 }
 
 
-function showMusicPlayer(startIdx=0){
+function showMusicPlayer(startIdx=0,includeShamu=false){
   if(document.getElementById('music-player'))return;
   localStorage.setItem('fluxle_music_found','1');
   if(!document.getElementById('music-spin-style')){
@@ -425,6 +423,7 @@ function showMusicPlayer(startIdx=0){
     },
   ];
   // ────────────────────────────────────────────────────────────────
+  const TL=includeShamu?TRACKS:TRACKS.slice(0,8);
 
   let trackIdx=startIdx;
   const audio=new Audio();
@@ -459,7 +458,7 @@ function showMusicPlayer(startIdx=0){
   cdLabel.appendChild(hole);disc.appendChild(cdLabel);
 
   function loadTrack(idx,autoplay){
-    const t=TRACKS[idx];
+    const t=TL[idx];
     audio.src=t.src;
     prog.value=0;timeEl.textContent='0:00';
     if(autoplay)audio.play().catch(e=>console.warn('Audio play failed:',e));
@@ -503,13 +502,13 @@ function showMusicPlayer(startIdx=0){
   }
   const playBtn=mkBtn('▶',()=>setPlaying(!playing));
   audio.addEventListener('ended',()=>{
-    trackIdx=(trackIdx+1)%TRACKS.length;
+    trackIdx=(trackIdx+1)%TL.length;
     loadTrack(trackIdx,true);
     playing=true;disc.style.animationPlayState='running';playBtn.textContent='⏸';playBtn.style.color='#ddd';
   });
-  ctrl.appendChild(mkBtn('⏮',()=>{trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length;loadTrack(trackIdx,playing);}));
+  ctrl.appendChild(mkBtn('⏮',()=>{trackIdx=(trackIdx-1+TL.length)%TL.length;loadTrack(trackIdx,playing);}));
   ctrl.appendChild(playBtn);
-  ctrl.appendChild(mkBtn('⏭',()=>{trackIdx=(trackIdx+1)%TRACKS.length;loadTrack(trackIdx,playing);}));
+  ctrl.appendChild(mkBtn('⏭',()=>{trackIdx=(trackIdx+1)%TL.length;loadTrack(trackIdx,playing);}));
 
   // progress bar
   const pw=document.createElement('div');pw.style.cssText='margin-bottom:10px;';
@@ -642,7 +641,7 @@ function renderArchiveCal(){
   ['S','M','T','W','T','F','S'].forEach(function(d){
     var h = document.createElement('div');
     h.textContent = d;
-    h.style.cssText = 'text-align:center;font-family:var(--font-mono);font-size:9px;color:#3a3a3a;padding-bottom:2px;';
+    h.style.cssText = 'text-align:center;font-family:\'League Spartan\',sans-serif;font-size:11px;font-weight:500;color:#3a3a3a;padding-bottom:3px;';
     cal.appendChild(h);
   });
 
@@ -656,7 +655,7 @@ function renderArchiveCal(){
     cellDate.setHours(0,0,0,0);
     var cell = document.createElement('div');
     cell.textContent = d;
-    cell.style.cssText = 'text-align:center;border-radius:4px;padding:4px 0;font-family:var(--font-mono);font-size:10px;line-height:1;';
+    cell.style.cssText = 'text-align:center;border-radius:5px;padding:5px 0;font-family:\'League Spartan\',sans-serif;font-size:12px;font-weight:400;line-height:1;';
 
     var isBeforeLaunch = cellDate < ARCH_LAUNCH;
     var isToday = cellDate.getTime() === today.getTime();
@@ -706,9 +705,6 @@ function loadArchivePuzzle(date){
     numEl.textContent = '#'+(diff+1)+' | '+label+' — archive';
   }
 
-  var todayBtn = document.getElementById('fluxle-today-btn');
-  if(todayBtn) todayBtn.style.display = '';
-
   var doneEl = document.getElementById('fluxle-done-msg');
   if(doneEl){
     if(pwDone){
@@ -720,15 +716,6 @@ function loadArchivePuzzle(date){
   }
   document.getElementById('pw-msg').textContent = '';
   pwRender();
-}
-
-function returnToToday(){
-  window._replayDate = null;
-  var todayBtn = document.getElementById('fluxle-today-btn');
-  if(todayBtn) todayBtn.style.display = 'none';
-  var doneEl = document.getElementById('fluxle-done-msg');
-  if(doneEl) doneEl.style.display = 'none';
-  fluxleInit();
 }
 
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeArchive(); });

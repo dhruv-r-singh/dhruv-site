@@ -75,7 +75,10 @@
     <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
   </div>
 
-  <div style="text-align:center;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.5rem 1rem 0.75rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.5rem 1rem 0.75rem;">
+    <div style="font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+    <button onclick="openHivesArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:3px 10px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">Archive</button>
+  </div>
 
   <iframe srcdoc='<!DOCTYPE html>
 <html>
@@ -142,7 +145,9 @@ function makeRng(seed){
   };
 }
 
+var _dateSeedOverride=null;
 function dateSeed(){
+  if(_dateSeedOverride!==null)return _dateSeedOverride;
   var d=new Date();
   return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
 }
@@ -858,6 +863,11 @@ window.hives_solve=function(){
     },500);
   }
 };
+window.loadDayWithDate=function(dateNum,dow){
+  _dateSeedOverride=dateNum;
+  currentDay=dow;
+  loadDay(dow);
+};
 loadDay(currentDay);
 </script>
 </body>
@@ -875,6 +885,19 @@ loadDay(currentDay);
   </footer>
 
 </div>
+<div id="hives-archive-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:10000;align-items:center;justify-content:center;">
+  <div style="background:#0e0e0e;border:1px solid #252525;border-radius:16px;padding:28px 26px 22px;width:340px;max-width:92vw;position:relative;box-shadow:0 8px 36px rgba(0,0,0,0.85);">
+    <button onclick="closeHivesArchive()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:#444;font-size:1.2rem;cursor:pointer;line-height:1;padding:2px 6px;transition:color .15s;" onmouseover="this.style.color='#aaa'" onmouseout="this.style.color='#444'">×</button>
+    <div style="font-family:'League Spartan',sans-serif;font-size:0.78rem;font-weight:500;color:#555;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px;">Archive</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <button id="harch-prev" onclick="harchPrevMonth()" style="background:none;border:none;color:#555;font-size:1.2rem;cursor:pointer;padding:0 8px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">‹</button>
+      <span id="harch-month-label" style="font-family:'League Spartan',sans-serif;font-size:0.82rem;font-weight:400;color:var(--muted);letter-spacing:0.04em;"></span>
+      <button id="harch-next" onclick="harchNextMonth()" style="background:none;border:none;color:#555;font-size:1.2rem;cursor:pointer;padding:0 8px;line-height:1;transition:color .15s;" onmouseover="this.style.color='#ccc'" onmouseout="this.style.color='#555'">›</button>
+    </div>
+    <div id="harch-cal" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+  </div>
+</div>
+
 <script>
 function initReveal() {
   const observer = new IntersectionObserver(entries => {
@@ -932,6 +955,113 @@ function closeMobileNav() {
   var el = document.getElementById('hives-number');
   if (el) el.textContent = '#' + (diff+1) + ' | ' + dateStr;
 })();
+
+// ── HIVES ARCHIVE ──
+var harchYear, harchMonth;
+var HARCH_LAUNCH = new Date('2026-05-15T00:00:00');
+var HARCH_MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function openHivesArchive(){
+  var today = new Date(); today.setHours(0,0,0,0);
+  harchYear = today.getFullYear(); harchMonth = today.getMonth();
+  renderHivesArchiveCal();
+  document.getElementById('hives-archive-modal').style.display = 'flex';
+}
+
+function closeHivesArchive(){
+  document.getElementById('hives-archive-modal').style.display = 'none';
+}
+
+function harchPrevMonth(){
+  harchMonth--;
+  if(harchMonth < 0){ harchMonth = 11; harchYear--; }
+  renderHivesArchiveCal();
+}
+
+function harchNextMonth(){
+  harchMonth++;
+  if(harchMonth > 11){ harchMonth = 0; harchYear++; }
+  renderHivesArchiveCal();
+}
+
+function renderHivesArchiveCal(){
+  var today = new Date(); today.setHours(0,0,0,0);
+  var launchM = HARCH_LAUNCH.getFullYear()*12 + HARCH_LAUNCH.getMonth();
+  var todayM = today.getFullYear()*12 + today.getMonth();
+  var curM = harchYear*12 + harchMonth;
+
+  document.getElementById('harch-month-label').textContent = HARCH_MONTHS[harchMonth] + ' ' + harchYear;
+  var prev = document.getElementById('harch-prev');
+  var next = document.getElementById('harch-next');
+  prev.style.opacity = curM <= launchM ? '0.2' : '1';
+  prev.style.pointerEvents = curM <= launchM ? 'none' : '';
+  next.style.opacity = curM >= todayM ? '0.2' : '1';
+  next.style.pointerEvents = curM >= todayM ? 'none' : '';
+
+  var cal = document.getElementById('harch-cal');
+  cal.innerHTML = '';
+
+  ['S','M','T','W','T','F','S'].forEach(function(d){
+    var h = document.createElement('div');
+    h.textContent = d;
+    h.style.cssText = 'text-align:center;font-family:\'League Spartan\',sans-serif;font-size:11px;font-weight:500;color:#3a3a3a;padding-bottom:3px;';
+    cal.appendChild(h);
+  });
+
+  var firstDay = new Date(harchYear, harchMonth, 1).getDay();
+  var daysInMonth = new Date(harchYear, harchMonth+1, 0).getDate();
+  for(var i = 0; i < firstDay; i++) cal.appendChild(document.createElement('div'));
+
+  for(var d = 1; d <= daysInMonth; d++){
+    var cellDate = new Date(harchYear, harchMonth, d);
+    cellDate.setHours(0,0,0,0);
+    var cell = document.createElement('div');
+    cell.textContent = d;
+    cell.style.cssText = 'text-align:center;border-radius:5px;padding:5px 0;font-family:\'League Spartan\',sans-serif;font-size:12px;font-weight:400;line-height:1;';
+
+    var isBeforeLaunch = cellDate < HARCH_LAUNCH;
+    var isToday = cellDate.getTime() === today.getTime();
+    var isFuture = cellDate > today;
+
+    if(isBeforeLaunch || isFuture){
+      cell.style.color = '#2a2a2a';
+    } else if(isToday){
+      cell.style.color = '#fff';
+      cell.style.background = '#1e1e1e';
+    } else {
+      cell.style.color = '#666';
+      cell.style.cursor = 'pointer';
+      cell.style.transition = 'background .12s';
+      (function(cd){
+        cell.onmouseover = function(){ cell.style.background='#1a1a1a'; };
+        cell.onmouseout = function(){ cell.style.background=''; };
+        cell.onclick = function(){ loadHivesArchivePuzzle(cd); };
+      })(cellDate);
+    }
+    cal.appendChild(cell);
+  }
+}
+
+function loadHivesArchivePuzzle(date){
+  closeHivesArchive();
+  var d = date;
+  var dateNum = d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+  var dow = d.getDay();
+  var iframe = document.getElementById('hives-iframe');
+  if(iframe && iframe.contentWindow && iframe.contentWindow.loadDayWithDate){
+    iframe.contentWindow.loadDayWithDate(dateNum, dow);
+  }
+  var diff = Math.floor((date - HARCH_LAUNCH) / (1000*60*60*24));
+  var label = date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  var el = document.getElementById('hives-number');
+  if(el) el.textContent = '#'+(diff+1)+' | '+label+' — archive';
+}
+
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeHivesArchive(); });
+document.addEventListener('DOMContentLoaded', function(){
+  var m = document.getElementById('hives-archive-modal');
+  if(m) m.addEventListener('click', function(e){ if(e.target===this) closeHivesArchive(); });
+});
 
 // Console cheat: type hives_win() to solve today's puzzle
 window.hives_win = function() {
