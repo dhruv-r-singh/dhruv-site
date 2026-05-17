@@ -321,18 +321,22 @@ function getDayConfig(dow){
 }
 
 function computeLayout(radius){
-  // fit board in canvas nicely
+  var isMobile=(window.innerWidth||640)<640;
+  window._isMobile=isMobile;
   var maxR;
-  if(radius<=2)maxR=58;
-  else if(radius===3)maxR=40;
-  else if(radius===4)maxR=30;
-  else maxR=24;
+  if(radius<=2)maxR=isMobile?44:58;
+  else if(radius===3)maxR=isMobile?30:40;
+  else if(radius===4)maxR=isMobile?23:30;
+  else maxR=isMobile?18:24;
   R=maxR;
   TR=Math.round(R*0.55);
-  var boardW=500;
-  var trayW=380;
-  var canvasW=boardW+trayW;
-  var canvasH=window.innerHeight||700;
+  var iframeH=window.innerHeight||700;
+  var boardW=isMobile?(window.innerWidth||375):500;
+  var trayW=isMobile?(window.innerWidth||375):380;
+  window._boardW=boardW;window._trayW=trayW;
+  window._trayH=isMobile?Math.round(iframeH*0.48):iframeH;
+  var canvasW=isMobile?boardW:(boardW+trayW);
+  var canvasH=iframeH;
   var dpr=window.devicePixelRatio||1;
   cv.style.width=canvasW+&#39;px&#39;;
   cv.style.height=canvasH+&#39;px&#39;;
@@ -340,7 +344,7 @@ function computeLayout(radius){
   cv.height=Math.round(canvasH*dpr);
   cx.scale(dpr,dpr);
   OX=boardW/2;
-  OY=canvasH/2;
+  OY=isMobile?Math.round(iframeH*0.26):iframeH/2;
 }
 
 
@@ -384,7 +388,9 @@ function buildPuzzle(dow){
   var n=raw.length;
   var cssH=parseFloat(cv.style.height)||700;
   var cssW=parseFloat(cv.style.width)||880;
-  var trayW=cssW-500;
+  var isMobile=window._isMobile||false;
+  var trayW=isMobile?(window._trayW||cssW):(cssW-500);
+  var trayH=isMobile?(window._trayH||cssH):cssH;
   var padX=trayW*0.06;
 
   var rExts=[];
@@ -406,7 +412,7 @@ function buildPuzzle(dow){
   var cols=4;
   var rows=Math.ceil(n/cols);
   var colW=(trayW-padX*2)/cols;
-  var rowH=Math.min(cssH*0.9/rows,colW*1.5);
+  var rowH=Math.min(trayH*0.9/rows,colW*1.5);
   var trV=Math.floor(rowH/pieceH);
   var trH=Math.floor(colW*0.92/((p80XEx+1)*Math.sqrt(3)));
   TR=Math.max(12,Math.min(Math.round(R),trV,trH));
@@ -536,6 +542,8 @@ function dropPiece(){
   } else {
     if(drag.pieceCanvas)drag.pieceCanvas.style.visibility="visible";
   }
+  var panel=document.getElementById("tray-panel");
+  if(panel&amp;&amp;window._isMobile)panel.style.opacity="1";
   drag=null;draw();
 }
 
@@ -547,6 +555,8 @@ function pieceDown(e,p){
   mx=src.clientX-r.left;my=src.clientY-r.top;
   drag=p;
   if(p.pieceCanvas)p.pieceCanvas.style.visibility="hidden";
+  var panel=document.getElementById("tray-panel");
+  if(panel&amp;&amp;window._isMobile)panel.style.opacity="0.18";
   draw();
 }
 
@@ -554,15 +564,24 @@ function updateTrayPanel(){
   var panel=document.getElementById("tray-panel");
   if(!panel)return;
   var r=cv.getBoundingClientRect();
-  panel.style.left=(r.left+500)+"px";
-  panel.style.top=r.top+"px";
-  panel.style.width="380px";
-  panel.style.height=r.height+"px";
+  var isMobile=window._isMobile||false;
+  var iH=window.innerHeight||700;
+  if(isMobile){
+    panel.style.left="0px";
+    panel.style.top=Math.round(iH*0.52)+"px";
+    panel.style.width=(window.innerWidth||375)+"px";
+    panel.style.height=Math.round(iH*0.48)+"px";
+  } else {
+    panel.style.left=(r.left+500)+"px";
+    panel.style.top=r.top+"px";
+    panel.style.width="380px";
+    panel.style.height=r.height+"px";
+  }
   panel.style.display="flex";
   var btn=document.getElementById("reset-btn");
   if(btn){
-    btn.style.left=(r.left+250)+"px";
-    btn.style.top=(r.top+r.height-116)+"px";
+    btn.style.left=isMobile?"50%":(r.left+250)+"px";
+    btn.style.top=isMobile?(Math.round(iH*0.52)+8)+"px":(r.top+r.height-116)+"px";
     btn.style.display=gameSolved?"none":"block";
   }
 }
@@ -682,10 +701,12 @@ function draw(){
   }
 
   // Tray divider
-  cx.setLineDash([3,4]);
-  cx.strokeStyle=&#39;rgba(255,255,255,0.12)&#39;;cx.lineWidth=1;
-  cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
-  cx.setLineDash([]);
+  if(!window._isMobile){
+    cx.setLineDash([3,4]);
+    cx.strokeStyle=&#39;rgba(255,255,255,0.12)&#39;;cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(500,0);cx.lineTo(500,H);cx.stroke();
+    cx.setLineDash([]);
+  }
 
   // Dragging
   if(drag){
@@ -827,7 +848,8 @@ loadDay(currentDay);
 </script>
 </body>
 </html>
-' style="width:100%;height:700px;border:none;background:transparent;"></iframe>
+' id="hives-iframe" style="width:100%;height:700px;border:none;background:transparent;display:block;"></iframe>
+<script>(function(){var f=document.getElementById("hives-iframe");if(window.innerWidth<640){f.style.height=(window.innerHeight||700)+"px";}})();</script>
   <footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
     <div style="display:flex;gap:1.5rem;align-items:center;">
