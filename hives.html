@@ -75,7 +75,10 @@
     <div id="hives-number" style="font-family:var(--font-mono);font-size:0.68rem;color:var(--muted);letter-spacing:0.08em;margin-top:0.4rem;"></div>
   </div>
 
-  <div style="text-align:center;font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;padding:0.5rem 1rem 0.75rem;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+  <div style="display:flex;align-items:center;justify-content:center;gap:1rem;padding:0.5rem 1rem 0.75rem;">
+    <div style="font-family:var(--font-mono);font-size:0.68rem;color:#555;letter-spacing:0.08em;">DRAG THE PIECES &mdash; FILL ALL HEXAGONS</div>
+    <button onclick="openHivesArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:3px 10px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">Archive</button>
+  </div>
 
   <iframe srcdoc='<!DOCTYPE html>
 <html>
@@ -103,7 +106,7 @@ h1{font-size:20px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
 .btns{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
 button{font-size:12px;padding:5px 11px;border:1px solid rgba(0,0,0,0.2);border-radius:8px;background:white;cursor:pointer;color:#1a1a1a}
 button:hover{background:#f0f0f0}
-button.active{background:#1a1a1a;color:white;border-color:#1a1a1a;cursor:pointer}
+button.active{background:#1a1a1a;color:white;border-color:#1a1a1a}
 .legend{font-size:11px;color:#aaa;margin-top:6px;text-align:center}
 </style>
 </head>
@@ -155,13 +158,13 @@ function dateLabel(){
 
 // Day of week config (0=Sun ... 6=Sat)
 var DAY_CONFIG=[
-  {name:&#39;Sunday&#39;,    radius:3, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:9999},
-  {name:&#39;Monday&#39;,    radius:3, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:9999},
+  {name:&#39;Sunday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:9999},
+  {name:&#39;Monday&#39;,    radius:2, maxBlanks:0, maxPreplaced:0, minPieces:4,  maxPieces:9999},
   {name:&#39;Tuesday&#39;,   radius:3, maxBlanks:0, maxPreplaced:0, minPieces:6,  maxPieces:9999},
   {name:&#39;Wednesday&#39;, radius:3, maxBlanks:3, maxPreplaced:1, minPieces:7,  maxPieces:9999},
   {name:&#39;Thursday&#39;,  radius:3, maxBlanks:4, maxPreplaced:2, minPieces:8,  maxPieces:9999},
-  {name:&#39;Friday&#39;,    radius:3, maxBlanks:5, maxPreplaced:2, minPieces:10, maxPieces:9999},
-  {name:&#39;Saturday&#39;,  radius:3, maxBlanks:7, maxPreplaced:3, minPieces:12, maxPieces:24}
+  {name:&#39;Friday&#39;,    radius:4, maxBlanks:5, maxPreplaced:2, minPieces:10, maxPieces:9999},
+  {name:&#39;Saturday&#39;,  radius:5, maxBlanks:7, maxPreplaced:3, minPieces:12, maxPieces:24}
 ];
 var DIFF_LABELS=[&#39;Easy&#39;,&#39;Easy&#39;,&#39;Medium&#39;,&#39;Medium&#39;,&#39;Hard&#39;,&#39;Hard&#39;,&#39;Expert&#39;];
 var DIFF_COLORS=[&#39;#1D9E75&#39;,&#39;#1D9E75&#39;,&#39;#BA7517&#39;,&#39;#BA7517&#39;,&#39;#D85A30&#39;,&#39;#D85A30&#39;,&#39;#c0392b&#39;];
@@ -794,7 +797,6 @@ function checkAlreadySolved(dow){
         }
         draw();
       }
-      showTraySolvedMsg();
     }
   }catch(e){}
 }
@@ -1041,25 +1043,6 @@ function renderHivesArchiveCal(){
     } else if(isToday){
       cell.style.color = '#fff';
       cell.style.background = '#1e1e1e';
-      cell.style.cursor = 'pointer';
-      cell.style.transition = 'background .12s';
-      cell.onmouseover = function(){ this.style.background='#2a2a2a'; };
-      cell.onmouseout = function(){ this.style.background='#1e1e1e'; };
-      cell.onclick = function(){
-        closeHivesArchive();
-        var iframe = document.getElementById('hives-iframe');
-        if(iframe && iframe.contentWindow){
-          iframe.contentWindow._dateSeedOverride = null;
-          var tod = new Date(); tod.setHours(0,0,0,0);
-          iframe.contentWindow.loadDay(tod.getDay());
-        }
-        var start = new Date('2026-05-15T00:00:00');
-        var tod2 = new Date(); tod2.setHours(0,0,0,0);
-        var diff = Math.max(0, Math.floor((tod2 - start) / (1000*60*60*24)));
-        var dateStr = tod2.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-        var el = document.getElementById('hives-number');
-        if(el) el.textContent = '#' + (diff+1) + ' | ' + dateStr;
-      };
     } else {
       cell.style.color = '#666';
       cell.style.cursor = 'pointer';
@@ -1086,7 +1069,7 @@ function loadHivesArchivePuzzle(date){
   var diff = Math.floor((date - HARCH_LAUNCH) / (1000*60*60*24));
   var label = date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   var el = document.getElementById('hives-number');
-  if(el) el.textContent = '#'+(diff+1)+' | '+label+' — Archive';
+  if(el) el.textContent = '#'+(diff+1)+' | '+label+' — archive';
 }
 
 document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeHivesArchive(); });
