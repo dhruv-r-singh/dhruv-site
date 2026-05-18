@@ -83,20 +83,28 @@
 
   <div class="proj-detail-body">
     <div class="proj-content reveal">
-      <p>Most PCB design services charge agency rates for work that doesn't require agency overhead. Traceworks was built to fix that. We're a small studio out of Nashua, New Hampshire, offering production-grade PCB layout at fixed, transparent prices — no retainers, no scope creep, no surprises.</p>
-      <p>I handle the embedded systems and firmware side: making sure the boards we deliver actually work in the real world, not just in simulation. That means thinking through signal integrity, power rail noise, and manufacturability constraints from the start, not as an afterthought before the Gerbers go out. Every design we ship is IPC-2221 and IPC-7351 compliant, DRC-verified for JLCPCB and PCBWay, and delivered as KiCad native files with full ownership transferred to the client.</p>
-      <p>Beyond client work, we've built a small suite of KiCad plugins — AutoBOM, TraceCheck, and SchemaSnap — and a couple of AI agents for PCB design called LayoutBot and SpecWriter. The plugins automate the parts of the workflow that are tedious and error-prone. The agents are more experimental, but the direction feels right: most of the friction in PCB design is documentation and iteration, not creativity.</p>
-      <p>The team is four people. Prithvi Gupta leads the PCB design work. Anghelo Araujo Lazaro handles the software infrastructure. Vandan Brahmbhatt runs operations and growth. We're still early, but we've built something real and clients are showing up.</p>
+      <p>Traceworks started because we kept running into the same problem: clients needed clean, manufacturable PCB layouts and the options were either overpriced design agencies or freelancers who'd never touched a fab file in production. We figured we could do it better, faster, and without the markup.</p>
+      <p>My role is embedded systems and firmware — I'm the one making sure the board that leaves our hands actually behaves the way it should in the field. That means I'm thinking about decoupling, trace impedance, and DFM constraints before layout even starts, not flagging issues after the Gerbers are generated. Every design we ship is IPC-2221 and IPC-7351 compliant, DRC-verified for JLCPCB and PCBWay, and handed over as KiCad native files. Full ownership, no lock-in.</p>
+      <p>We've also been building tools on the side — AutoBOM, TraceCheck, and SchemaSnap are KiCad plugins that cut out the tedious parts of the documentation workflow. LayoutBot and SpecWriter are earlier-stage AI agents for design and spec generation. The client work pays the bills; the tooling is where the interesting problems are.</p>
 
-      <h3>What We Deliver</h3>
-      <p>Every project ships with Gerber files, Excellon drill files, a BOM, pick-and-place coordinates, schematic PDF, and 3D renders. For complex boards — 4–6 layers with RF, power, or impedance-controlled traces — we get on a call first to make sure the requirements are locked before layout begins. We also offer 48-hour express turnaround, fab coordination, and component sourcing as add-ons.</p>
+      <h3>Additional Contributors</h3>
+      <div style="display:flex;gap:1rem;margin-top:0.75rem;padding-bottom:1rem;">
+        <div style="position:relative;display:inline-block;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#1a1a1a;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:0.75rem;font-weight:500;color:#FFFFFF;cursor:default;" onmouseenter="this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.transform='translateX(-50%) translateY(0)'" onmouseleave="this.nextElementSibling.style.opacity='0';this.nextElementSibling.style.transform='translateX(-50%) translateY(-4px)'">PG</div>
+          <div style="position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(-4px);background:#171717;border:1px solid #333;border-radius:6px;padding:6px 12px;font-family:var(--font-body);font-size:0.75rem;font-weight:500;color:#FFFFFF;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.18s ease,transform 0.18s ease;z-index:99;">Prithvi Gupta</div>
+        </div>
+        <div style="position:relative;display:inline-block;">
+          <div style="width:44px;height:44px;border-radius:50%;background:#1a1a1a;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:0.75rem;font-weight:500;color:#FFFFFF;cursor:default;" onmouseenter="this.nextElementSibling.style.opacity='1';this.nextElementSibling.style.transform='translateX(-50%) translateY(0)'" onmouseleave="this.nextElementSibling.style.opacity='0';this.nextElementSibling.style.transform='translateX(-50%) translateY(-4px)'">AA</div>
+          <div style="position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%) translateY(-4px);background:#171717;border:1px solid #333;border-radius:6px;padding:6px 12px;font-family:var(--font-body);font-size:0.75rem;font-weight:500;color:#FFFFFF;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.18s ease,transform 0.18s ease;z-index:99;">Anghelo Araujo</div>
+        </div>
+      </div>
     </div>
 
     <div class="proj-sidebar reveal">
       <div class="sidebar-title">About this project</div>
       <div class="sidebar-item"><strong>Status</strong>Active</div>
       <div class="sidebar-item"><strong>Role</strong>Co-founder, Embedded Systems & Firmware</div>
-      <div class="sidebar-item"><strong>Team</strong>Prithvi Gupta, Anghelo Araujo Lazaro, Vandan Brahmbhatt</div>
+      <div class="sidebar-item"><strong>Started</strong>2025</div>
       <div class="sidebar-item"><strong>Location</strong>Nashua, NH</div>
       <div class="sidebar-item"><strong>Website</strong><a href="https://traceworkspcb.com" target="_blank" style="color:var(--text);text-decoration:underline;text-underline-offset:3px;">traceworkspcb.com ↗</a></div>
     </div>
