@@ -36,6 +36,7 @@
         <a class="dropdown-item" href="proj-micromouse">The Micromouse Club</a>
         <a class="dropdown-item" href="proj-generator">Flowing Water Generator</a>
         <a class="dropdown-item" href="proj-youtube">YouTube Channel</a>
+        <a class="dropdown-item" href="proj-traceworks">Traceworks</a>
       </div>
     </div>
     <a class="nav-link " href="contact">Contact</a>
@@ -65,6 +66,7 @@
     <a href="proj-micromouse" onclick="closeMobileNav()">The Micromouse Club</a>
     <a href="proj-generator" onclick="closeMobileNav()">Flowing Water Generator</a>
     <a href="proj-youtube" onclick="closeMobileNav()">YouTube Channel</a>
+    <a href="proj-traceworks" onclick="closeMobileNav()">Traceworks</a>
   </div>
   <a href="contact" onclick="closeMobileNav()">Contact</a>
 </div>
@@ -81,7 +83,7 @@
     <div style="font-size:11px;color:var(--muted);font-family:var(--font-mono);height:14px;text-align:center;" id="pw-msg"></div>
     <div id="pw-kb" style="display:flex;flex-direction:column;gap:4px;align-items:center;"></div>
     <div id="fluxle-done-msg" style="display:none;font-family:var(--font-mono);font-size:0.72rem;color:var(--muted);text-align:center;margin-top:0.5rem;"></div>
-    <button onclick="openArchive()" style="font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:3px 10px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;margin-top:2px;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">Archive</button>
+    <button id="fluxle-archive-btn" onclick="openArchive()" style="display:none;font-family:var(--font-mono);font-size:0.6rem;color:var(--muted);background:none;border:1px solid #2a2a2a;border-radius:4px;padding:3px 10px;cursor:pointer;letter-spacing:0.06em;transition:color .15s,border-color .15s;margin-top:2px;" onmouseover="this.style.color='var(--text)';this.style.borderColor='#444'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='#2a2a2a'">Archive</button>
   </div>
   <footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
@@ -194,6 +196,7 @@ function fluxleInit() {
       if (pwDone) {
         const doneEl = document.getElementById('fluxle-done-msg');
         if (doneEl) { doneEl.style.display='block'; doneEl.textContent = saved.won ? 'You got it! Come back tomorrow for #' + (diff+2) + '.' : 'The word was ' + pwWord + '. Come back tomorrow for #' + (diff+2) + '.'; }
+        const ab = document.getElementById('fluxle-archive-btn'); if(ab) ab.style.display='';
       }
     }
   } catch(e) {}
@@ -285,8 +288,8 @@ function pwSubmit(){
   res.forEach(r=>{const p=pwKeys[r.letter];if(!p||p==='absent'||(p==='present'&&r.state==='correct'))pwKeys[r.letter]=r.state;});
   pwCurrent='';pwRender();
   const won = res.every(r=>r.state==='correct');
-  if(won){document.getElementById('pw-msg').textContent='🎉 '+pwWord;pwDone=true;pwSaveState(true);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';if(window._replayDate){d.textContent='You got it! (archive)';}else{const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));d.textContent='You got it! Come back tomorrow for #'+(diff+2)+'.';}}if(!window._replayDate){setTimeout(()=>{const pop=document.getElementById('fluxle-popup');const pw=document.getElementById('fluxle-popup-word');const pm=document.getElementById('fluxle-popup-msg');if(pop&&pw){const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));pw.textContent=pwWord;if(pm)pm.textContent='You did it! Come back tomorrow for #'+(diff+2)+'!';pop.classList.add('show');requestAnimationFrame(()=>requestAnimationFrame(()=>pop.classList.add('visible')));} },3000);}}
-  else if(pwGuesses.length===6){document.getElementById('pw-msg').textContent='Answer: '+pwWord;pwDone=true;pwSaveState(false);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent=window._replayDate?'Better luck next time.':'Come back tomorrow for a new word.';}}
+  if(won){document.getElementById('pw-msg').textContent='🎉 '+pwWord;pwDone=true;pwSaveState(true);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';if(window._replayDate){d.textContent='You got it!';}else{const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));d.textContent='You got it! Come back tomorrow for #'+(diff+2)+'.';}}if(!window._replayDate){const ab=document.getElementById('fluxle-archive-btn');if(ab)ab.style.display='';setTimeout(()=>{const pop=document.getElementById('fluxle-popup');const pw=document.getElementById('fluxle-popup-word');const pm=document.getElementById('fluxle-popup-msg');if(pop&&pw){const diff=Math.max(0,Math.floor((new Date().setHours(0,0,0,0)-new Date('2026-05-15T00:00:00').getTime())/(864e5)));pw.textContent=pwWord;if(pm)pm.textContent='You did it! Come back tomorrow for #'+(diff+2)+'!';pop.classList.add('show');requestAnimationFrame(()=>requestAnimationFrame(()=>pop.classList.add('visible')));} },3000);}}
+  else if(pwGuesses.length===6){document.getElementById('pw-msg').textContent='Answer: '+pwWord;pwDone=true;pwSaveState(false);const d=document.getElementById('fluxle-done-msg');if(d){d.style.display='block';d.textContent=window._replayDate?'Better luck next time.':'Come back tomorrow for a new word.';}if(!window._replayDate){const ab=document.getElementById('fluxle-archive-btn');if(ab)ab.style.display='';}}
   if(!pwDone)pwSaveState(false);
 }
 
@@ -666,7 +669,17 @@ function renderArchiveCal(){
     } else if(isToday){
       cell.style.color = '#fff';
       cell.style.background = '#1e1e1e';
-      cell.style.cursor = 'default';
+      cell.style.cursor = 'pointer';
+      cell.style.transition = 'background .12s';
+      cell.onmouseover = function(){ this.style.background='#2a2a2a'; };
+      cell.onmouseout = function(){ this.style.background='#1e1e1e'; };
+      cell.onclick = function(){
+        closeArchive();
+        window._replayDate = null;
+        var doneEl = document.getElementById('fluxle-done-msg');
+        if(doneEl) doneEl.style.display = 'none';
+        fluxleInit();
+      };
     } else {
       var ds = cellDate.toISOString().split('T')[0];
       var saved = null;
@@ -702,14 +715,14 @@ function loadArchivePuzzle(date){
   var numEl = document.getElementById('fluxle-number');
   if(numEl){
     var label = date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    numEl.textContent = '#'+(diff+1)+' | '+label+' — archive';
+    numEl.textContent = '#'+(diff+1)+' | '+label+' — Archive';
   }
 
   var doneEl = document.getElementById('fluxle-done-msg');
   if(doneEl){
     if(pwDone){
       doneEl.style.display = 'block';
-      doneEl.textContent = saved && saved.won ? 'You got it! (archive)' : 'The word was '+word+'.';
+      doneEl.textContent = saved && saved.won ? 'You got it!' : 'The word was '+word+'.';
     } else {
       doneEl.style.display = 'none';
     }

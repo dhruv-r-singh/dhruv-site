@@ -7,69 +7,65 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AdaptFlow | Dhruv Raj Singh</title>
+<title>Dhruv Raj Singh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
+<script src="prefetch.js" defer></script>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
+  <a href="/" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
   <div class="nav-links">
-    <a class="nav-link " href="index.html">Home</a>
+    <a class="nav-link " href="/">Home</a>
     <div class="nav-dropdown" id="nav-games-wrap" style="display:none;">
-      <a class="nav-link " href="games.html">Games</a>
+      <a class="nav-link " href="games">Games</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="fluxle.html">Fluxle</a>
-        <a class="dropdown-item" href="hives.html">Hives</a>
+        <a class="dropdown-item" href="fluxle">Fluxle</a>
+        <a class="dropdown-item" href="hives">Hives</a>
       </div>
     </div>
-    <a class="nav-link " href="about.html">About</a>
+    <a class="nav-link " href="about">About</a>
     <div class="nav-dropdown">
-      <a class="nav-link active" href="work.html">Projects</a>
+      <a class="nav-link active" href="work">Projects</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="proj-swarm.html">SWARM Systems</a>
-        <a class="dropdown-item" href="proj-adaptflow.html">AdaptFlow</a>
-        <a class="dropdown-item" href="proj-micromouse.html">The Micromouse Club</a>
-        <a class="dropdown-item" href="proj-generator.html">Flowing Water Generator</a>
-        <a class="dropdown-item" href="proj-youtube.html">YouTube Channel</a>
+        <a class="dropdown-item" href="proj-swarm">SWARM Systems</a>
+        <a class="dropdown-item" href="proj-adaptflow">AdaptFlow</a>
+        <a class="dropdown-item" href="proj-micromouse">The Micromouse Club</a>
+        <a class="dropdown-item" href="proj-generator">Flowing Water Generator</a>
+        <a class="dropdown-item" href="proj-youtube">YouTube Channel</a>
+        <a class="dropdown-item" href="proj-traceworks">Traceworks</a>
       </div>
     </div>
-    <a class="nav-link " href="contact.html">Contact</a>
+    <a class="nav-link " href="contact">Contact</a>
   </div>
   <button id="mobile-menu-btn" onclick="toggleMobileNav()" style="display:none;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text);font-size:1.2rem;line-height:1;flex-shrink:0;">☰</button>
 </nav>
 <script>
 // Show games nav if previously unlocked
-(function(){
-  if(localStorage.getItem('gamesUnlocked')){
-    var el=document.getElementById('nav-games-wrap');
-    if(el) el.style.display='';
-    var m=document.getElementById('mobile-nav-games');
-    if(m) m.style.display='';
-  }
-})();
+
 </script>
 
 <div class="mobile-nav" id="mobile-nav" style="display:none;">
-  <a href="index.html" onclick="closeMobileNav()">Home</a>
-  <a href="games.html" id="mobile-nav-games" style="display:none;" onclick="closeMobileNav()">Games</a>
-  <a href="about.html" onclick="closeMobileNav()">About</a>
-  <a href="work.html" onclick="closeMobileNav()">Projects</a>
+  <a href="/" onclick="closeMobileNav()">Home</a>
+  <a href="games" id="mobile-nav-games" style="display:none;" onclick="closeMobileNav()">Games</a>
+  <a href="about" onclick="closeMobileNav()">About</a>
+  <a href="work" onclick="closeMobileNav()">Projects</a>
   <div class="mobile-nav-sub">
-    <a href="proj-swarm.html" onclick="closeMobileNav()">SWARM Systems</a>
-    <a href="proj-adaptflow.html" onclick="closeMobileNav()">AdaptFlow</a>
-    <a href="proj-micromouse.html" onclick="closeMobileNav()">The Micromouse Club</a>
-    <a href="proj-generator.html" onclick="closeMobileNav()">Flowing Water Generator</a>
-    <a href="proj-youtube.html" onclick="closeMobileNav()">YouTube Channel</a>
+    <a href="proj-swarm" onclick="closeMobileNav()">SWARM Systems</a>
+    <a href="proj-adaptflow" onclick="closeMobileNav()">AdaptFlow</a>
+    <a href="proj-micromouse" onclick="closeMobileNav()">The Micromouse Club</a>
+    <a href="proj-generator" onclick="closeMobileNav()">Flowing Water Generator</a>
+    <a href="proj-youtube" onclick="closeMobileNav()">YouTube Channel</a>
+    <a href="proj-traceworks" onclick="closeMobileNav()">Traceworks</a>
   </div>
-  <a href="contact.html" onclick="closeMobileNav()">Contact</a>
+  <a href="contact" onclick="closeMobileNav()">Contact</a>
 </div>
 <div class="page active" id="page-proj-adaptflow">
 
   <div class="proj-detail-header reveal">
-    <a href="work.html" class="proj-back">← Projects</a>
+    <a href="work" class="proj-back">← Projects</a>
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
       <h1 style="margin-bottom:0;color:#FFFFFF;">AdaptFlow</h1>
     </div>
@@ -207,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const KONAMI=[38,38,40,40,37,39,37,39,66,65];
   let idx=0;
   document.addEventListener('keydown',function(e){
-    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;localStorage.setItem('gamesUnlocked','1');window.location='games.html';}}
+    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;sessionStorage.setItem('gamesUnlocked','1');window.location='games';}}
     else idx=0;
   });
 })();

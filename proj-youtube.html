@@ -7,69 +7,65 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YouTube Channel | Dhruv Raj Singh</title>
+<title>Dhruv Raj Singh</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&family=Geist+Mono:wght@400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
+<script src="prefetch.js" defer></script>
 </head>
 <body>
 <nav>
-  <a href="index.html" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
+  <a href="/" class="nav-name" style="white-space:nowrap;">Dhruv Raj Singh</a>
   <div class="nav-links">
-    <a class="nav-link " href="index.html">Home</a>
+    <a class="nav-link " href="/">Home</a>
     <div class="nav-dropdown" id="nav-games-wrap" style="display:none;">
-      <a class="nav-link " href="games.html">Games</a>
+      <a class="nav-link " href="games">Games</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="fluxle.html">Fluxle</a>
-        <a class="dropdown-item" href="hives.html">Hives</a>
+        <a class="dropdown-item" href="fluxle">Fluxle</a>
+        <a class="dropdown-item" href="hives">Hives</a>
       </div>
     </div>
-    <a class="nav-link " href="about.html">About</a>
+    <a class="nav-link " href="about">About</a>
     <div class="nav-dropdown">
-      <a class="nav-link active" href="work.html">Projects</a>
+      <a class="nav-link active" href="work">Projects</a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="proj-swarm.html">SWARM Systems</a>
-        <a class="dropdown-item" href="proj-adaptflow.html">AdaptFlow</a>
-        <a class="dropdown-item" href="proj-micromouse.html">The Micromouse Club</a>
-        <a class="dropdown-item" href="proj-generator.html">Flowing Water Generator</a>
-        <a class="dropdown-item" href="proj-youtube.html">YouTube Channel</a>
+        <a class="dropdown-item" href="proj-swarm">SWARM Systems</a>
+        <a class="dropdown-item" href="proj-adaptflow">AdaptFlow</a>
+        <a class="dropdown-item" href="proj-micromouse">The Micromouse Club</a>
+        <a class="dropdown-item" href="proj-generator">Flowing Water Generator</a>
+        <a class="dropdown-item" href="proj-youtube">YouTube Channel</a>
+        <a class="dropdown-item" href="proj-traceworks">Traceworks</a>
       </div>
     </div>
-    <a class="nav-link " href="contact.html">Contact</a>
+    <a class="nav-link " href="contact">Contact</a>
   </div>
   <button id="mobile-menu-btn" onclick="toggleMobileNav()" style="display:none;align-items:center;justify-content:center;width:36px;height:36px;background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text);font-size:1.2rem;line-height:1;flex-shrink:0;">☰</button>
 </nav>
 <script>
 // Show games nav if previously unlocked
-(function(){
-  if(localStorage.getItem('gamesUnlocked')){
-    var el=document.getElementById('nav-games-wrap');
-    if(el) el.style.display='';
-    var m=document.getElementById('mobile-nav-games');
-    if(m) m.style.display='';
-  }
-})();
+
 </script>
 
 <div class="mobile-nav" id="mobile-nav" style="display:none;">
-  <a href="index.html" onclick="closeMobileNav()">Home</a>
-  <a href="games.html" id="mobile-nav-games" style="display:none;" onclick="closeMobileNav()">Games</a>
-  <a href="about.html" onclick="closeMobileNav()">About</a>
-  <a href="work.html" onclick="closeMobileNav()">Projects</a>
+  <a href="/" onclick="closeMobileNav()">Home</a>
+  <a href="games" id="mobile-nav-games" style="display:none;" onclick="closeMobileNav()">Games</a>
+  <a href="about" onclick="closeMobileNav()">About</a>
+  <a href="work" onclick="closeMobileNav()">Projects</a>
   <div class="mobile-nav-sub">
-    <a href="proj-swarm.html" onclick="closeMobileNav()">SWARM Systems</a>
-    <a href="proj-adaptflow.html" onclick="closeMobileNav()">AdaptFlow</a>
-    <a href="proj-micromouse.html" onclick="closeMobileNav()">The Micromouse Club</a>
-    <a href="proj-generator.html" onclick="closeMobileNav()">Flowing Water Generator</a>
-    <a href="proj-youtube.html" onclick="closeMobileNav()">YouTube Channel</a>
+    <a href="proj-swarm" onclick="closeMobileNav()">SWARM Systems</a>
+    <a href="proj-adaptflow" onclick="closeMobileNav()">AdaptFlow</a>
+    <a href="proj-micromouse" onclick="closeMobileNav()">The Micromouse Club</a>
+    <a href="proj-generator" onclick="closeMobileNav()">Flowing Water Generator</a>
+    <a href="proj-youtube" onclick="closeMobileNav()">YouTube Channel</a>
+    <a href="proj-traceworks" onclick="closeMobileNav()">Traceworks</a>
   </div>
-  <a href="contact.html" onclick="closeMobileNav()">Contact</a>
+  <a href="contact" onclick="closeMobileNav()">Contact</a>
 </div>
 <div class="page active" id="page-proj-youtube">
 
   <div class="proj-detail-header reveal">
-    <a href="work.html" class="proj-back">← Projects</a>
+    <a href="work" class="proj-back">← Projects</a>
     
     <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;"><img src="data:image/png;base64,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" alt="drub logo" style="height:48px;width:auto;object-fit:contain;flex-shrink:0;"><h1 style="margin-bottom:0;">Engineering YouTube Channel</h1></div>
     <div class="proj-meta-row">
@@ -136,7 +132,7 @@ function closeMobileNav() {
   const KONAMI=[38,38,40,40,37,39,37,39,66,65];
   let idx=0;
   document.addEventListener('keydown',function(e){
-    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;localStorage.setItem('gamesUnlocked','1');window.location='games.html';}}
+    if(e.keyCode===KONAMI[idx]){idx++;if(idx===KONAMI.length){idx=0;sessionStorage.setItem('gamesUnlocked','1');window.location='games';}}
     else idx=0;
   });
 })();

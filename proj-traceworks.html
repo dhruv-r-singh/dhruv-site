@@ -68,99 +68,41 @@
   </div>
   <a href="contact" onclick="closeMobileNav()">Contact</a>
 </div>
-<div class="page active" id="page-work">
+<div class="page active" id="page-proj-traceworks">
 
-  <div class="work-header reveal">
-    <h2>Projects</h2>
-  </div>
-
-  <div class="work-list" id="work-list">
-    <div class="work-item reveal" onclick="window.location='proj-traceworks'" style="cursor:pointer;">
-      <span class="wi-num">01</span>
-      <div>
-        <div class="wi-title">Traceworks</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
-        <div class="wi-desc">A PCB design studio based in Nashua, NH. Production-grade circuit board layout at fixed, transparent prices — no agency overhead, no hidden fees. I handle embedded systems and firmware. We ship IPC-compliant designs with full file ownership transferred to the client.</div>
-
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2025–</span>
-        <span class="wi-status status-active">Active</span>
-      </div>
+  <div class="proj-detail-header reveal">
+    <a href="work" class="proj-back">← Projects</a>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+      <h1 style="margin-bottom:0;color:#FFFFFF;">Traceworks</h1>
     </div>
-
-    <div class="work-item reveal" onclick="window.location='proj-swarm'" style="cursor:pointer;">
-      <span class="wi-num">02</span>
-      <div>
-        <div class="wi-title">SWARM Systems</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
-        <div class="wi-desc">Every drone in SWARM is identical hardware. What makes them different is what they're told to do and that changes in real time based on what the swarm actually needs. No central brain, no single point of failure. One node goes down, the rest pick up the slack and keep going. This one's still in progress.</div>
-
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2025–</span>
-        <span class="wi-status status-active">Active</span>
-      </div>
-    </div>
-
-    <div class="work-item reveal" onclick="window.location='proj-adaptflow'" style="cursor:pointer;">
-      <span class="wi-num">03</span>
-      <div>
-        <div class="wi-title">AdaptFlow</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span></div>
-        <div class="wi-desc">A greywater management system that recycles household wastewater using sensors and AI to measure water quality and direct it where it can be safely reused. Selected as one of 23 teams globally for the MIT Regenerative Futures Challenge. Presented at the MIT Museum to over 500 people.</div>
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2025</span>
-        <span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span>
-      </div>
-    </div>
-
-    <div class="work-item reveal" onclick="window.location='proj-micromouse'" style="cursor:pointer;">
-      <span class="wi-num">04</span>
-      <div>
-        <div class="wi-title">The Micromouse Club</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
-        <div class="wi-desc">Started this from scratch at my school. We teach embedded programming, PID control, and maze-solving algorithms basically everything you need to build a robot that navigates on its own. 50+ in person, 1,000+ online. First year, still going.</div>
-
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2024–</span>
-        <span class="wi-status status-active">Active</span>
-      </div>
-    </div>
-
-    <div class="work-item reveal" onclick="window.location='proj-generator'" style="cursor:pointer;">
-      <span class="wi-num">05</span>
-      <div>
-        <div class="wi-title">Flowing Water Generator</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
-        <div class="wi-desc">A low-cost fluvial kinetic energy harvester built for under $15. Uses an Archimedes screw turbine to convert flowing water into electricity via a DC generator, designed for off-grid homes, refugee camps, and emergency disaster zones.</div>
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2024</span>
-        <span class="wi-status" style="background:rgba(59,130,246,0.12);color:#3b82f6;">Complete</span>
-      </div>
-    </div>
-
-    <div class="work-item reveal" onclick="window.location='proj-youtube'" style="cursor:pointer;">
-      <span class="wi-num">06</span>
-      <div>
-        <div class="wi-title">Engineering YouTube Channel</div>
-        <div class="wi-status-mobile" style="display:none;margin-bottom:0.5rem;"><span class="wi-status status-active">Active</span></div>
-        <div class="wi-desc">I started making videos because a lot of engineering content online is either too basic or too buried in jargon. I just wanted to explain things clearly. It started small now people from countries I've never visited are watching. That part still gets me.</div>
-
-      </div>
-      <div class="wi-meta">
-        <span class="wi-year">2023–</span>
-        <span class="wi-status status-active">Active</span>
-      </div>
+    <div class="proj-meta-row">
+      <span class="wi-status status-active">Active</span>
+      <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--muted);">2025–</span>
     </div>
   </div>
 
-  
+  <div class="proj-detail-body">
+    <div class="proj-content reveal">
+      <p>Most PCB design services charge agency rates for work that doesn't require agency overhead. Traceworks was built to fix that. We're a small studio out of Nashua, New Hampshire, offering production-grade PCB layout at fixed, transparent prices — no retainers, no scope creep, no surprises.</p>
+      <p>I handle the embedded systems and firmware side: making sure the boards we deliver actually work in the real world, not just in simulation. That means thinking through signal integrity, power rail noise, and manufacturability constraints from the start, not as an afterthought before the Gerbers go out. Every design we ship is IPC-2221 and IPC-7351 compliant, DRC-verified for JLCPCB and PCBWay, and delivered as KiCad native files with full ownership transferred to the client.</p>
+      <p>Beyond client work, we've built a small suite of KiCad plugins — AutoBOM, TraceCheck, and SchemaSnap — and a couple of AI agents for PCB design called LayoutBot and SpecWriter. The plugins automate the parts of the workflow that are tedious and error-prone. The agents are more experimental, but the direction feels right: most of the friction in PCB design is documentation and iteration, not creativity.</p>
+      <p>The team is four people. Prithvi Gupta leads the PCB design work. Anghelo Araujo Lazaro handles the software infrastructure. Vandan Brahmbhatt runs operations and growth. We're still early, but we've built something real and clients are showing up.</p>
 
-<footer>
+      <h3>What We Deliver</h3>
+      <p>Every project ships with Gerber files, Excellon drill files, a BOM, pick-and-place coordinates, schematic PDF, and 3D renders. For complex boards — 4–6 layers with RF, power, or impedance-controlled traces — we get on a call first to make sure the requirements are locked before layout begins. We also offer 48-hour express turnaround, fab coordination, and component sourcing as add-ons.</p>
+    </div>
+
+    <div class="proj-sidebar reveal">
+      <div class="sidebar-title">About this project</div>
+      <div class="sidebar-item"><strong>Status</strong>Active</div>
+      <div class="sidebar-item"><strong>Role</strong>Co-founder, Embedded Systems & Firmware</div>
+      <div class="sidebar-item"><strong>Team</strong>Prithvi Gupta, Anghelo Araujo Lazaro, Vandan Brahmbhatt</div>
+      <div class="sidebar-item"><strong>Location</strong>Nashua, NH</div>
+      <div class="sidebar-item"><strong>Website</strong><a href="https://traceworkspcb.com" target="_blank" style="color:var(--text);text-decoration:underline;text-underline-offset:3px;">traceworkspcb.com ↗</a></div>
+    </div>
+  </div>
+
+  <footer>
     <span class="footer-l">Dhruv Raj Singh © 2026</span>
     <div style="display:flex;gap:1.5rem;align-items:center;">
       <a href="https://www.instagram.com/dhruvrsingh_" target="_blank" style="font-family:var(--font-mono);font-size:0.67rem;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">Instagram</a>
@@ -169,6 +111,7 @@
     </div>
     <span class="footer-r">Nashua, NH</span>
   </footer>
+
 </div>
 <script>
 function initReveal() {
@@ -188,11 +131,11 @@ function toggleMobileNav() {
   if (isOpen) {
     nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
     setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
-    btn.textContent = '\u2630';
+    btn.textContent = '☰';
   } else {
     nav.style.display = 'flex';
     nav.style.animation = 'slideInRight 0.32s cubic-bezier(0.22,1,0.36,1) forwards';
-    btn.textContent = '\u2715';
+    btn.textContent = '✕';
   }
 }
 function closeMobileNav() {
@@ -201,7 +144,7 @@ function closeMobileNav() {
   if (!nav || nav.style.display !== 'flex') return;
   nav.style.animation = 'slideOutRight 0.28s ease-in forwards';
   setTimeout(() => { nav.style.display = 'none'; nav.style.animation = ''; }, 270);
-  if (btn) btn.textContent = '\u2630';
+  if (btn) btn.textContent = '☰';
 }
 </script>
 <script>
